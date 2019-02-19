@@ -6,7 +6,7 @@ replicas:
   max: 4
   cpuThresholdPercentage: 50
 port: 8080
-healthcheck
+healthcheck:
   liveness:
     path: /internal/isAlive
     initialDelay: 20
@@ -27,6 +27,8 @@ fasitResources:
   used:
     - alias: srvveilarbdokument
       resourceType: credential
+    - alias: Dokumentproduksjon_v3
+      resourceType: webserviceendpoint
 
 alertProfiles:
   - common-java-modules

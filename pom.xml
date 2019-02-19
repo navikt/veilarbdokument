@@ -44,8 +44,23 @@
             </exclusions>
         </dependency>
         <dependency>
+            <groupId>no.nav.common</groupId>
+            <artifactId>aktor-klient</artifactId>
+        </dependency>
+        <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>no.nav.common</groupId>
+            <artifactId>aktor-klient</artifactId>
+        </dependency>
+
+        <!-- Tjenester -->
+        <dependency>
+            <groupId>no.nav.tjenestespesifikasjoner</groupId>
+            <artifactId>dokumentproduksjon-v3-tjenestespesifikasjon</artifactId>
+            <version>1.2019.02.06-20.03-9acde4111245</version>
         </dependency>
 
         <!-- test -->
