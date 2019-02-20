@@ -20,13 +20,15 @@ import org.springframework.context.annotation.Import;
 public class ApplicationConfig implements ApiApplication {
 
     public static final String DOKUMENTPRODUKSJON_ENDPOINT_URL = "DOKUMENTPRODUKSJON_V3_ENDPOINT_URL";
+    public static final String AKTOR_ENDPOINT_URL = "AKTOER_V2_ENDPOINT_URL";
+    public static final String SECURITYTOKENSERVICE_URL = "SECURITYTOKENSERVICE_URL";
 
     @Override
     public void configure(ApiAppConfigurator apiAppConfigurator) {
         apiAppConfigurator
                 .addPublicPath("/*");
+                //.issoLogin();
     }
-
 
     @Bean
     public DokumentproduksjonV3 dokumentproduksjonV3() {
@@ -36,8 +38,15 @@ public class ApplicationConfig implements ApiApplication {
                 .build();
     }
 
-    static String getDokumentproduksjonEndpointUrl() {
+    public static String getDokumentproduksjonEndpointUrl() {
         return EnvironmentUtils.getRequiredProperty(DOKUMENTPRODUKSJON_ENDPOINT_URL);
     }
 
+    public static String getAktorEndpointUrl() {
+        return EnvironmentUtils.getRequiredProperty(AKTOR_ENDPOINT_URL);
+    }
+
+    public static String getSecurityTokenServiceUrl() {
+        return EnvironmentUtils.getRequiredProperty(SECURITYTOKENSERVICE_URL);
+    }
 }
