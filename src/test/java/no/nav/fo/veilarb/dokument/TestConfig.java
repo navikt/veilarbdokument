@@ -10,6 +10,7 @@ import static no.nav.dialogarena.config.fasit.FasitUtils.*;
 import static no.nav.dialogarena.config.fasit.FasitUtils.Zone.*;
 import static no.nav.fo.veilarb.dokument.ApplicationConfig.*;
 import static no.nav.sbl.util.EnvironmentUtils.Type.PUBLIC;
+import static no.nav.sbl.util.EnvironmentUtils.Type.SECRET;
 import static no.nav.sbl.util.EnvironmentUtils.resolveSrvUserPropertyName;
 import static no.nav.sbl.util.EnvironmentUtils.resolverSrvPasswordPropertyName;
 import static no.nav.sbl.dialogarena.common.cxf.StsSecurityConstants.SYSTEMUSER_PASSWORD;
@@ -25,9 +26,9 @@ public class TestConfig {
 
         ServiceUser serviceUser = FasitUtils.getServiceUser(SERVICE_USER_NAME, APPLICATION_NAME, FSS);
         EnvironmentUtils.setProperty(SYSTEMUSER_USERNAME, serviceUser.getUsername(), PUBLIC);
-        EnvironmentUtils.setProperty(SYSTEMUSER_PASSWORD, serviceUser.getPassword(), PUBLIC);
+        EnvironmentUtils.setProperty(SYSTEMUSER_PASSWORD, serviceUser.getPassword(), SECRET);
         EnvironmentUtils.setProperty(resolveSrvUserPropertyName(), serviceUser.getUsername(), PUBLIC);
-        EnvironmentUtils.setProperty(resolverSrvPasswordPropertyName(), serviceUser.getPassword(), PUBLIC);
+        EnvironmentUtils.setProperty(resolverSrvPasswordPropertyName(), serviceUser.getPassword(), SECRET);
 
         WebServiceEndpoint dokumentproduksjonEndpoint = getWebServiceEndpoint("Dokumentproduksjon_v3", getDefaultEnvironment());
         EnvironmentUtils.setProperty(

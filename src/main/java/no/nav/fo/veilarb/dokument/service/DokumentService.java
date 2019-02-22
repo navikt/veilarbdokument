@@ -1,5 +1,6 @@
 package no.nav.fo.veilarb.dokument.service;
 
+import lombok.SneakyThrows;
 import no.nav.dialogarena.aktor.AktorService;
 import no.nav.fo.veilarb.dokument.domain.DokumentBestilling;
 import no.nav.fo.veilarb.dokument.domain.JournalpostId;
@@ -25,22 +26,32 @@ public class DokumentService {
     }
 
     // TODO
+    @SneakyThrows
     public JournalpostId bestillDokument(DokumentBestilling dokumentBestilling) {
         Optional<String> aktorId = aktorService.getAktorId(dokumentBestilling.fnr());
-        WSProduserIkkeredigerbartDokumentRequest request = produserIkkeredigerbartDokumentRequest();
-//        WSProduserIkkeredigerbartDokumentResponse response = dokumentproduksjon.produserIkkeredigerbartDokument(request);
+        WSProduserIkkeredigerbartDokumentRequest request = produserIkkeredigerbartDokumentRequest(dokumentBestilling);
+        // WSProduserIkkeredigerbartDokumentResponse response = dokumentproduksjon.produserIkkeredigerbartDokument(request);
         return JournalpostId.of(null);
     }
 
-    private WSProduserIkkeredigerbartDokumentResponse produserIkkeredigerbartDokument() throws ProduserIkkeredigerbartDokumentDokumentErRedigerbart, ProduserIkkeRedigerbartDokumentJoarkForretningsmessigUnntak, ProduserIkkeredigerbartDokumentSikkerhetsbegrensning, ProduserIkkeredigerbartDokumentBrevdataValideringFeilet, ProduserIkkeredigerbartDokumentDokumentErVedlegg, ProduserIkkeRedigerbartDokumentInputValideringFeilet {
-        WSProduserIkkeredigerbartDokumentRequest request = produserIkkeredigerbartDokumentRequest();
+    @SneakyThrows
+    private WSProduserIkkeredigerbartDokumentResponse produserIkkeredigerbartDokument(DokumentBestilling dokumentBestilling) {
+        WSProduserIkkeredigerbartDokumentRequest request = produserIkkeredigerbartDokumentRequest(dokumentBestilling);
         return dokumentproduksjon.produserIkkeredigerbartDokument(request);
 
     }
 
-    private WSProduserIkkeredigerbartDokumentRequest produserIkkeredigerbartDokumentRequest() {
-        WSDokumentbestillingsinformasjon informasjon = new WSDokumentbestillingsinformasjon();
+    private WSProduserIkkeredigerbartDokumentRequest produserIkkeredigerbartDokumentRequest(DokumentBestilling dokumentBestilling) {
+        WSDokumentbestillingsinformasjon informasjon = produserDokumentbestillingsinformasjon(dokumentBestilling);
         return new WSProduserIkkeredigerbartDokumentRequest()
                 .withDokumentbestillingsinformasjon(informasjon);
+    }
+
+    private WSDokumentbestillingsinformasjon produserDokumentbestillingsinformasjon(DokumentBestilling dokumentBestilling) {
+        WSDokumentbestillingsinformasjon informasjon = new WSDokumentbestillingsinformasjon();
+
+        informasjon.setDokumenttypeId(dokumentBestilling.dokumentTypeId());
+
+        return informasjon;
     }
 }
