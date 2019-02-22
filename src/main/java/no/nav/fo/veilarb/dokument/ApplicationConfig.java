@@ -22,12 +22,13 @@ public class ApplicationConfig implements ApiApplication {
     public static final String DOKUMENTPRODUKSJON_ENDPOINT_URL = "DOKUMENTPRODUKSJON_V3_ENDPOINT_URL";
     public static final String AKTOR_ENDPOINT_URL = "AKTOER_V2_ENDPOINT_URL";
     public static final String SECURITYTOKENSERVICE_URL = "SECURITYTOKENSERVICE_URL";
+    public static final String VEILARBLOGIN_REDIRECT_URL = "VEILARBLOGIN_REDIRECT_URL_URL";
 
     @Override
     public void configure(ApiAppConfigurator apiAppConfigurator) {
         apiAppConfigurator
-                .addPublicPath("/*");
-                //.issoLogin();
+                .addPublicPath("/*")
+                .issoLogin();
     }
 
     @Bean
@@ -48,5 +49,9 @@ public class ApplicationConfig implements ApiApplication {
 
     public static String getSecurityTokenServiceUrl() {
         return EnvironmentUtils.getRequiredProperty(SECURITYTOKENSERVICE_URL);
+    }
+
+    public static String getVeilarbloginRedirectUrl() {
+        return VEILARBLOGIN_REDIRECT_URL;
     }
 }

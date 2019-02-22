@@ -34,5 +34,18 @@ fasitResources:
     - alias: securityTokenService
       resourceType: baseurl
 
+    - alias: isso-host
+      resourceType: baseurl
+    - alias: isso-rp-user
+      resourceType: credential
+    - alias: isso-jwks
+      resourceType: baseurl
+    - alias: isso-issuer
+      resourceType: baseurl
+    - alias: veilarblogin.redirect-url
+      resourceType: restservice
+  - alias: isso.isalive
+      resourceType: baseurl
+
 alertProfiles:
   - common-java-modules

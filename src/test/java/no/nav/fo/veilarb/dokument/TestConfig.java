@@ -1,11 +1,11 @@
 package no.nav.fo.veilarb.dokument;
 
-import no.nav.dialogarena.config.fasit.FasitUtils;
 import no.nav.dialogarena.config.fasit.ServiceUser;
 import no.nav.dialogarena.config.fasit.WebServiceEndpoint;
 import no.nav.sbl.util.EnvironmentUtils;
 import no.nav.testconfig.ApiAppTest;
 
+import static no.nav.brukerdialog.security.Constants.*;
 import static no.nav.dialogarena.config.fasit.FasitUtils.*;
 import static no.nav.dialogarena.config.fasit.FasitUtils.Zone.*;
 import static no.nav.fo.veilarb.dokument.ApplicationConfig.*;
@@ -24,11 +24,20 @@ public class TestConfig {
     public static void setupTestContext() {
         ApiAppTest.setupTestContext(ApiAppTest.Config.builder().applicationName(APPLICATION_NAME).build());
 
-        ServiceUser serviceUser = FasitUtils.getServiceUser(SERVICE_USER_NAME, APPLICATION_NAME, FSS);
+        ServiceUser serviceUser = getServiceUser(SERVICE_USER_NAME, APPLICATION_NAME, FSS);
         EnvironmentUtils.setProperty(SYSTEMUSER_USERNAME, serviceUser.getUsername(), PUBLIC);
         EnvironmentUtils.setProperty(SYSTEMUSER_PASSWORD, serviceUser.getPassword(), SECRET);
         EnvironmentUtils.setProperty(resolveSrvUserPropertyName(), serviceUser.getUsername(), PUBLIC);
         EnvironmentUtils.setProperty(resolverSrvPasswordPropertyName(), serviceUser.getPassword(), SECRET);
+
+        EnvironmentUtils.setProperty(ISSO_HOST_URL_PROPERTY_NAME, getBaseUrl("isso-host"), PUBLIC);
+        ServiceUser issoRpUser = getServiceUser("isso-rp-user", APPLICATION_NAME, FSS);
+        EnvironmentUtils.setProperty(ISSO_RP_USER_USERNAME_PROPERTY_NAME, issoRpUser.username, PUBLIC);
+        EnvironmentUtils.setProperty(ISSO_RP_USER_PASSWORD_PROPERTY_NAME, issoRpUser.password, SECRET);
+        EnvironmentUtils.setProperty(ISSO_JWKS_URL_PROPERTY_NAME, getBaseUrl("isso-jwks"), PUBLIC);
+        EnvironmentUtils.setProperty(ISSO_ISSUER_URL_PROPERTY_NAME, getBaseUrl("isso-issuer"), PUBLIC);
+        EnvironmentUtils.setProperty(VEILARBLOGIN_REDIRECT_URL, getRestService("veilarblogin.redirect-url").getUrl(), PUBLIC);
+        EnvironmentUtils.setProperty(ISSO_ISALIVE_URL_PROPERTY_NAME, getBaseUrl("isso.isalive", FSS), PUBLIC);
 
         WebServiceEndpoint dokumentproduksjonEndpoint = getWebServiceEndpoint("Dokumentproduksjon_v3", getDefaultEnvironment());
         EnvironmentUtils.setProperty(
