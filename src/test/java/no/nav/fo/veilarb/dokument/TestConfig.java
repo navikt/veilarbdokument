@@ -2,19 +2,20 @@ package no.nav.fo.veilarb.dokument;
 
 import no.nav.dialogarena.config.fasit.ServiceUser;
 import no.nav.dialogarena.config.fasit.WebServiceEndpoint;
+import no.nav.dialogarena.config.fasit.dto.RestService;
 import no.nav.sbl.util.EnvironmentUtils;
 import no.nav.testconfig.ApiAppTest;
 
 import static no.nav.brukerdialog.security.Constants.*;
+import static no.nav.dialogarena.config.fasit.FasitUtils.Zone.FSS;
 import static no.nav.dialogarena.config.fasit.FasitUtils.*;
-import static no.nav.dialogarena.config.fasit.FasitUtils.Zone.*;
 import static no.nav.fo.veilarb.dokument.ApplicationConfig.*;
+import static no.nav.sbl.dialogarena.common.cxf.StsSecurityConstants.SYSTEMUSER_PASSWORD;
+import static no.nav.sbl.dialogarena.common.cxf.StsSecurityConstants.SYSTEMUSER_USERNAME;
 import static no.nav.sbl.util.EnvironmentUtils.Type.PUBLIC;
 import static no.nav.sbl.util.EnvironmentUtils.Type.SECRET;
 import static no.nav.sbl.util.EnvironmentUtils.resolveSrvUserPropertyName;
 import static no.nav.sbl.util.EnvironmentUtils.resolverSrvPasswordPropertyName;
-import static no.nav.sbl.dialogarena.common.cxf.StsSecurityConstants.SYSTEMUSER_PASSWORD;
-import static no.nav.sbl.dialogarena.common.cxf.StsSecurityConstants.SYSTEMUSER_USERNAME;
 
 public class TestConfig {
 
@@ -25,18 +26,19 @@ public class TestConfig {
         ApiAppTest.setupTestContext(ApiAppTest.Config.builder().applicationName(APPLICATION_NAME).build());
 
         ServiceUser serviceUser = getServiceUser(SERVICE_USER_NAME, APPLICATION_NAME, FSS);
+        RestService veilarbLogin = getRestService("veilarblogin.redirect-url");
+        ServiceUser issoRpUser = getServiceUser("isso-rp-user", APPLICATION_NAME, FSS);
+
         EnvironmentUtils.setProperty(SYSTEMUSER_USERNAME, serviceUser.getUsername(), PUBLIC);
         EnvironmentUtils.setProperty(SYSTEMUSER_PASSWORD, serviceUser.getPassword(), SECRET);
         EnvironmentUtils.setProperty(resolveSrvUserPropertyName(), serviceUser.getUsername(), PUBLIC);
         EnvironmentUtils.setProperty(resolverSrvPasswordPropertyName(), serviceUser.getPassword(), SECRET);
-
         EnvironmentUtils.setProperty(ISSO_HOST_URL_PROPERTY_NAME, getBaseUrl("isso-host"), PUBLIC);
-        ServiceUser issoRpUser = getServiceUser("isso-rp-user", APPLICATION_NAME, FSS);
         EnvironmentUtils.setProperty(ISSO_RP_USER_USERNAME_PROPERTY_NAME, issoRpUser.username, PUBLIC);
         EnvironmentUtils.setProperty(ISSO_RP_USER_PASSWORD_PROPERTY_NAME, issoRpUser.password, SECRET);
         EnvironmentUtils.setProperty(ISSO_JWKS_URL_PROPERTY_NAME, getBaseUrl("isso-jwks"), PUBLIC);
         EnvironmentUtils.setProperty(ISSO_ISSUER_URL_PROPERTY_NAME, getBaseUrl("isso-issuer"), PUBLIC);
-        EnvironmentUtils.setProperty(VEILARBLOGIN_REDIRECT_URL, getRestService("veilarblogin.redirect-url").getUrl(), PUBLIC);
+        EnvironmentUtils.setProperty(OIDC_REDIRECT_URL, veilarbLogin.getUrl(), PUBLIC);
         EnvironmentUtils.setProperty(ISSO_ISALIVE_URL_PROPERTY_NAME, getBaseUrl("isso.isalive", FSS), PUBLIC);
 
         WebServiceEndpoint dokumentproduksjonEndpoint = getWebServiceEndpoint("Dokumentproduksjon_v3", getDefaultEnvironment());
@@ -56,5 +58,7 @@ public class TestConfig {
                 getBaseUrl("securityTokenService", FSS),
                 PUBLIC
                 );
+
+        EnvironmentUtils.setProperty("VEILARBABAC", "https://veilarbabac-"+ getDefaultEnvironment()+".nais.preprod.local" , SECRET);
     }
 }

@@ -1,34 +1,44 @@
 package no.nav.fo.veilarb.dokument.service;
 
 import lombok.SneakyThrows;
+import no.nav.apiapp.feil.Feil;
 import no.nav.dialogarena.aktor.AktorService;
 import no.nav.fo.veilarb.dokument.domain.DokumentBestilling;
 import no.nav.fo.veilarb.dokument.domain.JournalpostId;
-import no.nav.tjeneste.virksomhet.dokumentproduksjon.v3.*;
+import no.nav.fo.veilarb.dokument.utils.VeilarbAbacServiceClient;
+import no.nav.tjeneste.virksomhet.dokumentproduksjon.v3.DokumentproduksjonV3;
 import no.nav.tjeneste.virksomhet.dokumentproduksjon.v3.informasjon.WSDokumentbestillingsinformasjon;
 import no.nav.tjeneste.virksomhet.dokumentproduksjon.v3.meldinger.WSProduserIkkeredigerbartDokumentRequest;
 import no.nav.tjeneste.virksomhet.dokumentproduksjon.v3.meldinger.WSProduserIkkeredigerbartDokumentResponse;
 import org.springframework.stereotype.Component;
 
 import javax.inject.Inject;
-import java.util.Optional;
+
+import static no.nav.apiapp.feil.FeilType.UGYLDIG_REQUEST;
 
 @Component
 public class DokumentService {
 
     private AktorService aktorService;
     private DokumentproduksjonV3 dokumentproduksjon;
+    private VeilarbAbacServiceClient veilarbAbacServiceClient;
 
     @Inject
-    public DokumentService(AktorService aktorService, DokumentproduksjonV3 dokumentproduksjon) {
+    public DokumentService(AktorService aktorService,
+                           DokumentproduksjonV3 dokumentproduksjon,
+                           VeilarbAbacServiceClient veilarbAbacServiceClient) {
         this.aktorService = aktorService;
         this.dokumentproduksjon = dokumentproduksjon;
+        this.veilarbAbacServiceClient = veilarbAbacServiceClient;
     }
 
     // TODO
     @SneakyThrows
     public JournalpostId bestillDokument(DokumentBestilling dokumentBestilling) {
-        Optional<String> aktorId = aktorService.getAktorId(dokumentBestilling.fnr());
+        String aktorId = aktorService.getAktorId(dokumentBestilling.fnr())
+                .orElseThrow(() -> new Feil(UGYLDIG_REQUEST, "Fant ikke aktør for fnr"));
+        veilarbAbacServiceClient.veilederHarLesetilgangTilPerson(aktorId);
+
         WSProduserIkkeredigerbartDokumentRequest request = produserIkkeredigerbartDokumentRequest(dokumentBestilling);
         // WSProduserIkkeredigerbartDokumentResponse response = dokumentproduksjon.produserIkkeredigerbartDokument(request);
         return JournalpostId.of(null);

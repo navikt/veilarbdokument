@@ -4,6 +4,7 @@ import no.nav.apiapp.ApiApplication;
 import no.nav.apiapp.config.ApiAppConfigurator;
 import no.nav.dialogarena.aktor.AktorConfig;
 import no.nav.fo.veilarb.dokument.service.DokumentService;
+import no.nav.fo.veilarb.dokument.utils.VeilarbAbacServiceClient;
 import no.nav.sbl.dialogarena.common.cxf.CXFClient;
 import no.nav.sbl.util.EnvironmentUtils;
 import no.nav.tjeneste.virksomhet.dokumentproduksjon.v3.DokumentproduksjonV3;
@@ -15,6 +16,7 @@ import org.springframework.context.annotation.Import;
 @Import({
         DokumentService.class,
         DokumentRessurs.class,
+        VeilarbAbacServiceClient.class,
         AktorConfig.class
 })
 public class ApplicationConfig implements ApiApplication {
@@ -22,7 +24,7 @@ public class ApplicationConfig implements ApiApplication {
     public static final String DOKUMENTPRODUKSJON_ENDPOINT_URL = "DOKUMENTPRODUKSJON_V3_ENDPOINT_URL";
     public static final String AKTOR_ENDPOINT_URL = "AKTOER_V2_ENDPOINT_URL";
     public static final String SECURITYTOKENSERVICE_URL = "SECURITYTOKENSERVICE_URL";
-    public static final String VEILARBLOGIN_REDIRECT_URL = "VEILARBLOGIN_REDIRECT_URL_URL";
+    public static final String OIDC_REDIRECT_URL = "OIDC_REDIRECT_URL";
 
     @Override
     public void configure(ApiAppConfigurator apiAppConfigurator) {
@@ -51,7 +53,7 @@ public class ApplicationConfig implements ApiApplication {
         return EnvironmentUtils.getRequiredProperty(SECURITYTOKENSERVICE_URL);
     }
 
-    public static String getVeilarbloginRedirectUrl() {
-        return VEILARBLOGIN_REDIRECT_URL;
+    public static String getOidcRedirectUrl() {
+        return EnvironmentUtils.getRequiredProperty(OIDC_REDIRECT_URL);
     }
 }

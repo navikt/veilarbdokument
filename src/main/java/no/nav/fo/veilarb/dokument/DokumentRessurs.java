@@ -1,16 +1,18 @@
 package no.nav.fo.veilarb.dokument;
 
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.*;
 import no.nav.fo.veilarb.dokument.domain.DokumentBestilling;
 import no.nav.fo.veilarb.dokument.domain.JournalpostId;
 import no.nav.fo.veilarb.dokument.service.DokumentService;
 import org.springframework.stereotype.Component;
 
 import javax.inject.Inject;
+import javax.ws.rs.HeaderParam;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
+
+import static org.apache.cxf.helpers.HttpHeaderHelper.AUTHORIZATION;
 
 @Component
 @Path("/")
@@ -28,7 +30,10 @@ public class DokumentRessurs {
     @POST
     @Path("/bestilldokument")
     @ApiOperation(value = "Bestill dokument og ekspeder som brev")
-    public JournalpostId bestillDokument(DokumentBestilling dokumentBestilling) {
+    public JournalpostId bestillDokument(
+            @ApiParam(value = "a oidc-token representing the consuming application", example = "Bearer ")
+            @HeaderParam(AUTHORIZATION) String authorization,
+            DokumentBestilling dokumentBestilling) {
         return dokumentService.bestillDokument(dokumentBestilling);
     }
 }
