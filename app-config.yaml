@@ -6,7 +6,7 @@ replicas:
   max: 4
   cpuThresholdPercentage: 50
 port: 8080
-healthcheck
+healthcheck:
   liveness:
     path: /internal/isAlive
     initialDelay: 20
@@ -27,6 +27,27 @@ fasitResources:
   used:
     - alias: srvveilarbdokument
       resourceType: credential
+    - alias: Dokumentproduksjon_v3
+      resourceType: webserviceendpoint
+    - alias: Aktoer_v2
+      resourceType: webserviceendpoint
+    - alias: securityTokenService
+      resourceType: baseurl
+
+    - alias: isso-host
+      resourceType: baseurl
+    - alias: isso-rp-user
+      resourceType: credential
+    - alias: isso-jwks
+      resourceType: baseurl
+    - alias: isso-issuer
+      resourceType: baseurl
+    - alias: veilarblogin.redirect-url
+      resourceType: restservice
+      propertyMap:
+        url: OIDC_REDIRECT_URL
+    - alias: isso.isalive
+      resourceType: baseurl
 
 alertProfiles:
   - common-java-modules
