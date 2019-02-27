@@ -2,6 +2,7 @@ package no.nav.fo.veilarb.dokument.service;
 
 import lombok.SneakyThrows;
 import no.nav.apiapp.feil.Feil;
+import no.nav.common.auth.SubjectHandler;
 import no.nav.dialogarena.aktor.AktorService;
 import no.nav.fo.veilarb.dokument.domain.DokumentBestilling;
 import no.nav.fo.veilarb.dokument.domain.JournalpostId;
@@ -14,7 +15,9 @@ import org.springframework.stereotype.Component;
 
 import javax.inject.Inject;
 
+import static no.nav.apiapp.feil.FeilType.INGEN_TILGANG;
 import static no.nav.apiapp.feil.FeilType.UGYLDIG_REQUEST;
+import static no.nav.common.auth.SsoToken.Type.OIDC;
 
 @Component
 public class DokumentService {
@@ -37,11 +40,18 @@ public class DokumentService {
     public JournalpostId bestillDokument(DokumentBestilling dokumentBestilling) {
         String aktorId = aktorService.getAktorId(dokumentBestilling.fnr())
                 .orElseThrow(() -> new Feil(UGYLDIG_REQUEST, "Fant ikke aktør for fnr"));
-        veilarbAbacServiceClient.veilederHarLesetilgangTilPerson(aktorId);
+
+        validerLesetilgangTilPerson(aktorId);
 
         WSProduserIkkeredigerbartDokumentRequest request = produserIkkeredigerbartDokumentRequest(dokumentBestilling);
-        // WSProduserIkkeredigerbartDokumentResponse response = dokumentproduksjon.produserIkkeredigerbartDokument(request);
+        WSProduserIkkeredigerbartDokumentResponse response = dokumentproduksjon.produserIkkeredigerbartDokument(request);
         return JournalpostId.of(null);
+    }
+
+    private void validerLesetilgangTilPerson(String aktorId) {
+        SubjectHandler.getSsoToken(OIDC)
+                .map(token -> veilarbAbacServiceClient.harLesetilgangTilPerson(token, aktorId))
+                .orElseThrow(() -> new Feil(INGEN_TILGANG));
     }
 
     @SneakyThrows
