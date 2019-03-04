@@ -5,9 +5,7 @@ import lombok.experimental.Accessors;
 
 @Value
 @Accessors(fluent = true)
-public class DokumentBestilling {
-    Person bruker;
-    Person mottaker;
-    String dokumentTypeId;
-    String journalsakId;
+public class Person  {
+    String fnr;
+    String navn;
 }
