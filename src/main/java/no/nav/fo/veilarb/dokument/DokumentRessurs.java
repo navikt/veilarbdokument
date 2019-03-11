@@ -1,7 +1,7 @@
 package no.nav.fo.veilarb.dokument;
 
 import io.swagger.annotations.*;
-import no.nav.fo.veilarb.dokument.domain.DokumentBestilling;
+import no.nav.fo.veilarb.dokument.domain.Dokumentbestilling;
 import no.nav.fo.veilarb.dokument.domain.JournalpostId;
 import no.nav.fo.veilarb.dokument.service.DokumentService;
 import org.springframework.stereotype.Component;
@@ -33,7 +33,7 @@ public class DokumentRessurs {
     public JournalpostId bestillDokument(
             @ApiParam(value = "a oidc-token representing the consuming application", example = "Bearer ")
             @HeaderParam(AUTHORIZATION) String authorization,
-            DokumentBestilling dokumentBestilling) {
+            Dokumentbestilling dokumentBestilling) {
         return dokumentService.bestillDokument(dokumentBestilling);
     }
 }
