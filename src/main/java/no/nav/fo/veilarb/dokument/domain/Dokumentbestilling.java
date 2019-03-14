@@ -11,4 +11,5 @@ public class Dokumentbestilling {
     String dokumenttypeId;
     String journalsakId;
     String journalforendeEnhet;
+    Adresse adresse;
 }

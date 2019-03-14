@@ -1,5 +1,6 @@
 package no.nav.fo.veilarb.dokument.utils;
 
+import no.nav.fo.veilarb.dokument.domain.Adresse;
 import no.nav.fo.veilarb.dokument.domain.Dokumentbestilling;
 import no.nav.fo.veilarb.dokument.domain.Person;
 import no.nav.tjeneste.virksomhet.dokumentproduksjon.v3.informasjon.*;
@@ -36,11 +37,24 @@ public class WSMapper {
         informasjon.setUtledRegisterInfo(true);
 
         // TODO: følgende felter er ikke spesifisert hvilke verdier som er riktig
+        if (dokumentBestilling.adresse() != null) {
+            informasjon.setAdresse(adresse(dokumentBestilling.adresse()));
+        }
         informasjon.setInkludererEksterneVedlegg(false);
         informasjon.setFerdigstillForsendelse(false);
         informasjon.setSaksbehandlernavn("Test Navn"); // TODO: slå opp navn på saksbehandler?
 
         return informasjon;
+    }
+
+    public static WSAdresse adresse(Adresse adresse) {
+        return new WSNorskPostadresse()
+                .withAdresselinje1(adresse.adresselinje1())
+                .withAdresselinje2(adresse.adresselinje2())
+                .withAdresselinje3(adresse.adresselinje3())
+                .withLand(new WSLandkoder().withValue(adresse.land()))
+                .withPostnummer(adresse.postnummer())
+                .withPoststed(adresse.poststed());
     }
 
     public static WSPerson person(Person person) {
@@ -56,6 +70,6 @@ public class WSMapper {
 
         return new WSProduserDokumentutkastRequest()
                 .withDokumenttypeId(dokumentbestilling.dokumenttypeId())
-        .withAny(dokumentbestillingsinformasjon);
+                .withAny(dokumentbestillingsinformasjon);
     }
 }
