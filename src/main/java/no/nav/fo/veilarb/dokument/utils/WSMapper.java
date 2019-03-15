@@ -1,11 +1,20 @@
 package no.nav.fo.veilarb.dokument.utils;
 
+import lombok.SneakyThrows;
+import no.nav.dok.metaforcemal.BrevdataType;
 import no.nav.fo.veilarb.dokument.domain.Adresse;
 import no.nav.fo.veilarb.dokument.domain.Dokumentbestilling;
 import no.nav.fo.veilarb.dokument.domain.Person;
 import no.nav.tjeneste.virksomhet.dokumentproduksjon.v3.informasjon.*;
 import no.nav.tjeneste.virksomhet.dokumentproduksjon.v3.meldinger.WSProduserDokumentutkastRequest;
 import no.nav.tjeneste.virksomhet.dokumentproduksjon.v3.meldinger.WSProduserIkkeredigerbartDokumentRequest;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBElement;
+import javax.xml.bind.Marshaller;
+import javax.xml.parsers.DocumentBuilderFactory;
 
 public class WSMapper {
 
@@ -13,12 +22,33 @@ public class WSMapper {
     private static String SAKSTILHORENDE_FAGSYSTEM_KODE = "FS22";
     private static String DOKUMENTTILHORENDE_FAGOMRAADE = "OPP";
 
+    @SneakyThrows
     public static WSProduserIkkeredigerbartDokumentRequest produserIkkeredigerbartDokumentRequest(Dokumentbestilling dokumentBestilling) {
+
         WSDokumentbestillingsinformasjon informasjon =
                 WSMapper.dokumentbestillingsinformasjon(dokumentBestilling);
 
         return new WSProduserIkkeredigerbartDokumentRequest()
-                .withDokumentbestillingsinformasjon(informasjon);
+                .withDokumentbestillingsinformasjon(informasjon)
+                .withAny(brevdata());
+
+
+    }
+
+    @SneakyThrows
+    private static Object brevdata() {
+
+        JAXBElement<BrevdataType> brevdata = new no.nav.dok.metaforcemal.ObjectFactory().createBrevdata(new BrevdataType());
+
+        JAXBContext context = JAXBContext.newInstance(BrevdataType.class);
+        Marshaller marshaller = context.createMarshaller();
+        marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
+
+        Document document = DocumentBuilderFactory.newInstance().newDocumentBuilder().newDocument();
+        marshaller.marshal(brevdata, document);
+        Element documentElement = document.getDocumentElement();
+
+        return documentElement;
     }
 
     public static WSDokumentbestillingsinformasjon dokumentbestillingsinformasjon(Dokumentbestilling dokumentBestilling) {
