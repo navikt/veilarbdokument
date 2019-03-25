@@ -5,7 +5,7 @@ import no.nav.apiapp.feil.Feil;
 import no.nav.common.auth.SubjectHandler;
 import no.nav.dialogarena.aktor.AktorService;
 import no.nav.fo.veilarb.dokument.domain.Dokumentbestilling;
-import no.nav.fo.veilarb.dokument.domain.JournalpostId;
+import no.nav.fo.veilarb.dokument.domain.DokumentbestillingRespons;
 import no.nav.fo.veilarb.dokument.utils.VeilarbAbacServiceClient;
 import no.nav.fo.veilarb.dokument.utils.WSMapper;
 import no.nav.tjeneste.virksomhet.dokumentproduksjon.v3.DokumentproduksjonV3;
@@ -38,15 +38,16 @@ public class DokumentService {
     }
 
     @SneakyThrows
-    public JournalpostId bestillDokument(Dokumentbestilling dokumentbestilling) {
+    public DokumentbestillingRespons bestillDokument(Dokumentbestilling dokumentbestilling) {
         String aktorId = aktorService.getAktorId(dokumentbestilling.bruker().fnr())
                 .orElseThrow(() -> new Feil(UGYLDIG_REQUEST, "Fant ikke aktør for fnr"));
 
         // TODO: riktig abac-sjekk
         validerLesetilgangTilPerson(aktorId);
 
-        WSProduserIkkeredigerbartDokumentResponse response = produserIkkeredigerbartDokument(dokumentbestilling);
-        return JournalpostId.of(null);
+        DokumentbestillingRespons respons = produserIkkeredigerbartDokument(dokumentbestilling);
+
+        return respons;
     }
 
     private void validerLesetilgangTilPerson(String aktorId) {
@@ -56,9 +57,12 @@ public class DokumentService {
     }
 
     @SneakyThrows
-    private WSProduserIkkeredigerbartDokumentResponse produserIkkeredigerbartDokument(Dokumentbestilling dokumentbestilling) {
+    private DokumentbestillingRespons produserIkkeredigerbartDokument(Dokumentbestilling dokumentbestilling) {
         WSProduserIkkeredigerbartDokumentRequest request = WSMapper.produserIkkeredigerbartDokumentRequest(dokumentbestilling);
-        return dokumentproduksjon.produserIkkeredigerbartDokument(request);
+
+        WSProduserIkkeredigerbartDokumentResponse response = dokumentproduksjon.produserIkkeredigerbartDokument(request);
+
+        return WSMapper.produserIkkeredigerbartDokumentResponse(response);
     }
 
     @SneakyThrows

@@ -1,13 +1,12 @@
 package no.nav.fo.veilarb.dokument.utils;
 
 import lombok.SneakyThrows;
-import no.nav.dok.metaforcemal.BrevdataType;
-import no.nav.fo.veilarb.dokument.domain.Adresse;
-import no.nav.fo.veilarb.dokument.domain.Dokumentbestilling;
-import no.nav.fo.veilarb.dokument.domain.Person;
+import no.nav.dok.metaforcemal.*;
+import no.nav.fo.veilarb.dokument.domain.*;
 import no.nav.tjeneste.virksomhet.dokumentproduksjon.v3.informasjon.*;
 import no.nav.tjeneste.virksomhet.dokumentproduksjon.v3.meldinger.WSProduserDokumentutkastRequest;
 import no.nav.tjeneste.virksomhet.dokumentproduksjon.v3.meldinger.WSProduserIkkeredigerbartDokumentRequest;
+import no.nav.tjeneste.virksomhet.dokumentproduksjon.v3.meldinger.WSProduserIkkeredigerbartDokumentResponse;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -23,28 +22,78 @@ public class WSMapper {
     private static String DOKUMENTTILHORENDE_FAGOMRAADE = "OPP";
 
     @SneakyThrows
-    public static WSProduserIkkeredigerbartDokumentRequest produserIkkeredigerbartDokumentRequest(Dokumentbestilling dokumentBestilling) {
+    public static WSProduserIkkeredigerbartDokumentRequest produserIkkeredigerbartDokumentRequest(Dokumentbestilling dokumentbestilling) {
 
         WSDokumentbestillingsinformasjon informasjon =
-                WSMapper.dokumentbestillingsinformasjon(dokumentBestilling);
+                WSMapper.dokumentbestillingsinformasjon(dokumentbestilling);
 
         return new WSProduserIkkeredigerbartDokumentRequest()
                 .withDokumentbestillingsinformasjon(informasjon)
-                .withAny(brevdata());
-
-
+                .withAny(brevdata(dokumentbestilling));
     }
 
     @SneakyThrows
-    private static Object brevdata() {
-
-        JAXBElement<BrevdataType> brevdata = new no.nav.dok.metaforcemal.ObjectFactory().createBrevdata(new BrevdataType());
+    private static Object brevdata(Dokumentbestilling dokumentbestilling) {
 
         JAXBContext context = JAXBContext.newInstance(BrevdataType.class);
+
+        JAXBElement<BrevdataType> brevdata = new no.nav.dok.metaforcemal.ObjectFactory().createBrevdata(new BrevdataType());
+        FellesType fellesType = new FellesType();
+        fellesType.setSpraakkode("NB");
+        SignerendeSaksbehandlerType signerendeSaksbehandlerType = new SignerendeSaksbehandlerType();
+        signerendeSaksbehandlerType.setSignerendeSaksbehandlerNavn("Test");
+        fellesType.setSignerendeSaksbehandler(signerendeSaksbehandlerType);
+        SakspartType sakpartType = new SakspartType();
+        sakpartType.setSakspartId(Long.parseLong(dokumentbestilling.bruker().fnr()));
+        sakpartType.setSakspartNavn(dokumentbestilling.bruker().navn());
+        sakpartType.setSakspartTypeKode(SakspartTypeKode.PERSON);
+        fellesType.setSakspart(sakpartType);
+        MottakerType mottakerType = new MottakerType();
+        mottakerType.setMottakerId(Long.parseLong(dokumentbestilling.mottaker().fnr()));
+        mottakerType.setMottakerNavn(dokumentbestilling.bruker().navn());
+        mottakerType.setMottakerTypeKode(MottakerTypeKode.PERSON);
+        MottakerAdresseType mottakerAdresseType = new MottakerAdresseType();
+        mottakerAdresseType.setAdresselinje1(dokumentbestilling.adresse().adresselinje1());
+        mottakerAdresseType.setAdresselinje2(dokumentbestilling.adresse().adresselinje2());
+        mottakerAdresseType.setAdresselinje3(dokumentbestilling.adresse().adresselinje3());
+        mottakerAdresseType.setLand(dokumentbestilling.adresse().land());
+        mottakerAdresseType.setPostNr(Short.parseShort(dokumentbestilling.adresse().postnummer()));
+        mottakerAdresseType.setPoststed(dokumentbestilling.adresse().poststed());
+        mottakerType.setMottakerAdresse(mottakerAdresseType);
+        fellesType.setMottaker(mottakerType);
+        fellesType.setNavnAvsenderEnhet("Test");
+        KontaktInformasjonType kontaktInformasjonType = new KontaktInformasjonType();
+        BesoksadresseType besoksadresseType = new BesoksadresseType();
+        besoksadresseType.setAdresselinje("Test");
+        besoksadresseType.setPostNr("0118");
+        besoksadresseType.setPoststed("Test");
+        kontaktInformasjonType.setBesoksadresse(besoksadresseType);
+
+        PostadresseType postadresseType = new PostadresseType();
+        postadresseType.setAdresselinje("Test");
+        postadresseType.setNavEnhetsNavn("Test");
+        postadresseType.setPostNr((short)118);
+        postadresseType.setPoststed("Test");
+        kontaktInformasjonType.setPostadresse(postadresseType);
+
+        ReturadresseType returadresseType = new ReturadresseType();
+        returadresseType.setAdresselinje("Test");
+        returadresseType.setNavEnhetsNavn("Test");
+        returadresseType.setPostNr((short)118);
+        returadresseType.setPoststed("Test");
+        kontaktInformasjonType.setReturadresse(returadresseType);
+
+        kontaktInformasjonType.setKontaktTelefonnummer("0");
+        fellesType.setKontaktInformasjon(kontaktInformasjonType);
+        brevdata.getValue().setFelles(fellesType);
+        brevdata.getValue().setFag(new FagType());
+
+
         Marshaller marshaller = context.createMarshaller();
         marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
 
         Document document = DocumentBuilderFactory.newInstance().newDocumentBuilder().newDocument();
+
         marshaller.marshal(brevdata, document);
         Element documentElement = document.getDocumentElement();
 
@@ -101,5 +150,11 @@ public class WSMapper {
         return new WSProduserDokumentutkastRequest()
                 .withDokumenttypeId(dokumentbestilling.dokumenttypeId())
                 .withAny(dokumentbestillingsinformasjon);
+    }
+
+    public static DokumentbestillingRespons produserIkkeredigerbartDokumentResponse(WSProduserIkkeredigerbartDokumentResponse response) {
+        return DokumentbestillingRespons.of(
+                response.getJournalpostId(),
+                response.getDokumentId());
     }
 }
