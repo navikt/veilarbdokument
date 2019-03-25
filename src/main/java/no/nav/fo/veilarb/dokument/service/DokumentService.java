@@ -6,8 +6,9 @@ import no.nav.common.auth.SubjectHandler;
 import no.nav.dialogarena.aktor.AktorService;
 import no.nav.fo.veilarb.dokument.domain.Dokumentbestilling;
 import no.nav.fo.veilarb.dokument.domain.DokumentbestillingRespons;
+import no.nav.fo.veilarb.dokument.mappers.DokumentutkastMapper;
 import no.nav.fo.veilarb.dokument.utils.VeilarbAbacServiceClient;
-import no.nav.fo.veilarb.dokument.utils.WSMapper;
+import no.nav.fo.veilarb.dokument.mappers.IkkeredigerbartDokumentMapper;
 import no.nav.tjeneste.virksomhet.dokumentproduksjon.v3.DokumentproduksjonV3;
 import no.nav.tjeneste.virksomhet.dokumentproduksjon.v3.meldinger.WSProduserDokumentutkastRequest;
 import no.nav.tjeneste.virksomhet.dokumentproduksjon.v3.meldinger.WSProduserDokumentutkastResponse;
@@ -58,16 +59,16 @@ public class DokumentService {
 
     @SneakyThrows
     private DokumentbestillingRespons produserIkkeredigerbartDokument(Dokumentbestilling dokumentbestilling) {
-        WSProduserIkkeredigerbartDokumentRequest request = WSMapper.produserIkkeredigerbartDokumentRequest(dokumentbestilling);
+        WSProduserIkkeredigerbartDokumentRequest request = IkkeredigerbartDokumentMapper.mapRequest(dokumentbestilling);
 
         WSProduserIkkeredigerbartDokumentResponse response = dokumentproduksjon.produserIkkeredigerbartDokument(request);
 
-        return WSMapper.produserIkkeredigerbartDokumentResponse(response);
+        return IkkeredigerbartDokumentMapper.mapRespons(response);
     }
 
     @SneakyThrows
     public WSProduserDokumentutkastResponse bestillDokumentutkast(Dokumentbestilling dokumentbestilling) {
-        WSProduserDokumentutkastRequest dokumentutkastRequest = WSMapper.produserDokumentutkastRequest(dokumentbestilling);
+        WSProduserDokumentutkastRequest dokumentutkastRequest = DokumentutkastMapper.produserDokumentutkastRequest(dokumentbestilling);
 
         return dokumentproduksjon.produserDokumentutkast(dokumentutkastRequest);
     }
