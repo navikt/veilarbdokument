@@ -33,4 +33,14 @@ public class DokumentRessurs {
             Dokumentbestilling dokumentBestilling) {
         return dokumentService.bestillDokument(dokumentBestilling);
     }
+
+    @POST
+    @Path("/dokumentutkast")
+    @ApiOperation(value = "Produser dokumentutkast")
+    public byte[] produserDokumentutkast(
+            @ApiParam(value = "a oidc-token representing the consuming application", example = "Bearer ")
+            @HeaderParam(AUTHORIZATION) String authorization,
+            Dokumentbestilling dokumentBestilling) {
+        return dokumentService.produserDokumentutkast(dokumentBestilling);
+    }
 }

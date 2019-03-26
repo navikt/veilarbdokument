@@ -67,10 +67,10 @@ public class DokumentService {
     }
 
     @SneakyThrows
-    public WSProduserDokumentutkastResponse bestillDokumentutkast(Dokumentbestilling dokumentbestilling) {
+    public byte[] produserDokumentutkast(Dokumentbestilling dokumentbestilling) {
         WSProduserDokumentutkastRequest dokumentutkastRequest = DokumentutkastMapper.produserDokumentutkastRequest(dokumentbestilling);
 
-        return dokumentproduksjon.produserDokumentutkast(dokumentutkastRequest);
+        return dokumentproduksjon.produserDokumentutkast(dokumentutkastRequest).getDokumentutkast();
     }
 
 }
