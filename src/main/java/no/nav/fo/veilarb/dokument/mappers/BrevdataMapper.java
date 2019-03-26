@@ -14,12 +14,12 @@ import javax.xml.parsers.DocumentBuilderFactory;
 public class BrevdataMapper {
 
     @SneakyThrows
-    public static Object mapBrevdata(Dokumentbestilling dokumentbestilling) {
+    public static Element mapBrevdata(Dokumentbestilling dokumentbestilling) {
         return marshalBrevdata(mapBrevdataType(dokumentbestilling));
     }
 
     @SneakyThrows
-    private static Object marshalBrevdata(BrevdataType brevdata) {
+    private static Element marshalBrevdata(BrevdataType brevdata) {
         JAXBContext context = JAXBContext.newInstance(BrevdataType.class);
 
         JAXBElement<BrevdataType> brevdataElement =
