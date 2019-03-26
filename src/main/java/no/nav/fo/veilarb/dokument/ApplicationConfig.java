@@ -32,7 +32,8 @@ public class ApplicationConfig implements ApiApplication {
     public void configure(ApiAppConfigurator apiAppConfigurator) {
         apiAppConfigurator
                 .addPublicPath("/*")
-                .issoLogin();
+                .issoLogin()
+                .sts();
     }
 
     @Bean
