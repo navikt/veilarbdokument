@@ -18,6 +18,29 @@
 
     <build>
         <finalName>veilarbdokument</finalName>
+
+        <plugins>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>jaxb2-maven-plugin</artifactId>
+                <version>2.4</version>
+                <executions>
+                    <execution>
+                        <id>xjc</id>
+                        <goals>
+                            <goal>xjc</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <sources>
+                        <source>schemas/xsd/arena_000079.xsd</source>
+                        <!--<source>schemas/xsd/arena_000088.xsd</source>-->
+                    </sources>
+                    <packageName>no.nav.dok.metaforcemal</packageName>
+                </configuration>
+            </plugin>
+        </plugins>
     </build>
 
     <dependencyManagement>
@@ -61,6 +84,12 @@
             <groupId>no.nav.tjenestespesifikasjoner</groupId>
             <artifactId>dokumentproduksjon-v3-tjenestespesifikasjon</artifactId>
             <version>1.2019.02.06-20.03-9acde4111245</version>
+        </dependency>
+
+        <dependency>
+            <groupId>no.nav.dok.metaforcemal</groupId>
+            <artifactId>arenabrev</artifactId>
+            <version>8.0.2</version>
         </dependency>
 
         <!-- test -->

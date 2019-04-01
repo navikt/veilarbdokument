@@ -4,11 +4,14 @@ import lombok.SneakyThrows;
 import no.nav.apiapp.feil.Feil;
 import no.nav.common.auth.SubjectHandler;
 import no.nav.dialogarena.aktor.AktorService;
-import no.nav.fo.veilarb.dokument.domain.DokumentBestilling;
-import no.nav.fo.veilarb.dokument.domain.JournalpostId;
+import no.nav.fo.veilarb.dokument.domain.Dokumentbestilling;
+import no.nav.fo.veilarb.dokument.domain.DokumentbestillingRespons;
+import no.nav.fo.veilarb.dokument.mappers.DokumentutkastMapper;
 import no.nav.fo.veilarb.dokument.utils.VeilarbAbacServiceClient;
+import no.nav.fo.veilarb.dokument.mappers.IkkeredigerbartDokumentMapper;
 import no.nav.tjeneste.virksomhet.dokumentproduksjon.v3.DokumentproduksjonV3;
-import no.nav.tjeneste.virksomhet.dokumentproduksjon.v3.informasjon.WSDokumentbestillingsinformasjon;
+import no.nav.tjeneste.virksomhet.dokumentproduksjon.v3.meldinger.WSProduserDokumentutkastRequest;
+import no.nav.tjeneste.virksomhet.dokumentproduksjon.v3.meldinger.WSProduserDokumentutkastResponse;
 import no.nav.tjeneste.virksomhet.dokumentproduksjon.v3.meldinger.WSProduserIkkeredigerbartDokumentRequest;
 import no.nav.tjeneste.virksomhet.dokumentproduksjon.v3.meldinger.WSProduserIkkeredigerbartDokumentResponse;
 import org.springframework.stereotype.Component;
@@ -35,17 +38,17 @@ public class DokumentService {
         this.veilarbAbacServiceClient = veilarbAbacServiceClient;
     }
 
-    // TODO
     @SneakyThrows
-    public JournalpostId bestillDokument(DokumentBestilling dokumentBestilling) {
-        String aktorId = aktorService.getAktorId(dokumentBestilling.fnr())
+    public DokumentbestillingRespons bestillDokument(Dokumentbestilling dokumentbestilling) {
+        String aktorId = aktorService.getAktorId(dokumentbestilling.bruker().fnr())
                 .orElseThrow(() -> new Feil(UGYLDIG_REQUEST, "Fant ikke aktør for fnr"));
 
+        // TODO: riktig abac-sjekk
         validerLesetilgangTilPerson(aktorId);
 
-        WSProduserIkkeredigerbartDokumentRequest request = produserIkkeredigerbartDokumentRequest(dokumentBestilling);
-        WSProduserIkkeredigerbartDokumentResponse response = dokumentproduksjon.produserIkkeredigerbartDokument(request);
-        return JournalpostId.of(null);
+        DokumentbestillingRespons respons = produserIkkeredigerbartDokument(dokumentbestilling);
+
+        return respons;
     }
 
     private void validerLesetilgangTilPerson(String aktorId) {
@@ -55,23 +58,19 @@ public class DokumentService {
     }
 
     @SneakyThrows
-    private WSProduserIkkeredigerbartDokumentResponse produserIkkeredigerbartDokument(DokumentBestilling dokumentBestilling) {
-        WSProduserIkkeredigerbartDokumentRequest request = produserIkkeredigerbartDokumentRequest(dokumentBestilling);
-        return dokumentproduksjon.produserIkkeredigerbartDokument(request);
+    private DokumentbestillingRespons produserIkkeredigerbartDokument(Dokumentbestilling dokumentbestilling) {
+        WSProduserIkkeredigerbartDokumentRequest request = IkkeredigerbartDokumentMapper.mapRequest(dokumentbestilling);
 
+        WSProduserIkkeredigerbartDokumentResponse response = dokumentproduksjon.produserIkkeredigerbartDokument(request);
+
+        return IkkeredigerbartDokumentMapper.mapRespons(response);
     }
 
-    private WSProduserIkkeredigerbartDokumentRequest produserIkkeredigerbartDokumentRequest(DokumentBestilling dokumentBestilling) {
-        WSDokumentbestillingsinformasjon informasjon = produserDokumentbestillingsinformasjon(dokumentBestilling);
-        return new WSProduserIkkeredigerbartDokumentRequest()
-                .withDokumentbestillingsinformasjon(informasjon);
+    @SneakyThrows
+    public byte[] produserDokumentutkast(Dokumentbestilling dokumentbestilling) {
+        WSProduserDokumentutkastRequest dokumentutkastRequest = DokumentutkastMapper.produserDokumentutkastRequest(dokumentbestilling);
+
+        return dokumentproduksjon.produserDokumentutkast(dokumentutkastRequest).getDokumentutkast();
     }
 
-    private WSDokumentbestillingsinformasjon produserDokumentbestillingsinformasjon(DokumentBestilling dokumentBestilling) {
-        WSDokumentbestillingsinformasjon informasjon = new WSDokumentbestillingsinformasjon();
-
-        informasjon.setDokumenttypeId(dokumentBestilling.dokumentTypeId());
-
-        return informasjon;
-    }
 }

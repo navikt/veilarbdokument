@@ -2,6 +2,8 @@ package no.nav.fo.veilarb.dokument;
 
 import no.nav.apiapp.ApiApplication;
 import no.nav.apiapp.config.ApiAppConfigurator;
+import no.nav.brukerdialog.security.oidc.SystemUserTokenProvider;
+import no.nav.brukerdialog.security.oidc.SystemUserTokenProviderConfig;
 import no.nav.dialogarena.aktor.AktorConfig;
 import no.nav.fo.veilarb.dokument.service.DokumentService;
 import no.nav.fo.veilarb.dokument.utils.VeilarbAbacServiceClient;
@@ -30,7 +32,8 @@ public class ApplicationConfig implements ApiApplication {
     public void configure(ApiAppConfigurator apiAppConfigurator) {
         apiAppConfigurator
                 .addPublicPath("/*")
-                .issoLogin();
+                .issoLogin()
+                .sts();
     }
 
     @Bean
@@ -39,6 +42,11 @@ public class ApplicationConfig implements ApiApplication {
                 .address(getDokumentproduksjonEndpointUrl())
                 .configureStsForSystemUser()
                 .build();
+    }
+
+    @Bean
+    public SystemUserTokenProvider systemUserTokenProvider() {
+        return new SystemUserTokenProvider(SystemUserTokenProviderConfig.resolveFromSystemProperties());
     }
 
     public static String getDokumentproduksjonEndpointUrl() {
