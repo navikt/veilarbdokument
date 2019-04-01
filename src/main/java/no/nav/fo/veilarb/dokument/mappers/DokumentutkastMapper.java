@@ -10,6 +10,7 @@ public class DokumentutkastMapper {
 
         return new WSProduserDokumentutkastRequest()
                 .withDokumenttypeId(dokumentbestilling.dokumenttypeId())
-                .withAny(brevdata);
+                .withAny(brevdata)
+                .withUtledRegisterInfo(true);
     }
 }
