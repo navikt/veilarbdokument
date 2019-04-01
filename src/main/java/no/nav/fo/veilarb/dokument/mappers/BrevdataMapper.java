@@ -47,11 +47,11 @@ public class BrevdataMapper {
     private static FellesType mapFellesType(Dokumentbestilling dokumentbestilling) {
         FellesType fellesType = new FellesType();
 
-        fellesType.setSpraakkode("NB");
-        fellesType.setSignerendeSaksbehandler(mapSignerendeSaksbehandlerType("Test"));
+        fellesType.setSpraakkode(Stubs.spraakkode);
+        fellesType.setSignerendeSaksbehandler(mapSignerendeSaksbehandlerType(Stubs.test));
         fellesType.setSakspart(mapSakspartType(dokumentbestilling));
         fellesType.setMottaker(mapMottakerType(dokumentbestilling));
-        fellesType.setNavnAvsenderEnhet("Test");
+        fellesType.setNavnAvsenderEnhet(Stubs.test);
         fellesType.setKontaktInformasjon(mapKontaktInformasjonType());
 
         return fellesType;
@@ -95,26 +95,26 @@ public class BrevdataMapper {
     private static KontaktInformasjonType mapKontaktInformasjonType() {
         KontaktInformasjonType kontaktInformasjonType = new KontaktInformasjonType();
         BesoksadresseType besoksadresseType = new BesoksadresseType();
-        besoksadresseType.setAdresselinje("Test");
-        besoksadresseType.setPostNr("0118");
-        besoksadresseType.setPoststed("Test");
+        besoksadresseType.setAdresselinje(Stubs.test);
+        besoksadresseType.setPostNr(Stubs.postnrString);
+        besoksadresseType.setPoststed(Stubs.test);
         kontaktInformasjonType.setBesoksadresse(besoksadresseType);
 
         PostadresseType postadresseType = new PostadresseType();
-        postadresseType.setAdresselinje("Test");
-        postadresseType.setNavEnhetsNavn("Test");
-        postadresseType.setPostNr((short)118);
-        postadresseType.setPoststed("Test");
+        postadresseType.setAdresselinje(Stubs.test);
+        postadresseType.setNavEnhetsNavn(Stubs.test);
+        postadresseType.setPostNr(Stubs.postnr);
+        postadresseType.setPoststed(Stubs.test);
         kontaktInformasjonType.setPostadresse(postadresseType);
 
         ReturadresseType returadresseType = new ReturadresseType();
-        returadresseType.setAdresselinje("Test");
-        returadresseType.setNavEnhetsNavn("Test");
-        returadresseType.setPostNr((short)118);
-        returadresseType.setPoststed("Test");
+        returadresseType.setAdresselinje(Stubs.test);
+        returadresseType.setNavEnhetsNavn(Stubs.test);
+        returadresseType.setPostNr(Stubs.postnr);
+        returadresseType.setPoststed(Stubs.test);
         kontaktInformasjonType.setReturadresse(returadresseType);
 
-        kontaktInformasjonType.setKontaktTelefonnummer("0");
+        kontaktInformasjonType.setKontaktTelefonnummer(Stubs.tlf);
 
         return kontaktInformasjonType;
     }

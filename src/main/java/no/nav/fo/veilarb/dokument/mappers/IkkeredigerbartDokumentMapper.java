@@ -47,7 +47,7 @@ public class IkkeredigerbartDokumentMapper {
         }
         informasjon.setInkludererEksterneVedlegg(false);
         informasjon.setFerdigstillForsendelse(false);
-        informasjon.setSaksbehandlernavn("Test Navn"); // TODO: slå opp navn på saksbehandler?
+        informasjon.setSaksbehandlernavn(Stubs.test); // TODO: slå opp navn på saksbehandler?
 
         return informasjon;
     }
