@@ -4,6 +4,7 @@ import io.swagger.annotations.*;
 import no.nav.fo.veilarb.dokument.domain.Dokumentbestilling;
 import no.nav.fo.veilarb.dokument.domain.DokumentbestillingRespons;
 import no.nav.fo.veilarb.dokument.service.DokumentService;
+import no.nav.sbl.featuretoggle.unleash.UnleashService;
 import org.springframework.stereotype.Component;
 
 import javax.inject.Inject;
@@ -17,11 +18,15 @@ import static org.apache.cxf.helpers.HttpHeaderHelper.AUTHORIZATION;
 @Api(value = "DokumentRessurs", description = "Tjeneste for bestilling av dokument og ekspedering som brev")
 public class DokumentRessurs {
 
+    static final String VEILARBDOKUMENT_ENABLED_TOGGLE = "veilarbdokument.enabled";
+
     private final DokumentService dokumentService;
+    private final UnleashService unleashService;
 
     @Inject
-    public DokumentRessurs(DokumentService dokumentService) {
+    public DokumentRessurs(DokumentService dokumentService, UnleashService unleashService) {
         this.dokumentService = dokumentService;
+        this.unleashService = unleashService;
     }
 
     @POST
@@ -31,7 +36,11 @@ public class DokumentRessurs {
             @ApiParam(value = "a oidc-token representing the consuming application", example = "Bearer ")
             @HeaderParam(AUTHORIZATION) String authorization,
             Dokumentbestilling dokumentBestilling) {
-        return dokumentService.bestillDokument(dokumentBestilling);
+        if (unleashService.isEnabled(VEILARBDOKUMENT_ENABLED_TOGGLE)) {
+            return dokumentService.bestillDokument(dokumentBestilling);
+        } else {
+            throw new IllegalStateException("ikke tilgjengelig");
+        }
     }
 
     @POST
@@ -41,6 +50,10 @@ public class DokumentRessurs {
             @ApiParam(value = "a oidc-token representing the consuming application", example = "Bearer ")
             @HeaderParam(AUTHORIZATION) String authorization,
             Dokumentbestilling dokumentBestilling) {
-        return dokumentService.produserDokumentutkast(dokumentBestilling);
+        if (unleashService.isEnabled(VEILARBDOKUMENT_ENABLED_TOGGLE)) {
+            return dokumentService.produserDokumentutkast(dokumentBestilling);
+        } else {
+            throw new IllegalStateException("ikke tilgjengelig");
+        }
     }
 }

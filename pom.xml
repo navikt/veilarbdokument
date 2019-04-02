@@ -78,6 +78,10 @@
             <groupId>no.nav.common</groupId>
             <artifactId>aktor-klient</artifactId>
         </dependency>
+        <dependency>
+            <groupId>no.nav.common</groupId>
+            <artifactId>feature-toggle</artifactId>
+        </dependency>
 
         <!-- Tjenester -->
         <dependency>

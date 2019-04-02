@@ -8,11 +8,14 @@ import no.nav.dialogarena.aktor.AktorConfig;
 import no.nav.fo.veilarb.dokument.service.DokumentService;
 import no.nav.fo.veilarb.dokument.utils.VeilarbAbacServiceClient;
 import no.nav.sbl.dialogarena.common.cxf.CXFClient;
+import no.nav.sbl.featuretoggle.unleash.UnleashService;
 import no.nav.sbl.util.EnvironmentUtils;
 import no.nav.tjeneste.virksomhet.dokumentproduksjon.v3.DokumentproduksjonV3;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
+
+import static no.nav.sbl.featuretoggle.unleash.UnleashServiceConfig.resolveFromEnvironment;
 
 @Configuration
 @Import({
@@ -47,6 +50,11 @@ public class ApplicationConfig implements ApiApplication {
     @Bean
     public SystemUserTokenProvider systemUserTokenProvider() {
         return new SystemUserTokenProvider(SystemUserTokenProviderConfig.resolveFromSystemProperties());
+    }
+
+    @Bean
+    public UnleashService unleashService() {
+        return new UnleashService(resolveFromEnvironment());
     }
 
     public static String getDokumentproduksjonEndpointUrl() {
