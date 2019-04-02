@@ -1,14 +1,14 @@
 package no.nav.fo.veilarb.dokument;
 
-import no.nav.dialogarena.config.fasit.ServiceUser;
-import no.nav.dialogarena.config.fasit.WebServiceEndpoint;
-import no.nav.dialogarena.config.fasit.dto.RestService;
+import no.nav.fasit.ServiceUser;
+import no.nav.fasit.WebServiceEndpoint;
+import no.nav.fasit.dto.RestService;
 import no.nav.sbl.util.EnvironmentUtils;
 import no.nav.testconfig.ApiAppTest;
 
 import static no.nav.brukerdialog.security.Constants.*;
-import static no.nav.dialogarena.config.fasit.FasitUtils.Zone.FSS;
-import static no.nav.dialogarena.config.fasit.FasitUtils.*;
+import static no.nav.fasit.FasitUtils.*;
+import static no.nav.fasit.FasitUtils.Zone.FSS;
 import static no.nav.fo.veilarb.dokument.ApplicationConfig.*;
 import static no.nav.sbl.dialogarena.common.cxf.StsSecurityConstants.SYSTEMUSER_PASSWORD;
 import static no.nav.sbl.dialogarena.common.cxf.StsSecurityConstants.SYSTEMUSER_USERNAME;
