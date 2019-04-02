@@ -27,7 +27,7 @@ import static no.nav.sbl.featuretoggle.unleash.UnleashServiceConfig.resolveFromE
 public class ApplicationConfig implements ApiApplication {
 
     public static final String DOKUMENTPRODUKSJON_ENDPOINT_URL = "DOKUMENTPRODUKSJON_V3_ENDPOINT_URL";
-    public static final String AKTOR_ENDPOINT_URL = "AKTOER_V2_ENDPOINT_URL";
+    public static final String AKTOR_ENDPOINT_URL = "AKTOER_V2_ENDPOINTURL";
     public static final String SECURITYTOKENSERVICE_URL = "SECURITYTOKENSERVICE_URL";
     public static final String OIDC_REDIRECT_URL = "OIDC_REDIRECT_URL";
 
