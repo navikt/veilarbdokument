@@ -1,6 +1,7 @@
 package no.nav.fo.veilarb.dokument;
 
 import io.swagger.annotations.*;
+import lombok.extern.slf4j.Slf4j;
 import no.nav.fo.veilarb.dokument.domain.Dokumentbestilling;
 import no.nav.fo.veilarb.dokument.domain.DokumentbestillingRespons;
 import no.nav.fo.veilarb.dokument.service.DokumentService;
@@ -16,6 +17,7 @@ import static org.apache.cxf.helpers.HttpHeaderHelper.AUTHORIZATION;
 @Path("/")
 @Produces("application/json")
 @Api(value = "DokumentRessurs", description = "Tjeneste for bestilling av dokument og ekspedering som brev")
+@Slf4j
 public class DokumentRessurs {
 
     static final String VEILARBDOKUMENT_ENABLED_TOGGLE = "veilarbdokument.enabled";

@@ -32,16 +32,6 @@ public class ApplicationConfig implements ApiApplication {
     public static final String OIDC_REDIRECT_URL = "OIDC_REDIRECT_URL";
 
     @Override
-    public String getApiBasePath() {
-        return "/";
-    }
-
-    @Override
-    public String getContextPath() {
-        return "/";
-    }
-
-    @Override
     public void configure(ApiAppConfigurator apiAppConfigurator) {
         apiAppConfigurator
                 .addPublicPath("/*")

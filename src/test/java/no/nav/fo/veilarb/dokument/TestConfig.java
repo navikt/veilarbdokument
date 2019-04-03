@@ -41,7 +41,7 @@ public class TestConfig {
         EnvironmentUtils.setProperty(ISSO_ISSUER_URL_PROPERTY_NAME, getBaseUrl("isso-issuer"), PUBLIC);
         EnvironmentUtils.setProperty(OIDC_REDIRECT_URL, veilarbLogin.getUrl(), PUBLIC);
         EnvironmentUtils.setProperty(ISSO_ISALIVE_URL_PROPERTY_NAME, getBaseUrl("isso.isalive", FSS), PUBLIC);
-        EnvironmentUtils.setProperty(UNLEASH_API_URL_PROPERTY_NAME, getRestService("unleash-api").getUrl(), PUBLIC);
+        EnvironmentUtils.setProperty(UNLEASH_API_URL_PROPERTY_NAME, "https://unleash.nais.adeo.no/api/", PUBLIC);
 
         WebServiceEndpoint dokumentproduksjonEndpoint = getWebServiceEndpoint("Dokumentproduksjon_v3", getDefaultEnvironment());
         EnvironmentUtils.setProperty(
