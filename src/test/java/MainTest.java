@@ -4,6 +4,6 @@ public class MainTest {
 
     public static void main(String... args) {
         TestConfig.setupTestContext();
-        Main.main();
+        Main.main("8674");
     }
 }
