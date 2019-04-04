@@ -34,7 +34,6 @@ public class ApplicationConfig implements ApiApplication {
     @Override
     public void configure(ApiAppConfigurator apiAppConfigurator) {
         apiAppConfigurator
-                .addPublicPath("/*")
                 .issoLogin()
                 .sts();
     }

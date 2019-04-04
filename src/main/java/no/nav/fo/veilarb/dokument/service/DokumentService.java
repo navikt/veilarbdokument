@@ -11,7 +11,6 @@ import no.nav.fo.veilarb.dokument.utils.VeilarbAbacServiceClient;
 import no.nav.fo.veilarb.dokument.mappers.IkkeredigerbartDokumentMapper;
 import no.nav.tjeneste.virksomhet.dokumentproduksjon.v3.DokumentproduksjonV3;
 import no.nav.tjeneste.virksomhet.dokumentproduksjon.v3.meldinger.WSProduserDokumentutkastRequest;
-import no.nav.tjeneste.virksomhet.dokumentproduksjon.v3.meldinger.WSProduserDokumentutkastResponse;
 import no.nav.tjeneste.virksomhet.dokumentproduksjon.v3.meldinger.WSProduserIkkeredigerbartDokumentRequest;
 import no.nav.tjeneste.virksomhet.dokumentproduksjon.v3.meldinger.WSProduserIkkeredigerbartDokumentResponse;
 import org.springframework.stereotype.Component;
@@ -38,7 +37,6 @@ public class DokumentService {
         this.veilarbAbacServiceClient = veilarbAbacServiceClient;
     }
 
-    @SneakyThrows
     public DokumentbestillingRespons bestillDokument(Dokumentbestilling dokumentbestilling) {
         String aktorId = aktorService.getAktorId(dokumentbestilling.bruker().fnr())
                 .orElseThrow(() -> new Feil(UGYLDIG_REQUEST, "Fant ikke aktør for fnr"));
