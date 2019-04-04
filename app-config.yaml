@@ -2,8 +2,8 @@
 image: docker.adeo.no:5000/fo/veilarbdokument
 team: biff
 replicas:
-  min: 2
-  max: 4
+  min: 1
+  max: 2
   cpuThresholdPercentage: 50
 port: 8080
 webproxy: true
