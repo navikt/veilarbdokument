@@ -6,6 +6,7 @@ import no.nav.common.auth.SubjectHandler;
 import no.nav.dialogarena.aktor.AktorService;
 import no.nav.fo.veilarb.dokument.domain.Dokumentbestilling;
 import no.nav.fo.veilarb.dokument.domain.DokumentbestillingRespons;
+import no.nav.fo.veilarb.dokument.domain.Sak;
 import no.nav.fo.veilarb.dokument.mappers.DokumentutkastMapper;
 import no.nav.fo.veilarb.dokument.utils.VeilarbAbacServiceClient;
 import no.nav.fo.veilarb.dokument.mappers.IkkeredigerbartDokumentMapper;
@@ -17,6 +18,8 @@ import org.springframework.stereotype.Component;
 
 import javax.inject.Inject;
 
+import java.util.List;
+
 import static no.nav.apiapp.feil.FeilType.INGEN_TILGANG;
 import static no.nav.apiapp.feil.FeilType.UGYLDIG_REQUEST;
 import static no.nav.common.auth.SsoToken.Type.OIDC;
@@ -27,14 +30,17 @@ public class DokumentService {
     private AktorService aktorService;
     private DokumentproduksjonV3 dokumentproduksjon;
     private VeilarbAbacServiceClient veilarbAbacServiceClient;
+    private SakService sakService;
 
     @Inject
     public DokumentService(AktorService aktorService,
                            DokumentproduksjonV3 dokumentproduksjon,
-                           VeilarbAbacServiceClient veilarbAbacServiceClient) {
+                           VeilarbAbacServiceClient veilarbAbacServiceClient,
+                           SakService sakService) {
         this.aktorService = aktorService;
         this.dokumentproduksjon = dokumentproduksjon;
         this.veilarbAbacServiceClient = veilarbAbacServiceClient;
+        this.sakService = sakService;
     }
 
     public DokumentbestillingRespons bestillDokument(Dokumentbestilling dokumentbestilling) {
@@ -43,6 +49,10 @@ public class DokumentService {
 
         // TODO: riktig abac-sjekk
         validerLesetilgangTilPerson(aktorId);
+
+        // TODO bruk sak i request til dokprod
+        List<Sak> saker = sakService.finnSaker(aktorId, "OPP");
+        Sak sak = SakService.finnGjeldendeOppfolgingssak(saker);
 
         DokumentbestillingRespons respons = produserIkkeredigerbartDokument(dokumentbestilling);
 
