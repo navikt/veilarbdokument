@@ -53,6 +53,10 @@ fasitResources:
         url: OIDC_REDIRECT_URL
     - alias: isso.isalive
       resourceType: baseurl
+    - alias: sak.saker
+      resourceType: restservice
+      propertyMap:
+        url: SAK_API_URL
 
 alertProfiles:
   - common-java-modules

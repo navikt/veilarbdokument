@@ -9,7 +9,6 @@ public class Dokumentbestilling {
     Person bruker;
     Person mottaker;
     String dokumenttypeId;
-    String journalsakId;
     String journalforendeEnhet;
     Adresse adresse;
 }

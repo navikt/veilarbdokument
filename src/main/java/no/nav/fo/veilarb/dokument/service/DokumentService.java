@@ -6,6 +6,7 @@ import no.nav.common.auth.SubjectHandler;
 import no.nav.dialogarena.aktor.AktorService;
 import no.nav.fo.veilarb.dokument.domain.Dokumentbestilling;
 import no.nav.fo.veilarb.dokument.domain.DokumentbestillingRespons;
+import no.nav.fo.veilarb.dokument.domain.Sak;
 import no.nav.fo.veilarb.dokument.mappers.DokumentutkastMapper;
 import no.nav.fo.veilarb.dokument.utils.VeilarbAbacServiceClient;
 import no.nav.fo.veilarb.dokument.mappers.IkkeredigerbartDokumentMapper;
@@ -27,14 +28,17 @@ public class DokumentService {
     private AktorService aktorService;
     private DokumentproduksjonV3 dokumentproduksjon;
     private VeilarbAbacServiceClient veilarbAbacServiceClient;
+    private SakService sakService;
 
     @Inject
     public DokumentService(AktorService aktorService,
                            DokumentproduksjonV3 dokumentproduksjon,
-                           VeilarbAbacServiceClient veilarbAbacServiceClient) {
+                           VeilarbAbacServiceClient veilarbAbacServiceClient,
+                           SakService sakService) {
         this.aktorService = aktorService;
         this.dokumentproduksjon = dokumentproduksjon;
         this.veilarbAbacServiceClient = veilarbAbacServiceClient;
+        this.sakService = sakService;
     }
 
     public DokumentbestillingRespons bestillDokument(Dokumentbestilling dokumentbestilling) {
@@ -44,9 +48,9 @@ public class DokumentService {
         // TODO: riktig abac-sjekk
         validerLesetilgangTilPerson(aktorId);
 
-        DokumentbestillingRespons respons = produserIkkeredigerbartDokument(dokumentbestilling);
+        Sak sak = sakService.finnGjeldendeOppfolgingssak(aktorId);
 
-        return respons;
+        return produserIkkeredigerbartDokument(dokumentbestilling, sak);
     }
 
     private void validerLesetilgangTilPerson(String aktorId) {
@@ -56,10 +60,12 @@ public class DokumentService {
     }
 
     @SneakyThrows
-    private DokumentbestillingRespons produserIkkeredigerbartDokument(Dokumentbestilling dokumentbestilling) {
-        WSProduserIkkeredigerbartDokumentRequest request = IkkeredigerbartDokumentMapper.mapRequest(dokumentbestilling);
+    private DokumentbestillingRespons produserIkkeredigerbartDokument(Dokumentbestilling dokumentbestilling, Sak sak) {
+        WSProduserIkkeredigerbartDokumentRequest request =
+                IkkeredigerbartDokumentMapper.mapRequest(dokumentbestilling, sak);
 
-        WSProduserIkkeredigerbartDokumentResponse response = dokumentproduksjon.produserIkkeredigerbartDokument(request);
+        WSProduserIkkeredigerbartDokumentResponse response =
+                dokumentproduksjon.produserIkkeredigerbartDokument(request);
 
         return IkkeredigerbartDokumentMapper.mapRespons(response);
     }
