@@ -18,8 +18,6 @@ import org.springframework.stereotype.Component;
 
 import javax.inject.Inject;
 
-import java.util.List;
-
 import static no.nav.apiapp.feil.FeilType.INGEN_TILGANG;
 import static no.nav.apiapp.feil.FeilType.UGYLDIG_REQUEST;
 import static no.nav.common.auth.SsoToken.Type.OIDC;
@@ -51,8 +49,7 @@ public class DokumentService {
         validerLesetilgangTilPerson(aktorId);
 
         // TODO bruk sak i request til dokprod
-        List<Sak> saker = sakService.finnSaker(aktorId, "OPP");
-        Sak sak = SakService.finnGjeldendeOppfolgingssak(saker);
+        Sak sak = sakService.finnGjeldendeOppfolgingssak(aktorId);
 
         DokumentbestillingRespons respons = produserIkkeredigerbartDokument(dokumentbestilling);
 

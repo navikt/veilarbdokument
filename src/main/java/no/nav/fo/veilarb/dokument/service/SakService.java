@@ -13,11 +13,13 @@ import org.springframework.stereotype.Component;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 import static no.nav.fo.veilarb.dokument.ApplicationConfig.SAK_API_URL;
 
 @Component
 public class SakService {
+
     private Client restClient;
     private String host;
 
@@ -27,8 +29,18 @@ public class SakService {
         this.host = EnvironmentUtils.getRequiredProperty(SAK_API_URL);
     }
 
-    public List<Sak> finnSaker(String aktorId, String tema) {
-        Response response = restClient.target(host)
+    public Sak finnGjeldendeOppfolgingssak(String aktorId) {
+
+        List<Sak> saker = finnSaker(aktorId, "OPP");
+
+        return finnGjeldendeOppfolgingssak(saker)
+                .orElseThrow(() -> new IllegalStateException("Mangler oppføgningssak"));
+    }
+
+    private List<Sak> finnSaker(String aktorId, String tema) {
+
+        Response response = restClient
+                .target(host)
                 .queryParam("aktoerId", aktorId)
                 .queryParam("tema", tema)
                 .request()
@@ -38,13 +50,13 @@ public class SakService {
         });
     }
 
-    public static Sak finnGjeldendeOppfolgingssak(List<Sak> saker) {
+    private static Optional<Sak> finnGjeldendeOppfolgingssak(List<Sak> saker) {
+
         return saker.stream().filter(sak ->
                 Objects.equals(sak.tema(), "OPP") &&
                         StringUtils.notNullOrEmpty(sak.fagsakNr()) &&
                         Objects.equals(sak.applikasjon(), "AO01"))
-                .max(Comparator.comparing(Sak::opprettetTidspunkt))
-                .orElseThrow(() -> new IllegalStateException("Mangler oppføgningssak"));
+                .max(Comparator.comparing(Sak::opprettetTidspunkt));
 
     }
 }
