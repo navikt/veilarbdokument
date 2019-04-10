@@ -1,10 +1,7 @@
 package no.nav.fo.veilarb.dokument.mappers;
 
 import lombok.SneakyThrows;
-import no.nav.fo.veilarb.dokument.domain.Adresse;
-import no.nav.fo.veilarb.dokument.domain.Dokumentbestilling;
-import no.nav.fo.veilarb.dokument.domain.DokumentbestillingRespons;
-import no.nav.fo.veilarb.dokument.domain.Person;
+import no.nav.fo.veilarb.dokument.domain.*;
 import no.nav.tjeneste.virksomhet.dokumentproduksjon.v3.informasjon.*;
 import no.nav.tjeneste.virksomhet.dokumentproduksjon.v3.meldinger.WSProduserIkkeredigerbartDokumentRequest;
 import no.nav.tjeneste.virksomhet.dokumentproduksjon.v3.meldinger.WSProduserIkkeredigerbartDokumentResponse;
@@ -16,17 +13,20 @@ public class IkkeredigerbartDokumentMapper {
     private static String DOKUMENTTILHORENDE_FAGOMRAADE = "OPP";
 
     @SneakyThrows
-    public static WSProduserIkkeredigerbartDokumentRequest mapRequest(Dokumentbestilling dokumentbestilling) {
+    public static WSProduserIkkeredigerbartDokumentRequest mapRequest(Dokumentbestilling dokumentbestilling, Sak sak) {
 
         WSDokumentbestillingsinformasjon informasjon =
-                MapDokumentbestillingsinformasjon(dokumentbestilling);
+                MapDokumentbestillingsinformasjon(dokumentbestilling, sak);
 
         return new WSProduserIkkeredigerbartDokumentRequest()
                 .withDokumentbestillingsinformasjon(informasjon)
                 .withAny(BrevdataMapper.mapBrevdata(dokumentbestilling));
     }
 
-    public static WSDokumentbestillingsinformasjon MapDokumentbestillingsinformasjon(Dokumentbestilling dokumentBestilling) {
+    public static WSDokumentbestillingsinformasjon MapDokumentbestillingsinformasjon(
+            Dokumentbestilling dokumentBestilling,
+            Sak sak) {
+
         WSDokumentbestillingsinformasjon informasjon = new WSDokumentbestillingsinformasjon();
 
         informasjon.setDokumenttypeId(dokumentBestilling.dokumenttypeId());
@@ -37,7 +37,7 @@ public class IkkeredigerbartDokumentMapper {
         informasjon.setDokumenttilhoerendeFagomraade(new WSFagomraader().withValue(DOKUMENTTILHORENDE_FAGOMRAADE));
         informasjon.setBruker(mapPerson(dokumentBestilling.bruker()));
         informasjon.setMottaker(mapPerson(dokumentBestilling.mottaker()));
-        informasjon.setJournalsakId(dokumentBestilling.journalsakId());
+        informasjon.setJournalsakId(Integer.toString(sak.id()));
         informasjon.setJournalfoerendeEnhet(dokumentBestilling.journalforendeEnhet());
         informasjon.setUtledRegisterInfo(true);
 
@@ -46,7 +46,7 @@ public class IkkeredigerbartDokumentMapper {
             informasjon.setAdresse(mapAdresse(dokumentBestilling.adresse()));
         }
         informasjon.setInkludererEksterneVedlegg(false);
-        informasjon.setFerdigstillForsendelse(false);
+        informasjon.setFerdigstillForsendelse(true);
         informasjon.setSaksbehandlernavn(Stubs.test); // TODO: slå opp navn på saksbehandler?
 
         return informasjon;

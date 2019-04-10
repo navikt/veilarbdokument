@@ -48,12 +48,9 @@ public class DokumentService {
         // TODO: riktig abac-sjekk
         validerLesetilgangTilPerson(aktorId);
 
-        // TODO bruk sak i request til dokprod
         Sak sak = sakService.finnGjeldendeOppfolgingssak(aktorId);
 
-        DokumentbestillingRespons respons = produserIkkeredigerbartDokument(dokumentbestilling);
-
-        return respons;
+        return produserIkkeredigerbartDokument(dokumentbestilling, sak);
     }
 
     private void validerLesetilgangTilPerson(String aktorId) {
@@ -63,10 +60,12 @@ public class DokumentService {
     }
 
     @SneakyThrows
-    private DokumentbestillingRespons produserIkkeredigerbartDokument(Dokumentbestilling dokumentbestilling) {
-        WSProduserIkkeredigerbartDokumentRequest request = IkkeredigerbartDokumentMapper.mapRequest(dokumentbestilling);
+    private DokumentbestillingRespons produserIkkeredigerbartDokument(Dokumentbestilling dokumentbestilling, Sak sak) {
+        WSProduserIkkeredigerbartDokumentRequest request =
+                IkkeredigerbartDokumentMapper.mapRequest(dokumentbestilling, sak);
 
-        WSProduserIkkeredigerbartDokumentResponse response = dokumentproduksjon.produserIkkeredigerbartDokument(request);
+        WSProduserIkkeredigerbartDokumentResponse response =
+                dokumentproduksjon.produserIkkeredigerbartDokument(request);
 
         return IkkeredigerbartDokumentMapper.mapRespons(response);
     }
