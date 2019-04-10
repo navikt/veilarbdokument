@@ -18,6 +18,8 @@ import java.util.Collections;
 import java.util.List;
 
 import static no.nav.fo.veilarb.dokument.ApplicationConfig.SAK_API_URL;
+import static no.nav.fo.veilarb.dokument.service.SakService.ARENA_KODE;
+import static no.nav.fo.veilarb.dokument.service.SakService.OPPFOLGING_KODE;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
@@ -42,28 +44,26 @@ public class SakServiceTest {
     private static ZonedDateTime ELDSTE_DATO = ZonedDateTime.of(2017, 9, 6, 10, 2, 57, 687, ZoneId.systemDefault());
 
     @Test
-    public void finnGjeldendeOppfolgingssak__henter_siste_oppfolgingssak() {
+    public void finnGjeldendeOppfolgingssak__ok_dersom_en_oppfolgingssak_i_arena() {
 
 
         List<Sak> saker = Arrays.asList(
-                new Sak(7, "OPP", "AO01", null, NYESTE_DATO),
-                new Sak(5, "OPP", "AO01", "5", NYESTE_DATO),
-                new Sak(1, "OPP", "AO01", "1", ELDSTE_DATO),
-                new Sak(4, "OPP", "FS22", "4", NYESTE_DATO),
-                new Sak(3, "OPP", null, null, NYESTE_DATO),
-                new Sak(6, null, null, null, NYESTE_DATO),
-                new Sak(2, "OPP", "AO01", "2", ELDRE_DATO)
+                new Sak(7, OPPFOLGING_KODE, ARENA_KODE, null, NYESTE_DATO),
+                new Sak(2, OPPFOLGING_KODE, ARENA_KODE, "2", ELDSTE_DATO),
+                new Sak(4, OPPFOLGING_KODE, "FS22", "4", NYESTE_DATO),
+                new Sak(3, OPPFOLGING_KODE, null, null, NYESTE_DATO),
+                new Sak(6, null, null, null, NYESTE_DATO)
         );
 
         mockRestClient(saker);
 
-        assertThat(sakService.finnGjeldendeOppfolgingssak("aktorId").id()).isEqualTo(5);
+        assertThat(sakService.finnGjeldendeOppfolgingssak("aktorId").id()).isEqualTo(2);
     }
 
     @Test(expected = IllegalStateException.class)
-    public void finnGjeldendeOppfolgingssak__feiler_ved_kall_med_saker_uten_oppfolgingssak() {
+    public void finnGjeldendeOppfolgingssak__feiler_dersom_ingen_oppfolgingssak() {
         List<Sak> saker = Collections.singletonList(
-                new Sak(4, "OPP", "FS22", "4", NYESTE_DATO)
+                new Sak(4, OPPFOLGING_KODE, "FS22", "4", NYESTE_DATO)
         );
 
         mockRestClient(saker);
@@ -72,7 +72,19 @@ public class SakServiceTest {
     }
 
     @Test(expected = IllegalStateException.class)
-    public void finnGjeldendeOppfolgingssak__feiler_ved_kall_uten_saker() {
+    public void finnGjeldendeOppfolgingssak__feiler_dersom_flere_oppfolgingssaker() {
+        List<Sak> saker = Arrays.asList(
+                new Sak(4, OPPFOLGING_KODE, ARENA_KODE, "4", NYESTE_DATO),
+                new Sak(2, OPPFOLGING_KODE, ARENA_KODE, "2", ELDRE_DATO)
+        );
+
+        mockRestClient(saker);
+
+        sakService.finnGjeldendeOppfolgingssak("aktorId").id();
+    }
+
+    @Test(expected = IllegalStateException.class)
+    public void finnGjeldendeOppfolgingssak__feiler_dersom_ingen_saker() {
         List<Sak> saker = Collections.emptyList();
 
         mockRestClient(saker);
