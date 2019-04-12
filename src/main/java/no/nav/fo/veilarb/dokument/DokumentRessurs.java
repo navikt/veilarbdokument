@@ -1,15 +1,22 @@
 package no.nav.fo.veilarb.dokument;
 
-import io.swagger.annotations.*;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
+import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
-import no.nav.fo.veilarb.dokument.domain.Dokumentbestilling;
-import no.nav.fo.veilarb.dokument.domain.DokumentbestillingRespons;
+import no.nav.fo.veilarb.dokument.domain.DokumentbestillingDto;
+import no.nav.fo.veilarb.dokument.domain.DokumentbestillingResponsDto;
 import no.nav.fo.veilarb.dokument.service.DokumentService;
 import no.nav.sbl.featuretoggle.unleash.UnleashService;
 import org.springframework.stereotype.Component;
 
 import javax.inject.Inject;
-import javax.ws.rs.*;
+import javax.ws.rs.HeaderParam;
+import javax.ws.rs.POST;
+import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
+import javax.ws.rs.core.Response;
 
 import static org.apache.cxf.helpers.HttpHeaderHelper.AUTHORIZATION;
 
@@ -34,10 +41,10 @@ public class DokumentRessurs {
     @POST
     @Path("/bestilldokument")
     @ApiOperation(value = "Bestill dokument og ekspeder som brev")
-    public DokumentbestillingRespons bestillDokument(
+    public DokumentbestillingResponsDto bestillDokument(
             @ApiParam(value = "a oidc-token representing the consuming application", example = "Bearer ")
             @HeaderParam(AUTHORIZATION) String authorization,
-            Dokumentbestilling dokumentBestilling) {
+            DokumentbestillingDto dokumentBestilling) {
         if (unleashService.isEnabled(VEILARBDOKUMENT_ENABLED_TOGGLE)) {
             return dokumentService.bestillDokument(dokumentBestilling);
         } else {
@@ -48,12 +55,16 @@ public class DokumentRessurs {
     @POST
     @Path("/dokumentutkast")
     @ApiOperation(value = "Produser dokumentutkast")
-    public byte[] produserDokumentutkast(
+    @SneakyThrows
+    @Produces("application/pdf")
+    public Response produserDokumentutkast(
             @ApiParam(value = "a oidc-token representing the consuming application", example = "Bearer ")
             @HeaderParam(AUTHORIZATION) String authorization,
-            Dokumentbestilling dokumentBestilling) {
+            DokumentbestillingDto dokumentBestilling) {
         if (unleashService.isEnabled(VEILARBDOKUMENT_ENABLED_TOGGLE)) {
-            return dokumentService.produserDokumentutkast(dokumentBestilling);
+            byte[] dokumentutkast = dokumentService.produserDokumentutkast(dokumentBestilling);
+            return Response.ok(dokumentutkast).build();
+
         } else {
             throw new IllegalStateException("ikke tilgjengelig");
         }

@@ -7,5 +7,4 @@ import lombok.experimental.Accessors;
 @Accessors(fluent = true)
 public class Person  {
     String fnr;
-    String navn;
 }

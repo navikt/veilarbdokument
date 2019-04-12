@@ -3,7 +3,7 @@ package no.nav.fo.veilarb.dokument.domain;
 import lombok.Value;
 
 @Value(staticConstructor = "of")
-public class DokumentbestillingRespons {
+public class DokumentbestillingResponsDto {
     String journalpostId;
     String dokumentId;
 }

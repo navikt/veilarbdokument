@@ -18,9 +18,9 @@ public enum MalType {
     public static String getMalKode(MalType malType) {
         switch (malType) {
             case STANDARD_INNSATS_SKAFFE_ARBEID:
-                return "000079";
+                return "000132";
             case STANDARD_INNSATS_BEHOLDE_ARBEID:
-                return "000079";
+                return "000132";
             default:
                 throw new IllegalStateException("Manglende mapping av MalType til kode");
         }
