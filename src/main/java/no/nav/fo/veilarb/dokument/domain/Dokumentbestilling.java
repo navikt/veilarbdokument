@@ -8,7 +8,8 @@ import lombok.experimental.Accessors;
 public class Dokumentbestilling {
     Person bruker;
     Person mottaker;
-    String dokumenttypeId;
-    String journalforendeEnhet;
+    MalType malType;
+    String veilederEnhet;
     Adresse adresse;
+    String begrunnelse;
 }

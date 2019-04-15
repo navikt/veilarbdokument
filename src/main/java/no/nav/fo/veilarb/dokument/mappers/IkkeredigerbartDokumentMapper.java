@@ -29,7 +29,7 @@ public class IkkeredigerbartDokumentMapper {
 
         WSDokumentbestillingsinformasjon informasjon = new WSDokumentbestillingsinformasjon();
 
-        informasjon.setDokumenttypeId(dokumentBestilling.dokumenttypeId());
+        informasjon.setDokumenttypeId(MalType.getMalKode(dokumentBestilling.malType()));
 
 
         informasjon.setBestillendeFagsystem(new WSFagsystemer().withValue(BESTILLENDE_FAGSYSTEM_KODE));
@@ -38,7 +38,7 @@ public class IkkeredigerbartDokumentMapper {
         informasjon.setBruker(mapPerson(dokumentBestilling.bruker()));
         informasjon.setMottaker(mapPerson(dokumentBestilling.mottaker()));
         informasjon.setJournalsakId(Integer.toString(sak.id()));
-        informasjon.setJournalfoerendeEnhet(dokumentBestilling.journalforendeEnhet());
+        informasjon.setJournalfoerendeEnhet(dokumentBestilling.veilederEnhet());
         informasjon.setUtledRegisterInfo(true);
 
         // TODO: følgende felter er ikke spesifisert hvilke verdier som er riktig
