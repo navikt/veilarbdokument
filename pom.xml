@@ -68,6 +68,12 @@
             <artifactId>veilarbdokmaler</artifactId>
             <version>1.0.8</version>
             <classifier>jaxb</classifier>
+            <exclusions>
+                <exclusion>
+                    <groupId>commons-logging</groupId>
+                    <artifactId>commons-logging</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
 
         <!-- test -->
