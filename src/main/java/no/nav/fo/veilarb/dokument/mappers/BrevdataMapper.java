@@ -27,6 +27,24 @@ public class BrevdataMapper {
             case STANDARD_INNSATS_BEHOLDE_ARBEID:
                 brevdataElement = map000132BrevdataType(brevdata);
                 break;
+            case SITUASJONSBESTEMT_INNSATS_SKAFFE_ARBEID:
+                brevdataElement = map000132BrevdataType(brevdata);
+                break;
+            case SITUASJONSBESTEMT_INNSATS_BEHOLDE_ARBEID:
+                brevdataElement = map000132BrevdataType(brevdata);
+                break;
+            case SPESIELT_TILPASSET_INNSATS_SKAFFE_ARBEID:
+                brevdataElement = map000132BrevdataType(brevdata);
+                break;
+            case SPESIELT_TILPASSET_INNSATS_BEHOLDE_ARBEID:
+                brevdataElement = map000132BrevdataType(brevdata);
+                break;
+            case GRADERT_VARIG_TILPASSET_INNSATS:
+                brevdataElement = map000132BrevdataType(brevdata);
+                break;
+            case VARIG_TILPASSET_INNSATS:
+                brevdataElement = map000132BrevdataType(brevdata);
+                break;
         }
 
         return brevdataElement;
