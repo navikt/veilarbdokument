@@ -14,10 +14,10 @@ public enum MalType {
     VARIG_TILPASSET_INNSATS("VARIG_TILPASSET_INNSATS");
 
     @JsonValue
-    public final String name;
+    public final String kode;
 
     MalType(String kode) {
-        this.name = kode;
+        this.kode = kode;
     }
 
     public static String getMalKode(MalType malType) {
