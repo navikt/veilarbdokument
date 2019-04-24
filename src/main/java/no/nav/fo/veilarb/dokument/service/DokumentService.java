@@ -2,12 +2,13 @@ package no.nav.fo.veilarb.dokument.service;
 
 import lombok.SneakyThrows;
 import no.nav.apiapp.feil.Feil;
+import no.nav.brukerdialog.security.domain.IdentType;
+import no.nav.common.auth.Subject;
 import no.nav.common.auth.SubjectHandler;
 import no.nav.dialogarena.aktor.AktorService;
-import no.nav.fo.veilarb.dokument.domain.Dokumentbestilling;
-import no.nav.fo.veilarb.dokument.domain.DokumentbestillingRespons;
-import no.nav.fo.veilarb.dokument.domain.Sak;
+import no.nav.fo.veilarb.dokument.domain.*;
 import no.nav.fo.veilarb.dokument.mappers.DokumentutkastMapper;
+import no.nav.fo.veilarb.dokument.mappers.Stubs;
 import no.nav.fo.veilarb.dokument.utils.VeilarbAbacServiceClient;
 import no.nav.fo.veilarb.dokument.mappers.IkkeredigerbartDokumentMapper;
 import no.nav.tjeneste.virksomhet.dokumentproduksjon.v3.DokumentproduksjonV3;
@@ -41,16 +42,38 @@ public class DokumentService {
         this.sakService = sakService;
     }
 
-    public DokumentbestillingRespons bestillDokument(Dokumentbestilling dokumentbestilling) {
-        String aktorId = aktorService.getAktorId(dokumentbestilling.bruker().fnr())
+    public DokumentbestillingResponsDto bestillDokument(DokumentbestillingDto dto) {
+        String aktorId = aktorService.getAktorId(dto.bruker().fnr())
                 .orElseThrow(() -> new Feil(UGYLDIG_REQUEST, "Fant ikke aktør for fnr"));
 
         // TODO: riktig abac-sjekk
         validerLesetilgangTilPerson(aktorId);
 
-        Sak sak = sakService.finnGjeldendeOppfolgingssak(aktorId);
+        Dokumentbestilling dokumentbestilling = lagDokumentbestilling(dto, aktorId);
+        return produserIkkeredigerbartDokument(dokumentbestilling);
+    }
 
-        return produserIkkeredigerbartDokument(dokumentbestilling, sak);
+    private Dokumentbestilling lagDokumentbestilling(DokumentbestillingDto dto, String aktorId) {
+        Brevdata brevdata = lagBrevdata(dto);
+        Sak sak = sakService.finnGjeldendeOppfolgingssak(aktorId);
+        String veilederNavn = Stubs.test; // TODO Hent veilederNavn fra veilarbveileder
+
+        return Dokumentbestilling.builder()
+                .brevdata(brevdata)
+                .sak(sak)
+                .veilederNavn(veilederNavn)
+                .build();
+    }
+
+    private Brevdata lagBrevdata(DokumentbestillingDto dokumentbestilling) {
+        return Brevdata.builder()
+                .bruker(dokumentbestilling.bruker())
+                .mottaker(dokumentbestilling.mottaker())
+                .malType(dokumentbestilling.malType())
+                .veilederEnhet(dokumentbestilling.veilederEnhet())
+                .veilederId(getVeilederId())
+                .begrunnelse(dokumentbestilling.begrunnelse())
+                .build();
     }
 
     private void validerLesetilgangTilPerson(String aktorId) {
@@ -60,9 +83,9 @@ public class DokumentService {
     }
 
     @SneakyThrows
-    private DokumentbestillingRespons produserIkkeredigerbartDokument(Dokumentbestilling dokumentbestilling, Sak sak) {
+    private DokumentbestillingResponsDto produserIkkeredigerbartDokument(Dokumentbestilling dokumentbestilling) {
         WSProduserIkkeredigerbartDokumentRequest request =
-                IkkeredigerbartDokumentMapper.mapRequest(dokumentbestilling, sak);
+                IkkeredigerbartDokumentMapper.mapRequest(dokumentbestilling);
 
         WSProduserIkkeredigerbartDokumentResponse response =
                 dokumentproduksjon.produserIkkeredigerbartDokument(request);
@@ -70,9 +93,18 @@ public class DokumentService {
         return IkkeredigerbartDokumentMapper.mapRespons(response);
     }
 
+    private String getVeilederId() {
+        return SubjectHandler.getSubject()
+                .filter(subject -> IdentType.InternBruker.equals(subject.getIdentType()))
+                .map(Subject::getUid)
+                .orElseThrow(() -> new IllegalStateException("Mangler veileder token"));
+    }
+
     @SneakyThrows
-    public byte[] produserDokumentutkast(Dokumentbestilling dokumentbestilling) {
-        WSProduserDokumentutkastRequest dokumentutkastRequest = DokumentutkastMapper.produserDokumentutkastRequest(dokumentbestilling);
+    public byte[] produserDokumentutkast(DokumentbestillingDto dokumentbestilling) {
+        Brevdata brevdata = lagBrevdata(dokumentbestilling);
+        WSProduserDokumentutkastRequest dokumentutkastRequest =
+                DokumentutkastMapper.produserDokumentutkastRequest(brevdata);
 
         return dokumentproduksjon.produserDokumentutkast(dokumentutkastRequest).getDokumentutkast();
     }

@@ -7,8 +7,11 @@ import lombok.experimental.Accessors;
 @Value
 @Accessors(fluent = true)
 @Builder
-public class Dokumentbestilling {
-    Brevdata brevdata;
-    Sak sak;
-    String veilederNavn;
+public class Brevdata {
+    Person bruker;
+    Person mottaker;
+    MalType malType;
+    String veilederEnhet;
+    String veilederId;
+    String begrunnelse;
 }
