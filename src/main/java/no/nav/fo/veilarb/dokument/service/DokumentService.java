@@ -34,7 +34,7 @@ public class DokumentService {
     }
 
     public DokumentbestillingResponsDto bestillDokument(DokumentbestillingDto dto) {
-        Bruker bruker = authService.sjekkSkrivetilgangTilBruker(dto.bruker().fnr());
+        Bruker bruker = authService.sjekkTilgang(dto.bruker().fnr(), dto.veilederEnhet());
 
         Dokumentbestilling dokumentbestilling = lagDokumentbestilling(dto, bruker.getAktoerId());
         return produserIkkeredigerbartDokument(dokumentbestilling);
@@ -83,7 +83,7 @@ public class DokumentService {
 
     @SneakyThrows
     public byte[] produserDokumentutkast(DokumentbestillingDto dto) {
-        authService.sjekkSkrivetilgangTilBruker(dto.bruker().fnr());
+        authService.sjekkTilgang(dto.bruker().fnr(), dto.veilederEnhet());
 
         Brevdata brevdata = lagBrevdata(dto);
         WSProduserDokumentutkastRequest dokumentutkastRequest =

@@ -17,22 +17,37 @@ public class AuthService {
 
     private AktorService aktorService;
     private VeilarbAbacPepClient pepClient;
+    private ArenaService arenaService;
 
     @Inject
     public AuthService(AktorService aktorService,
-                       VeilarbAbacPepClient pepClient) {
+                       VeilarbAbacPepClient pepClient,
+                       ArenaService arenaService) {
         this.aktorService = aktorService;
         this.pepClient = pepClient;
+        this.arenaService = arenaService;
     }
 
 
-    public Bruker sjekkSkrivetilgangTilBruker(String fnr) {
+    public Bruker sjekkTilgang(String fnr, String veilederEnhet) {
         sjekkInternBruker();
+
         String aktorId = getAktorIdOrThrow(fnr);
         Bruker bruker = Bruker.fraAktoerId(aktorId).medFoedselsnummer(fnr);
+
         pepClient.sjekkSkrivetilgangTilBruker(bruker);
 
+        sjekkEnhet(fnr, veilederEnhet);
+
         return bruker;
+    }
+
+    private void sjekkEnhet(String fnr, String veilederEnhet) {
+        String oppfolgingsenhet = arenaService.oppfolgingsenhet(fnr);
+
+        if (!veilederEnhet.equals(oppfolgingsenhet)) {
+            throw new IngenTilgang("Feil enhet");
+        }
     }
 
     private void sjekkInternBruker() {

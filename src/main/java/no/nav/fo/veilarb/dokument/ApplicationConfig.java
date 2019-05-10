@@ -8,6 +8,7 @@ import no.nav.brukerdialog.security.oidc.SystemUserTokenProviderConfig;
 import no.nav.common.auth.Subject;
 import no.nav.common.auth.SubjectHandler;
 import no.nav.dialogarena.aktor.AktorConfig;
+import no.nav.fo.veilarb.dokument.service.ArenaService;
 import no.nav.fo.veilarb.dokument.service.AuthService;
 import no.nav.fo.veilarb.dokument.service.DokumentService;
 import no.nav.fo.veilarb.dokument.service.SakService;
@@ -34,6 +35,7 @@ import static no.nav.sbl.featuretoggle.unleash.UnleashServiceConfig.resolveFromE
         DokumentRessurs.class,
         DokumentService.class,
         AuthService.class,
+        ArenaService.class,
         AktorConfig.class,
         SakService.class,
         AbacContext.class
@@ -46,6 +48,7 @@ public class ApplicationConfig implements ApiApplication {
     public static final String OIDC_REDIRECT_URL = "OIDC_REDIRECT_URL";
     public static final String SAK_API_URL = "SAK_API_URL";
     public static final String VEILARBABAC_API_URL_PROPERTY = "VEILARBABAC_API_URL";
+    public static final String VEILARBARENA_API_URL_PROPERTY = "VEILARBARENAAPI_URL";
 
     @Override
     public void configure(ApiAppConfigurator apiAppConfigurator) {
