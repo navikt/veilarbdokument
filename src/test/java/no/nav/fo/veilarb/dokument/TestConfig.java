@@ -10,6 +10,8 @@ import static no.nav.brukerdialog.security.Constants.*;
 import static no.nav.fasit.FasitUtils.*;
 import static no.nav.fasit.FasitUtils.Zone.FSS;
 import static no.nav.fo.veilarb.dokument.ApplicationConfig.*;
+import static no.nav.fo.veilarb.dokument.utils.TestUtils.lagFssUrl;
+import static no.nav.sbl.dialogarena.common.abac.pep.service.AbacServiceConfig.ABAC_ENDPOINT_URL_PROPERTY_NAME;
 import static no.nav.sbl.dialogarena.common.cxf.StsSecurityConstants.SYSTEMUSER_PASSWORD;
 import static no.nav.sbl.dialogarena.common.cxf.StsSecurityConstants.SYSTEMUSER_USERNAME;
 import static no.nav.sbl.featuretoggle.unleash.UnleashServiceConfig.UNLEASH_API_URL_PROPERTY_NAME;
@@ -43,6 +45,8 @@ public class TestConfig {
         EnvironmentUtils.setProperty(OIDC_REDIRECT_URL, veilarbLogin.getUrl(), PUBLIC);
         EnvironmentUtils.setProperty(ISSO_ISALIVE_URL_PROPERTY_NAME, getBaseUrl("isso.isalive", FSS), PUBLIC);
         EnvironmentUtils.setProperty(UNLEASH_API_URL_PROPERTY_NAME, "https://unleash.nais.adeo.no/api/", PUBLIC);
+        EnvironmentUtils.setProperty(VEILARBABAC_API_URL_PROPERTY, lagFssUrl("veilarbabac", false), PUBLIC);
+        EnvironmentUtils.setProperty(ABAC_ENDPOINT_URL_PROPERTY_NAME, "https://wasapp-" + getDefaultEnvironment() + ".adeo.no/asm-pdp/authorize", PUBLIC);
 
         if (EnvironmentUtils.requireNamespace().equals("q1")) {
             EnvironmentUtils.setProperty(SAK_API_URL, "https://sak-q1.nais.preprod.local/api/v1/saker", PUBLIC);

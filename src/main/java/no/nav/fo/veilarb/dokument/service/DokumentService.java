@@ -1,16 +1,14 @@
 package no.nav.fo.veilarb.dokument.service;
 
 import lombok.SneakyThrows;
-import no.nav.apiapp.feil.Feil;
+import no.nav.apiapp.security.veilarbabac.Bruker;
 import no.nav.brukerdialog.security.domain.IdentType;
 import no.nav.common.auth.Subject;
 import no.nav.common.auth.SubjectHandler;
-import no.nav.dialogarena.aktor.AktorService;
 import no.nav.fo.veilarb.dokument.domain.*;
 import no.nav.fo.veilarb.dokument.mappers.DokumentutkastMapper;
-import no.nav.fo.veilarb.dokument.mappers.Stubs;
-import no.nav.fo.veilarb.dokument.utils.VeilarbAbacServiceClient;
 import no.nav.fo.veilarb.dokument.mappers.IkkeredigerbartDokumentMapper;
+import no.nav.fo.veilarb.dokument.mappers.Stubs;
 import no.nav.tjeneste.virksomhet.dokumentproduksjon.v3.DokumentproduksjonV3;
 import no.nav.tjeneste.virksomhet.dokumentproduksjon.v3.meldinger.WSProduserDokumentutkastRequest;
 import no.nav.tjeneste.virksomhet.dokumentproduksjon.v3.meldinger.WSProduserIkkeredigerbartDokumentRequest;
@@ -19,37 +17,26 @@ import org.springframework.stereotype.Component;
 
 import javax.inject.Inject;
 
-import static no.nav.apiapp.feil.FeilType.INGEN_TILGANG;
-import static no.nav.apiapp.feil.FeilType.UGYLDIG_REQUEST;
-import static no.nav.common.auth.SsoToken.Type.OIDC;
-
 @Component
 public class DokumentService {
 
-    private AktorService aktorService;
     private DokumentproduksjonV3 dokumentproduksjon;
-    private VeilarbAbacServiceClient veilarbAbacServiceClient;
+    private AuthService authService;
     private SakService sakService;
 
     @Inject
-    public DokumentService(AktorService aktorService,
-                           DokumentproduksjonV3 dokumentproduksjon,
-                           VeilarbAbacServiceClient veilarbAbacServiceClient,
+    public DokumentService(DokumentproduksjonV3 dokumentproduksjon,
+                           AuthService authService,
                            SakService sakService) {
-        this.aktorService = aktorService;
         this.dokumentproduksjon = dokumentproduksjon;
-        this.veilarbAbacServiceClient = veilarbAbacServiceClient;
+        this.authService = authService;
         this.sakService = sakService;
     }
 
     public DokumentbestillingResponsDto bestillDokument(DokumentbestillingDto dto) {
-        String aktorId = aktorService.getAktorId(dto.bruker().fnr())
-                .orElseThrow(() -> new Feil(UGYLDIG_REQUEST, "Fant ikke aktør for fnr"));
+        Bruker bruker = authService.sjekkSkrivetilgangTilBruker(dto.bruker().fnr());
 
-        // TODO: riktig abac-sjekk
-        validerLesetilgangTilPerson(aktorId);
-
-        Dokumentbestilling dokumentbestilling = lagDokumentbestilling(dto, aktorId);
+        Dokumentbestilling dokumentbestilling = lagDokumentbestilling(dto, bruker.getAktoerId());
         return produserIkkeredigerbartDokument(dokumentbestilling);
     }
 
@@ -76,12 +63,6 @@ public class DokumentService {
                 .build();
     }
 
-    private void validerLesetilgangTilPerson(String aktorId) {
-        SubjectHandler.getSsoToken(OIDC)
-                .map(token -> veilarbAbacServiceClient.harLesetilgangTilPerson(token, aktorId))
-                .orElseThrow(() -> new Feil(INGEN_TILGANG));
-    }
-
     @SneakyThrows
     private DokumentbestillingResponsDto produserIkkeredigerbartDokument(Dokumentbestilling dokumentbestilling) {
         WSProduserIkkeredigerbartDokumentRequest request =
@@ -101,8 +82,10 @@ public class DokumentService {
     }
 
     @SneakyThrows
-    public byte[] produserDokumentutkast(DokumentbestillingDto dokumentbestilling) {
-        Brevdata brevdata = lagBrevdata(dokumentbestilling);
+    public byte[] produserDokumentutkast(DokumentbestillingDto dto) {
+        authService.sjekkSkrivetilgangTilBruker(dto.bruker().fnr());
+
+        Brevdata brevdata = lagBrevdata(dto);
         WSProduserDokumentutkastRequest dokumentutkastRequest =
                 DokumentutkastMapper.produserDokumentutkastRequest(brevdata);
 
