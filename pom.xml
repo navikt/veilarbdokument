@@ -8,7 +8,7 @@
     <parent>
         <groupId>no.nav.common</groupId>
         <artifactId>mor-pom</artifactId>
-        <version>2019.02.14.18.56</version>
+        <version>1.2019.04.30-17.04-3d8bebacf430</version>
     </parent>
 
     <groupId>no.nav.fo</groupId>
@@ -36,12 +36,6 @@
         <dependency>
             <groupId>no.nav.common</groupId>
             <artifactId>api-app</artifactId>
-            <exclusions>
-                <exclusion>
-                    <groupId>no.nav.common</groupId>
-                    <artifactId>abac</artifactId>
-                </exclusion>
-            </exclusions>
         </dependency>
         <dependency>
             <groupId>no.nav.common</groupId>

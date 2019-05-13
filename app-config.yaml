@@ -57,6 +57,10 @@ fasitResources:
       resourceType: restservice
       propertyMap:
         url: SAK_API_URL
+    - alias: abac.pdp.endpoint
+      resourceType: restservice
+    - alias: veilarbarenaAPI
+      resourceType: restservice
 
 alertProfiles:
   - common-java-modules
