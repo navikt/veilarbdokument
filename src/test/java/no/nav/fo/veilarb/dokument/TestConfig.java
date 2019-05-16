@@ -47,7 +47,9 @@ public class TestConfig {
         setProperty(ABAC_ENDPOINT_URL_PROPERTY_NAME, "https://wasapp-" + getDefaultEnvironment() + ".adeo.no/asm-pdp/authorize", PUBLIC);
         setProperty(VEILARBARENA_API_URL_PROPERTY, lagFssUrl("veilarbarena", true) + "api/", PUBLIC);
         setProperty(VEILARBVEILEDER_API_URL_PROPERTY, lagFssUrl("veilarbveileder", true) + "api/", PUBLIC);
-        setProperty(TJENESTEBUSS_URL_PROPERTY, getBaseUrl("tjenestebuss", FSS), PUBLIC);
+
+        WebServiceEndpoint tjenestebussEndpoint = getWebServiceEndpoint("virksomhet:ArbeidOgAktivitet_v1", getDefaultEnvironment());
+        setProperty(ARBEID_OG_AKTIVITET_URL_PROPERTY, tjenestebussEndpoint.getUrl(), PUBLIC);
 
         if (requireNamespace().equals("q1")) {
             setProperty(SAK_API_URL, "https://sak-q1.nais.preprod.local/api/v1/saker", PUBLIC);

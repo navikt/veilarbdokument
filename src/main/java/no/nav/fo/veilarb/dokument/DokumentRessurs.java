@@ -7,15 +7,14 @@ import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.fo.veilarb.dokument.domain.DokumentbestillingDto;
 import no.nav.fo.veilarb.dokument.domain.DokumentbestillingResponsDto;
+import no.nav.fo.veilarb.dokument.service.ArenaSakService;
 import no.nav.fo.veilarb.dokument.service.DokumentService;
 import no.nav.sbl.featuretoggle.unleash.UnleashService;
+import no.nav.virksomhet.gjennomforing.sak.arbeidogaktivitet.v1.Sak;
 import org.springframework.stereotype.Component;
 
 import javax.inject.Inject;
-import javax.ws.rs.HeaderParam;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
+import javax.ws.rs.*;
 import javax.ws.rs.core.Response;
 
 import static org.apache.cxf.helpers.HttpHeaderHelper.AUTHORIZATION;
@@ -31,11 +30,15 @@ public class DokumentRessurs {
 
     private final DokumentService dokumentService;
     private final UnleashService unleashService;
+    private final ArenaSakService arenaSakService;
 
     @Inject
-    public DokumentRessurs(DokumentService dokumentService, UnleashService unleashService) {
+    public DokumentRessurs(DokumentService dokumentService,
+                           UnleashService unleashService,
+                           ArenaSakService arenaSakService) {
         this.dokumentService = dokumentService;
         this.unleashService = unleashService;
+        this.arenaSakService = arenaSakService;
     }
 
     @POST
@@ -68,5 +71,15 @@ public class DokumentRessurs {
         } else {
             throw new IllegalStateException("ikke tilgjengelig");
         }
+    }
+
+    // TODO ta bort
+    @GET
+    @Path("/test/{fnr}")
+    public Sak test(
+            @ApiParam(value = "a oidc-token representing the consuming application", example = "Bearer ")
+            @HeaderParam(AUTHORIZATION) String authorization,
+            @PathParam("fnr") String fnr) {
+        return arenaSakService.hentOppfolgingssakFraArena(fnr).orElseThrow(() -> new RuntimeException(""));
     }
 }

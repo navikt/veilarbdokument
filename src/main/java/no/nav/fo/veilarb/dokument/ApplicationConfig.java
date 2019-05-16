@@ -50,7 +50,7 @@ public class ApplicationConfig implements ApiApplication {
     public static final String VEILARBABAC_API_URL_PROPERTY = "VEILARBABAC_API_URL";
     public static final String VEILARBARENA_API_URL_PROPERTY = "VEILARBARENAAPI_URL";
     public static final String VEILARBVEILEDER_API_URL_PROPERTY = "VEILARBVEILEDERAPI_URL";
-    public static final String TJENESTEBUSS_URL_PROPERTY = "TJENESTEBUSS_URL";
+    public static final String ARBEID_OG_AKTIVITET_URL_PROPERTY = "ARBEID_OG_AKTIVITET_URL";
 
     @Override
     public void configure(ApiAppConfigurator apiAppConfigurator) {
@@ -70,7 +70,7 @@ public class ApplicationConfig implements ApiApplication {
     @Bean
     ArbeidOgAktivitet arbeidOgAktivitet() {
         return new CXFClient<>(ArbeidOgAktivitet.class)
-                .address(getTjenestebussUrl())
+                .address(getArbeidOgAktivitetUrl())
                 .configureStsForSystemUser()
                 .build();
     }
@@ -141,7 +141,7 @@ public class ApplicationConfig implements ApiApplication {
         return EnvironmentUtils.getRequiredProperty(OIDC_REDIRECT_URL);
     }
 
-    public static String getTjenestebussUrl() {
-        return  EnvironmentUtils.getRequiredProperty(TJENESTEBUSS_URL_PROPERTY);
+    public static String getArbeidOgAktivitetUrl() {
+        return  EnvironmentUtils.getRequiredProperty(ARBEID_OG_AKTIVITET_URL_PROPERTY);
     }
 }

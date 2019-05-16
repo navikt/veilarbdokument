@@ -63,8 +63,10 @@ fasitResources:
       resourceType: restservice
     - alias: veilArbVeilederAPI
       resourceType: restservice
-    - alias: tjenestebuss
-      resourceType: baseurl
+    - alias: virksomhet:ArbeidOgAktivitet_v1
+      resourceType: webserviceendpoint
+      propertyMap:
+        url: ARBEID_OG_AKTIVITET_URL
 
 alertProfiles:
   - common-java-modules

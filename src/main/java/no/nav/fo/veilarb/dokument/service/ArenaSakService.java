@@ -20,7 +20,7 @@ public class ArenaSakService {
         this.arbeidOgAktivitet = arbeidOgAktivitet;
     }
 
-    Optional<Sak> hentOppfolgingssakFraArena(String fnr) {
+    public Optional<Sak> hentOppfolgingssakFraArena(String fnr) {
 
         WSHentSakListeRequest request = new WSHentSakListeRequest()
                 .withBruker(new WSBruker().withBrukertypeKode("PERSON").withBruker(fnr))
