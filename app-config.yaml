@@ -63,6 +63,8 @@ fasitResources:
       resourceType: restservice
     - alias: veilArbVeilederAPI
       resourceType: restservice
+    - alias: tjenestebuss
+      resourceType: baseurl
 
 alertProfiles:
   - common-java-modules

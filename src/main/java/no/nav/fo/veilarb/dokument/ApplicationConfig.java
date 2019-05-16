@@ -16,6 +16,7 @@ import no.nav.sbl.featuretoggle.unleash.UnleashService;
 import no.nav.sbl.rest.RestUtils;
 import no.nav.sbl.util.EnvironmentUtils;
 import no.nav.tjeneste.virksomhet.dokumentproduksjon.v3.DokumentproduksjonV3;
+import no.nav.virksomhet.tjenester.sak.arbeidogaktivitet.v1.ArbeidOgAktivitet;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
@@ -36,7 +37,8 @@ import static no.nav.sbl.featuretoggle.unleash.UnleashServiceConfig.resolveFromE
         AktorConfig.class,
         SakService.class,
         VeilederService.class,
-        AbacContext.class
+        AbacContext.class,
+        ArenaSakService.class
 })
 public class ApplicationConfig implements ApiApplication {
 
@@ -48,6 +50,7 @@ public class ApplicationConfig implements ApiApplication {
     public static final String VEILARBABAC_API_URL_PROPERTY = "VEILARBABAC_API_URL";
     public static final String VEILARBARENA_API_URL_PROPERTY = "VEILARBARENAAPI_URL";
     public static final String VEILARBVEILEDER_API_URL_PROPERTY = "VEILARBVEILEDERAPI_URL";
+    public static final String TJENESTEBUSS_URL_PROPERTY = "TJENESTEBUSS_URL";
 
     @Override
     public void configure(ApiAppConfigurator apiAppConfigurator) {
@@ -60,6 +63,14 @@ public class ApplicationConfig implements ApiApplication {
     public DokumentproduksjonV3 dokumentproduksjonV3() {
         return new CXFClient<>(DokumentproduksjonV3.class)
                 .address(getDokumentproduksjonEndpointUrl())
+                .configureStsForSystemUser()
+                .build();
+    }
+
+    @Bean
+    ArbeidOgAktivitet arbeidOgAktivitet() {
+        return new CXFClient<>(ArbeidOgAktivitet.class)
+                .address(getTjenestebussUrl())
                 .configureStsForSystemUser()
                 .build();
     }
@@ -128,5 +139,9 @@ public class ApplicationConfig implements ApiApplication {
 
     public static String getOidcRedirectUrl() {
         return EnvironmentUtils.getRequiredProperty(OIDC_REDIRECT_URL);
+    }
+
+    public static String getTjenestebussUrl() {
+        return  EnvironmentUtils.getRequiredProperty(TJENESTEBUSS_URL_PROPERTY);
     }
 }

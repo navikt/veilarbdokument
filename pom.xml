@@ -51,6 +51,13 @@
         </dependency>
 
         <!-- Tjenester -->
+
+        <dependency>
+            <groupId>no.nav.tjenestespesifikasjoner</groupId>
+            <artifactId>arena-arbeid-og-aktivitet</artifactId>
+            <version>1.2019.04.05-09.36-fbdf6a084578</version>
+        </dependency>
+
         <dependency>
             <groupId>no.nav.tjenestespesifikasjoner</groupId>
             <artifactId>dokumentproduksjon-v3-tjenestespesifikasjon</artifactId>
