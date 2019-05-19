@@ -1,5 +1,6 @@
 package no.nav.fo.veilarb.dokument.service;
 
+import no.nav.fo.veilarb.dokument.domain.OpprettSakDto;
 import no.nav.fo.veilarb.dokument.domain.Sak;
 import no.nav.sbl.util.EnvironmentUtils;
 import no.nav.sbl.util.StringUtils;
@@ -7,6 +8,7 @@ import org.springframework.stereotype.Component;
 
 import javax.inject.Inject;
 import javax.ws.rs.client.Client;
+import javax.ws.rs.client.Entity;
 import javax.ws.rs.core.GenericType;
 import javax.ws.rs.core.Response;
 import java.util.List;
@@ -30,31 +32,29 @@ public class SakService {
         this.host = EnvironmentUtils.getRequiredProperty(SAK_API_URL);
     }
 
-    public Sak finnGjeldendeOppfolgingssak(String aktorId) {
-
-        List<Sak> saker = finnSaker(aktorId, OPPFOLGING_KODE);
-        List<Sak> oppfolgingssaker = filtrerOppfolgingssaker(saker);
-
-        if (oppfolgingssaker.size() == 1) {
-            return oppfolgingssaker.get(0);
-        } else if (oppfolgingssaker.isEmpty()) {
-            throw new IllegalStateException("Mangler oppføgningssak");
-        } else {
-            throw new IllegalStateException("Flere oppføgningssaker");
-        }
-    }
-
-    private List<Sak> finnSaker(String aktorId, String tema) {
+    public List<Sak> finnOppfolgingssaker(String aktorId) {
 
         Response response = restClient
                 .target(host)
                 .queryParam("aktoerId", aktorId)
-                .queryParam("tema", tema)
+                .queryParam("tema", OPPFOLGING_KODE)
                 .request()
                 .get();
 
-        return response.readEntity(new GenericType<List<Sak>>() {
+        List<Sak> saker = response.readEntity(new GenericType<List<Sak>>() {
         });
+
+        return filtrerOppfolgingssaker(saker);
+    }
+
+    public Sak opprettOppfolgingssak(String aktorId, String fagsakNr) {
+        OpprettSakDto entity = new OpprettSakDto(OPPFOLGING_KODE, ARENA_KODE, aktorId, fagsakNr);
+
+        return restClient
+                .target(host)
+                .request()
+                .post(Entity.json(entity))
+                .readEntity(Sak.class); // TODO antagelse at vi får Sak i response
     }
 
     private static List<Sak> filtrerOppfolgingssaker(List<Sak> saker) {

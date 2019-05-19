@@ -21,30 +21,30 @@ public class DokumentService {
 
     private DokumentproduksjonV3 dokumentproduksjon;
     private AuthService authService;
-    private SakService sakService;
     private VeilederService veilederService;
+    private OppfolgingssakService oppfolgingssakService;
 
     @Inject
     public DokumentService(DokumentproduksjonV3 dokumentproduksjon,
                            AuthService authService,
-                           SakService sakService,
-                           VeilederService veilederService) {
+                           VeilederService veilederService,
+                           OppfolgingssakService oppfolgingssakService) {
         this.dokumentproduksjon = dokumentproduksjon;
         this.authService = authService;
-        this.sakService = sakService;
         this.veilederService = veilederService;
+        this.oppfolgingssakService = oppfolgingssakService;
     }
 
     public DokumentbestillingResponsDto bestillDokument(DokumentbestillingDto dto) {
         Bruker bruker = authService.sjekkTilgang(dto.bruker().fnr(), dto.veilederEnhet());
 
-        Dokumentbestilling dokumentbestilling = lagDokumentbestilling(dto, bruker.getAktoerId());
+        Dokumentbestilling dokumentbestilling = lagDokumentbestilling(dto, bruker);
         return produserIkkeredigerbartDokument(dokumentbestilling);
     }
 
-    private Dokumentbestilling lagDokumentbestilling(DokumentbestillingDto dto, String aktorId) {
+    private Dokumentbestilling lagDokumentbestilling(DokumentbestillingDto dto, Bruker bruker) {
         Brevdata brevdata = lagBrevdata(dto);
-        Sak sak = sakService.finnGjeldendeOppfolgingssak(aktorId);
+        Sak sak = oppfolgingssakService.hentOppfolgingssak(bruker);
 
         return Dokumentbestilling.builder()
                 .brevdata(brevdata)

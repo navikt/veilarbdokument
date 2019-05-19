@@ -10,6 +10,8 @@ import org.springframework.stereotype.Service;
 import javax.inject.Inject;
 import java.util.Optional;
 
+import static no.nav.fo.veilarb.dokument.service.SakService.OPPFOLGING_KODE;
+
 @Service
 public class ArenaSakService {
 
@@ -24,8 +26,7 @@ public class ArenaSakService {
 
         WSHentSakListeRequest request = new WSHentSakListeRequest()
                 .withBruker(new WSBruker().withBrukertypeKode("PERSON").withBruker(fnr))
-                .withFagomradeKode("OPP");
-
+                .withFagomradeKode(OPPFOLGING_KODE);
 
         WSHentSakListeResponse wsHentSakListeResponse = arbeidOgAktivitet.hentSakListe(request);
 

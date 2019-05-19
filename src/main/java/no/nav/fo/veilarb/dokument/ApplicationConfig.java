@@ -38,7 +38,8 @@ import static no.nav.sbl.featuretoggle.unleash.UnleashServiceConfig.resolveFromE
         SakService.class,
         VeilederService.class,
         AbacContext.class,
-        ArenaSakService.class
+        ArenaSakService.class,
+        OppfolgingssakService.class
 })
 public class ApplicationConfig implements ApiApplication {
 
