@@ -10,10 +10,10 @@ webproxy: true
 healthcheck:
   liveness:
     path: veilarbdokument/internal/isAlive
-    initialDelay: 60
+    initialDelay: 90
   readiness:
     path: veilarbdokument/internal/isReady
-    initialDelay: 60
+    initialDelay: 90
 prometheus:
   enabled: true
   path: veilarbdokument/internal/metrics
