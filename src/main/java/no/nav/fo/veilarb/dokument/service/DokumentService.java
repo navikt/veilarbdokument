@@ -60,7 +60,6 @@ public class DokumentService {
                 .veilederEnhet(dokumentbestilling.veilederEnhet())
                 .veilederId(getVeilederId())
                 .begrunnelse(dokumentbestilling.begrunnelse())
-                .kilder(dokumentbestilling.kilder())
                 .build();
     }
 

@@ -5,8 +5,6 @@ import lombok.val;
 import no.nav.dok.brevdata.felles.v1.navfelles.*;
 import no.nav.dok.brevdata.felles.v1.simpletypes.AktoerType;
 import no.nav.dok.veilarbdokmaler._000132.BrevdataType;
-import no.nav.dok.veilarbdokmaler._000132.KulepunktListeType;
-import no.nav.dok.veilarbdokmaler._000132.KulepunktType;
 import no.nav.fo.veilarb.dokument.domain.Brevdata;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -16,7 +14,6 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBElement;
 import javax.xml.bind.Marshaller;
 import javax.xml.parsers.DocumentBuilderFactory;
-import java.util.stream.Collectors;
 
 public class BrevdataMapper {
     @SneakyThrows
@@ -74,18 +71,6 @@ public class BrevdataMapper {
         val brevdataType = objectFactory.createBrevdataType();
         val fag = objectFactory.createFagType();
         fag.setFritekstBegrunnelse(brevdata.begrunnelse());
-
-        KulepunktListeType kilder = KulepunktListeType.builder()
-                .withKulepunkt(
-                        brevdata.kilder().stream()
-                                .map(kilde ->
-                                        KulepunktType.builder()
-                                                .withKulepunktTekst(kilde)
-                                                .build()
-                                ).collect(Collectors.toList())
-                )
-                .build();
-        fag.setKulepunktListe(kilder);
         brevdataType.setFag(fag);
         brevdataType.setNAVFelles(mapFelles(brevdata));
         JAXBElement<BrevdataType> brevdataElement = objectFactory.createBrevdata(
