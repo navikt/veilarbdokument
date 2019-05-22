@@ -13,5 +13,6 @@ public class Brevdata {
     MalType malType;
     String veilederEnhet;
     String veilederId;
+    String veilederNavn;
     String begrunnelse;
 }
