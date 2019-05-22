@@ -8,7 +8,6 @@ import no.nav.common.auth.SubjectHandler;
 import no.nav.fo.veilarb.dokument.domain.*;
 import no.nav.fo.veilarb.dokument.mappers.DokumentutkastMapper;
 import no.nav.fo.veilarb.dokument.mappers.IkkeredigerbartDokumentMapper;
-import no.nav.fo.veilarb.dokument.mappers.Stubs;
 import no.nav.tjeneste.virksomhet.dokumentproduksjon.v3.DokumentproduksjonV3;
 import no.nav.tjeneste.virksomhet.dokumentproduksjon.v3.meldinger.WSProduserDokumentutkastRequest;
 import no.nav.tjeneste.virksomhet.dokumentproduksjon.v3.meldinger.WSProduserIkkeredigerbartDokumentRequest;
@@ -23,14 +22,17 @@ public class DokumentService {
     private DokumentproduksjonV3 dokumentproduksjon;
     private AuthService authService;
     private SakService sakService;
+    private VeilederService veilederService;
 
     @Inject
     public DokumentService(DokumentproduksjonV3 dokumentproduksjon,
                            AuthService authService,
-                           SakService sakService) {
+                           SakService sakService,
+                           VeilederService veilederService) {
         this.dokumentproduksjon = dokumentproduksjon;
         this.authService = authService;
         this.sakService = sakService;
+        this.veilederService = veilederService;
     }
 
     public DokumentbestillingResponsDto bestillDokument(DokumentbestillingDto dto) {
@@ -43,22 +45,24 @@ public class DokumentService {
     private Dokumentbestilling lagDokumentbestilling(DokumentbestillingDto dto, String aktorId) {
         Brevdata brevdata = lagBrevdata(dto);
         Sak sak = sakService.finnGjeldendeOppfolgingssak(aktorId);
-        String veilederNavn = Stubs.test; // TODO Hent veilederNavn fra veilarbveileder
 
         return Dokumentbestilling.builder()
                 .brevdata(brevdata)
                 .sak(sak)
-                .veilederNavn(veilederNavn)
+                .veilederNavn(brevdata.veilederNavn())
                 .build();
     }
 
     private Brevdata lagBrevdata(DokumentbestillingDto dokumentbestilling) {
+        String veilederNavn = veilederService.veiledernavn();
+
         return Brevdata.builder()
                 .bruker(dokumentbestilling.bruker())
                 .mottaker(dokumentbestilling.mottaker())
                 .malType(dokumentbestilling.malType())
                 .veilederEnhet(dokumentbestilling.veilederEnhet())
                 .veilederId(getVeilederId())
+                .veilederNavn(veilederNavn)
                 .begrunnelse(dokumentbestilling.begrunnelse())
                 .build();
     }

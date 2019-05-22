@@ -8,10 +8,7 @@ import no.nav.brukerdialog.security.oidc.SystemUserTokenProviderConfig;
 import no.nav.common.auth.Subject;
 import no.nav.common.auth.SubjectHandler;
 import no.nav.dialogarena.aktor.AktorConfig;
-import no.nav.fo.veilarb.dokument.service.ArenaService;
-import no.nav.fo.veilarb.dokument.service.AuthService;
-import no.nav.fo.veilarb.dokument.service.DokumentService;
-import no.nav.fo.veilarb.dokument.service.SakService;
+import no.nav.fo.veilarb.dokument.service.*;
 import no.nav.sbl.dialogarena.common.abac.pep.Pep;
 import no.nav.sbl.dialogarena.common.abac.pep.context.AbacContext;
 import no.nav.sbl.dialogarena.common.cxf.CXFClient;
@@ -38,6 +35,7 @@ import static no.nav.sbl.featuretoggle.unleash.UnleashServiceConfig.resolveFromE
         ArenaService.class,
         AktorConfig.class,
         SakService.class,
+        VeilederService.class,
         AbacContext.class
 })
 public class ApplicationConfig implements ApiApplication {
@@ -49,6 +47,7 @@ public class ApplicationConfig implements ApiApplication {
     public static final String SAK_API_URL = "SAK_API_URL";
     public static final String VEILARBABAC_API_URL_PROPERTY = "VEILARBABAC_API_URL";
     public static final String VEILARBARENA_API_URL_PROPERTY = "VEILARBARENAAPI_URL";
+    public static final String VEILARBVEILEDER_API_URL_PROPERTY = "VEILARBVEILEDERAPI_URL";
 
     @Override
     public void configure(ApiAppConfigurator apiAppConfigurator) {

@@ -136,6 +136,7 @@ public class BrevdataMapper {
                 .withNavAnsatt(
                         NavAnsatt.builder()
                                 .withAnsattId(brevdata.veilederId())
+                                .withNavn(brevdata.veilederNavn())
                                 .build())
                 .withNavEnhet(
                         NavEnhet.builder()

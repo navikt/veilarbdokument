@@ -48,6 +48,7 @@ public class TestConfig {
         EnvironmentUtils.setProperty(VEILARBABAC_API_URL_PROPERTY, lagFssUrl("veilarbabac", false), PUBLIC);
         EnvironmentUtils.setProperty(ABAC_ENDPOINT_URL_PROPERTY_NAME, "https://wasapp-" + getDefaultEnvironment() + ".adeo.no/asm-pdp/authorize", PUBLIC);
         EnvironmentUtils.setProperty(VEILARBARENA_API_URL_PROPERTY, lagFssUrl("veilarbarena", true) + "api/", PUBLIC);
+        EnvironmentUtils.setProperty(VEILARBVEILEDER_API_URL_PROPERTY, lagFssUrl("veilarbveileder", true) + "api/", PUBLIC);
 
         if (EnvironmentUtils.requireNamespace().equals("q1")) {
             EnvironmentUtils.setProperty(SAK_API_URL, "https://sak-q1.nais.preprod.local/api/v1/saker", PUBLIC);
