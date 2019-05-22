@@ -4,9 +4,9 @@ import lombok.SneakyThrows;
 import lombok.val;
 import no.nav.dok.brevdata.felles.v1.navfelles.*;
 import no.nav.dok.brevdata.felles.v1.simpletypes.AktoerType;
-import no.nav.dok.veilarbdokmaler._000132.BrevdataType;
-import no.nav.dok.veilarbdokmaler._000132.KulepunktListeType;
-import no.nav.dok.veilarbdokmaler._000132.KulepunktType;
+import no.nav.dok.veilarbdokmaler._000135.BrevdataType;
+import no.nav.dok.veilarbdokmaler._000135.KulepunktListeType;
+import no.nav.dok.veilarbdokmaler._000135.KulepunktType;
 import no.nav.fo.veilarb.dokument.domain.Brevdata;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -16,6 +16,8 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBElement;
 import javax.xml.bind.Marshaller;
 import javax.xml.parsers.DocumentBuilderFactory;
+import java.util.Collections;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class BrevdataMapper {
@@ -25,28 +27,28 @@ public class BrevdataMapper {
         Element brevdataElement = null;
         switch (brevdata.malType()) {
             case STANDARD_INNSATS_SKAFFE_ARBEID:
-                brevdataElement = map000132BrevdataType(brevdata);
+                brevdataElement = map000135BrevdataType(brevdata);
                 break;
             case STANDARD_INNSATS_BEHOLDE_ARBEID:
-                brevdataElement = map000132BrevdataType(brevdata);
+                brevdataElement = map000135BrevdataType(brevdata);
                 break;
             case SITUASJONSBESTEMT_INNSATS_SKAFFE_ARBEID:
-                brevdataElement = map000132BrevdataType(brevdata);
+                brevdataElement = map000135BrevdataType(brevdata);
                 break;
             case SITUASJONSBESTEMT_INNSATS_BEHOLDE_ARBEID:
-                brevdataElement = map000132BrevdataType(brevdata);
+                brevdataElement = map000135BrevdataType(brevdata);
                 break;
             case SPESIELT_TILPASSET_INNSATS_SKAFFE_ARBEID:
-                brevdataElement = map000132BrevdataType(brevdata);
+                brevdataElement = map000135BrevdataType(brevdata);
                 break;
             case SPESIELT_TILPASSET_INNSATS_BEHOLDE_ARBEID:
-                brevdataElement = map000132BrevdataType(brevdata);
+                brevdataElement = map000135BrevdataType(brevdata);
                 break;
             case GRADERT_VARIG_TILPASSET_INNSATS:
-                brevdataElement = map000132BrevdataType(brevdata);
+                brevdataElement = map000135BrevdataType(brevdata);
                 break;
             case VARIG_TILPASSET_INNSATS:
-                brevdataElement = map000132BrevdataType(brevdata);
+                brevdataElement = map000135BrevdataType(brevdata);
                 break;
         }
 
@@ -69,15 +71,15 @@ public class BrevdataMapper {
         return document.getDocumentElement();
     }
 
-    private static Element map000132BrevdataType(Brevdata brevdata) {
-        val objectFactory = new no.nav.dok.veilarbdokmaler._000132.ObjectFactory();
+    private static Element map000135BrevdataType(Brevdata brevdata) {
+        val objectFactory = new no.nav.dok.veilarbdokmaler._000135.ObjectFactory();
         val brevdataType = objectFactory.createBrevdataType();
         val fag = objectFactory.createFagType();
         fag.setFritekstBegrunnelse(brevdata.begrunnelse());
 
         KulepunktListeType kilder = KulepunktListeType.builder()
                 .withKulepunkt(
-                        brevdata.kilder().stream()
+                        Optional.ofNullable(brevdata.kilder()).orElse(Collections.emptyList()).stream()
                                 .map(kilde ->
                                         KulepunktType.builder()
                                                 .withKulepunktTekst(kilde)
