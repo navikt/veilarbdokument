@@ -152,6 +152,7 @@ public class BrevdataMapper {
         return Saksbehandler.builder()
                 .withNavAnsatt(
                         NavAnsatt.builder()
+                                .withBerik(false)
                                 .withAnsattId(brevdata.veilederId())
                                 .withNavn(brevdata.veilederNavn())
                                 .build())
