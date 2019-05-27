@@ -8,8 +8,8 @@ import no.nav.dok.veilarbdokmaler._000135.BrevdataType;
 import no.nav.dok.veilarbdokmaler._000135.KulepunktListeType;
 import no.nav.dok.veilarbdokmaler._000135.KulepunktType;
 import no.nav.fo.veilarb.dokument.domain.Brevdata;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
+import no.nav.fo.veilarb.dokument.domain.MalType;
+import org.w3c.dom.*;
 import no.nav.dok.veilarbdokmaler.felles.arena_felles.VeilArbNAVFelles;
 
 import javax.xml.bind.JAXBContext;
@@ -24,35 +24,7 @@ public class BrevdataMapper {
     @SneakyThrows
     public static Element mapBrevdata(Brevdata brevdata) {
 
-        Element brevdataElement = null;
-        switch (brevdata.malType()) {
-            case STANDARD_INNSATS_SKAFFE_ARBEID:
-                brevdataElement = map000135BrevdataType(brevdata);
-                break;
-            case STANDARD_INNSATS_BEHOLDE_ARBEID:
-                brevdataElement = map000135BrevdataType(brevdata);
-                break;
-            case SITUASJONSBESTEMT_INNSATS_SKAFFE_ARBEID:
-                brevdataElement = map000135BrevdataType(brevdata);
-                break;
-            case SITUASJONSBESTEMT_INNSATS_BEHOLDE_ARBEID:
-                brevdataElement = map000135BrevdataType(brevdata);
-                break;
-            case SPESIELT_TILPASSET_INNSATS_SKAFFE_ARBEID:
-                brevdataElement = map000135BrevdataType(brevdata);
-                break;
-            case SPESIELT_TILPASSET_INNSATS_BEHOLDE_ARBEID:
-                brevdataElement = map000135BrevdataType(brevdata);
-                break;
-            case GRADERT_VARIG_TILPASSET_INNSATS:
-                brevdataElement = map000135BrevdataType(brevdata);
-                break;
-            case VARIG_TILPASSET_INNSATS:
-                brevdataElement = map000135BrevdataType(brevdata);
-                break;
-        }
-
-        return brevdataElement;
+        return mapBrevdataType(brevdata);
     }
 
     @SneakyThrows
@@ -65,13 +37,14 @@ public class BrevdataMapper {
     }
 
     @SneakyThrows
-    private static <T> Element marshalBrevdata(JAXBElement<T> brevdataElement) {
+    private static <T> Document marshalBrevdata(JAXBElement<T> brevdataElement) {
         Document document = DocumentBuilderFactory.newInstance().newDocumentBuilder().newDocument();
-        createMarshaller(brevdataElement.getDeclaredType()).marshal(brevdataElement, document);
-        return document.getDocumentElement();
+        Marshaller marshaller = createMarshaller(brevdataElement.getDeclaredType());
+        marshaller.marshal(brevdataElement, document);
+        return document;
     }
 
-    private static Element map000135BrevdataType(Brevdata brevdata) {
+    private static Element mapBrevdataType(Brevdata brevdata) {
         val objectFactory = new no.nav.dok.veilarbdokmaler._000135.ObjectFactory();
         val brevdataType = objectFactory.createBrevdataType();
         val fag = objectFactory.createFagType();
@@ -90,12 +63,70 @@ public class BrevdataMapper {
         fag.setKulepunktListe(kilder);
         brevdataType.setFag(fag);
         brevdataType.setNAVFelles(mapFelles(brevdata));
-        JAXBElement<BrevdataType> brevdataElement = objectFactory.createBrevdata(
-                brevdataType
+//         JAXBElement<BrevdataType> brevdataElement = new JAXBElement<>(new QName("http://nav.no/dok/veilarbdokmaler/000136", "brevdata"), BrevdataType.class, brevdataType);
+        JAXBElement<BrevdataType> brevdataElement = objectFactory.createBrevdata(brevdataType);
+
+        Document document = marshalBrevdata(brevdataElement);
+
+//        objectFactory.createBrevdata(null).getName();
+
+        changeNamespaceUri(
+                document,
+                brevdataElement.getName().getNamespaceURI(),
+                utledNamespaceUri(brevdataElement.getName().getNamespaceURI(), brevdata.malType())
         );
 
-        return marshalBrevdata(brevdataElement);
+        Element documentElement = document.getDocumentElement();
+
+//        fixAttribute(documentElement);
+
+        return documentElement;
     }
+
+    private static String utledNamespaceUri(String templateUri, MalType malType) {
+        String pattern = "(.+\\/)(\\d+$)";
+        if (templateUri.matches(pattern)) {
+            return templateUri.replaceAll(pattern, "$1") + MalType.getMalKode(malType);
+        } else {
+            throw new IllegalStateException(
+                    String.format(
+                            "Klarer ikke utlede namespace URI for mal %s (%s) basert på template URI %s",
+                            malType.kode,
+                            MalType.getMalKode(malType),
+                            templateUri));
+        }
+    }
+//
+//    private static void fixAttribute(Element element) {
+//
+//        NamedNodeMap attributes = element.getAttributes();
+//
+//        for (int i = 0; i < attributes.getLength(); i++) {
+//            Node attribute = attributes.item(i);
+//            if ("http://nav.no/dok/veilarbdokmaler/000135".equals(attribute.getNodeValue())) {
+//                attribute.setNodeValue("http://nav.no/dok/veilarbdokmaler/000136");
+//            } else if("http://nav.no/dok/veilarbdokmaler/000136".equals(attribute.getNodeValue()))  {
+//                element.removeAttributeNS(attribute.getNamespaceURI(), attribute.getLocalName());
+//            }
+//        }
+//    }
+
+    private static void changeNamespaceUri(Document doc, String fromUri, String toUri) {
+        NodeList elements = doc.getElementsByTagName("*");
+        for (int i = 0; i < elements.getLength(); i++) {
+            Node element = elements.item(i);
+            System.out.println(element.getNodeName());
+            System.out.println(element.getNamespaceURI());
+            if (fromUri.equals(element.getNamespaceURI())) {
+                doc.renameNode(element, toUri, element.getNodeName());
+            }
+        }
+    }
+
+//    public static JAXBElement<BrevdataType> createBrevdata(BrevdataType value) {
+//        QName qName = new QName("http://nav.no/dok/veilarbdokmaler/000136", "brevdata");
+//        return new JAXBElement<>(qName, BrevdataType.class, value);
+//    }
 
     private static VeilArbNAVFelles mapFelles(Brevdata brevdata) {
 

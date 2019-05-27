@@ -23,21 +23,21 @@ public enum MalType {
     public static String getMalKode(MalType malType) {
         switch (malType) {
             case STANDARD_INNSATS_SKAFFE_ARBEID:
-                return "000135";
+                return "000132"; // TODO
             case STANDARD_INNSATS_BEHOLDE_ARBEID:
-                return "000135";
+                return "000132"; // TODO
             case SITUASJONSBESTEMT_INNSATS_SKAFFE_ARBEID:
                 return "000135";
             case SITUASJONSBESTEMT_INNSATS_BEHOLDE_ARBEID:
-                return "000135";
+                return "000132"; // TODO
             case SPESIELT_TILPASSET_INNSATS_SKAFFE_ARBEID:
-                return "000135";
+                return "000132"; // TODO
             case SPESIELT_TILPASSET_INNSATS_BEHOLDE_ARBEID:
-                return "000135";
+                return "000132"; // TODO
             case GRADERT_VARIG_TILPASSET_INNSATS:
-                return "000135";
+                return "000132"; // TODO
             case VARIG_TILPASSET_INNSATS:
-                return "000135";
+                return "000132"; // TODO
             default:
                 throw new IllegalStateException("Manglende mapping av MalType til kode");
         }
