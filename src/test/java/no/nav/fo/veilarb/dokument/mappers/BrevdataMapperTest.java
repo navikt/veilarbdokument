@@ -11,31 +11,51 @@ import org.w3c.dom.ls.DOMImplementationLS;
 import org.w3c.dom.ls.LSSerializer;
 
 import java.util.Arrays;
+import java.util.stream.Stream;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class BrevdataMapperTest {
 
     @Test
-    public void foo() {
-        Brevdata brevdata = Brevdata.builder()
-                .veilederNavn("Test")
-                .kilder(Arrays.asList("argegr esbt", "argsdth setbs nhn"))
-                .begrunnelse("wrgwrg")
-                .bruker(new Person("123123"))
-                .mottaker(new Person("123123"))
-                .veilederEnhet("enhet")
-                .veilederId("2345")
-                .veilederNavn("veilederen")
-                .malType(MalType.GRADERT_VARIG_TILPASSET_INNSATS)
-                .build();
-        Element element = BrevdataMapper.mapBrevdata(brevdata);
+    public void lagBrevdata__sjekk_korrekt_mapping_av_xml_namespace_uri() {
+        Stream.of(MalType.values()).forEach(malType -> {
+            Brevdata brevdata = lagBrevdata(malType);
 
+            Element element = BrevdataMapper.mapBrevdata(brevdata);
+
+            sjekkXml(element, malType);
+
+        });
+    }
+
+    private static String elementTilString(Element element) {
         Document document = element.getOwnerDocument();
         DOMImplementationLS domImplLS = (DOMImplementationLS) document.getImplementation();
         LSSerializer serializer = domImplLS.createLSSerializer();
-        String str = serializer.writeToString(element);
+        return serializer.writeToString(element);
+    }
 
-        System.out.println(str);
+    private static Brevdata lagBrevdata(MalType malType) {
+        return Brevdata.builder()
+                .kilder(Arrays.asList("kilde1", "kilde2"))
+                .begrunnelse("begrunnelse")
+                .bruker(new Person("fnr"))
+                .mottaker(new Person("fnr"))
+                .veilederEnhet("enhet")
+                .veilederId("veilederId")
+                .veilederNavn("veilederNavn")
+                .malType(malType)
+                .build();
+    }
 
+    private static void sjekkXml(Element element, MalType malType) {
+        String xml = elementTilString(element);
 
+        assertThat(xml.contains("xmlns:ns1=\"http://nav.no/dok/brevdata/felles/v1/NAVFelles\"")).isTrue();
+        assertThat(xml.contains("xmlns:ns2=\"http://nav.no/dok/veilarbdokmaler/felles/arena_felles\"")).isTrue();
+        assertThat(xml.contains("xmlns:ns3=\"http://nav.no/dok/veilarbdokmaler/" + MalType.getMalKode(malType) + "\"")).isTrue();
+        assertThat(xml.contains("xmlns=")).isFalse();
+        assertThat(xml.contains("xmlns:ns4=")).isFalse();
     }
 }
