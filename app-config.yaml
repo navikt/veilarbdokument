@@ -65,8 +65,6 @@ fasitResources:
       resourceType: restservice
     - alias: virksomhet:ArbeidOgAktivitet_v1
       resourceType: webserviceendpoint
-      propertyMap:
-        url: ARBEID_OG_AKTIVITET_URL
 
 alertProfiles:
   - common-java-modules

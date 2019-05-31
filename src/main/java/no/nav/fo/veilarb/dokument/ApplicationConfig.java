@@ -51,7 +51,7 @@ public class ApplicationConfig implements ApiApplication {
     public static final String VEILARBABAC_API_URL_PROPERTY = "VEILARBABAC_API_URL";
     public static final String VEILARBARENA_API_URL_PROPERTY = "VEILARBARENAAPI_URL";
     public static final String VEILARBVEILEDER_API_URL_PROPERTY = "VEILARBVEILEDERAPI_URL";
-    public static final String ARBEID_OG_AKTIVITET_URL_PROPERTY = "ARBEID_OG_AKTIVITET_URL";
+    public static final String ARBEID_OG_AKTIVITET_URL_PROPERTY = "VIRKSOMHET_ARBEIDOGAKTIVITET_V1_ENDPOINTURL";
 
     @Override
     public void configure(ApiAppConfigurator apiAppConfigurator) {
