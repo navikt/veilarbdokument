@@ -80,6 +80,10 @@ public class DokumentRessurs {
             @ApiParam(value = "a oidc-token representing the consuming application", example = "Bearer ")
             @HeaderParam(AUTHORIZATION) String authorization,
             @PathParam("fnr") String fnr) {
-        return arenaSakService.hentOppfolgingssakFraArena(fnr).orElseThrow(() -> new RuntimeException(""));
+        if (unleashService.isEnabled(VEILARBDOKUMENT_ENABLED_TOGGLE)) {
+            return arenaSakService.hentOppfolgingssakFraArena(fnr).orElseThrow(() -> new RuntimeException(""));
+        } else {
+            throw new IllegalStateException("ikke tilgjengelig");
+        }
     }
 }
