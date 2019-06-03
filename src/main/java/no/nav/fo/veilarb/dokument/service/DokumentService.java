@@ -64,7 +64,7 @@ public class DokumentService {
                 .veilederId(getVeilederId())
                 .veilederNavn(veilederNavn)
                 .begrunnelse(dokumentbestilling.begrunnelse())
-                .kilder(dokumentbestilling.kilder())
+                .kilder(dokumentbestilling.opplysninger())
                 .build();
     }
 
