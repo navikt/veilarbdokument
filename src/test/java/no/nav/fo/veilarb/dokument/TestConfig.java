@@ -50,11 +50,7 @@ public class TestConfig {
         EnvironmentUtils.setProperty(VEILARBARENA_API_URL_PROPERTY, lagFssUrl("veilarbarena", true) + "api/", PUBLIC);
         EnvironmentUtils.setProperty(VEILARBVEILEDER_API_URL_PROPERTY, lagFssUrl("veilarbveileder", true) + "api/", PUBLIC);
 
-        if (EnvironmentUtils.requireNamespace().equals("q1")) {
-            EnvironmentUtils.setProperty(SAK_API_URL, "https://sak-q1.nais.preprod.local/api/v1/saker", PUBLIC);
-        } else {
-            EnvironmentUtils.setProperty(SAK_API_URL, sak.getUrl(), PUBLIC);
-        }
+        EnvironmentUtils.setProperty(SAK_API_URL, sak.getUrl(), PUBLIC);
 
         WebServiceEndpoint dokumentproduksjonEndpoint = getWebServiceEndpoint("Dokumentproduksjon_v3", getDefaultEnvironment());
         EnvironmentUtils.setProperty(
