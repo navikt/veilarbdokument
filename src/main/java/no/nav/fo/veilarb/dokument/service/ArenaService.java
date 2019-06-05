@@ -1,6 +1,8 @@
 package no.nav.fo.veilarb.dokument.service;
 
 import lombok.extern.slf4j.Slf4j;
+import no.nav.apiapp.selftest.Helsesjekk;
+import no.nav.apiapp.selftest.HelsesjekkMetadata;
 import no.nav.fo.veilarb.dokument.domain.OppfolgingsenhetDto;
 import org.springframework.stereotype.Service;
 
@@ -13,7 +15,7 @@ import static no.nav.sbl.util.EnvironmentUtils.getRequiredProperty;
 
 @Slf4j
 @Service
-public class ArenaService {
+public class ArenaService implements Helsesjekk {
 
     private Client restClient;
     private String host;
@@ -31,4 +33,22 @@ public class ArenaService {
                 .getNavKontor();
     }
 
+    @Override
+    public void helsesjekk() {
+        int status = restClient.target(host).path("ping").request().get().getStatus();
+
+        if (status != 200) {
+            throw new IllegalStateException("Rest kall mot veilarbarena feilet");
+        }
+    }
+
+    @Override
+    public HelsesjekkMetadata getMetadata() {
+        return new HelsesjekkMetadata(
+                "veilarbarena helsesjekk",
+                host,
+                "veilarbarena - ping",
+                true
+        );
+    }
 }

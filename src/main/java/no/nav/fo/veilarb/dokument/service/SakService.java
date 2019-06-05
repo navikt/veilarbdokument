@@ -1,5 +1,8 @@
 package no.nav.fo.veilarb.dokument.service;
 
+import lombok.SneakyThrows;
+import no.nav.apiapp.selftest.Helsesjekk;
+import no.nav.apiapp.selftest.HelsesjekkMetadata;
 import no.nav.fo.veilarb.dokument.domain.Sak;
 import no.nav.sbl.util.EnvironmentUtils;
 import no.nav.sbl.util.StringUtils;
@@ -9,6 +12,7 @@ import javax.inject.Inject;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.core.GenericType;
 import javax.ws.rs.core.Response;
+import java.net.URL;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -16,7 +20,7 @@ import java.util.stream.Collectors;
 import static no.nav.fo.veilarb.dokument.ApplicationConfig.SAK_API_URL;
 
 @Component
-public class SakService {
+public class SakService implements Helsesjekk {
 
     private Client restClient;
     private String host;
@@ -65,5 +69,31 @@ public class SakService {
                         Objects.equals(sak.applikasjon(), ARENA_KODE))
                 .collect(Collectors.toList());
 
+    }
+
+    @Override
+    @SneakyThrows
+    public void helsesjekk() {
+        int status = restClient
+                .target(new URL(new URL(host), "/").toString())
+                .path("internal")
+                .path("alive")
+                .request()
+                .get()
+                .getStatus();
+
+        if (status != 200) {
+            throw new IllegalStateException("Rest kall mot Sak API feilet");
+        }
+    }
+
+    @Override
+    public HelsesjekkMetadata getMetadata() {
+        return new HelsesjekkMetadata(
+                "sak helsesjekk",
+                host,
+                "Sak API - alive",
+                true
+        );
     }
 }

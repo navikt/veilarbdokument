@@ -3,11 +3,13 @@ package no.nav.fo.veilarb.dokument;
 import no.nav.apiapp.ApiApplication;
 import no.nav.apiapp.config.ApiAppConfigurator;
 import no.nav.apiapp.security.veilarbabac.VeilarbAbacPepClient;
+import no.nav.apiapp.selftest.Helsesjekk;
 import no.nav.brukerdialog.security.oidc.SystemUserTokenProvider;
 import no.nav.brukerdialog.security.oidc.SystemUserTokenProviderConfig;
 import no.nav.common.auth.Subject;
 import no.nav.common.auth.SubjectHandler;
 import no.nav.dialogarena.aktor.AktorConfig;
+import no.nav.fo.veilarb.dokument.helsesjekk.DokumentproduksjonV3Helsesjekk;
 import no.nav.fo.veilarb.dokument.service.*;
 import no.nav.sbl.dialogarena.common.abac.pep.Pep;
 import no.nav.sbl.dialogarena.common.abac.pep.context.AbacContext;
@@ -36,7 +38,8 @@ import static no.nav.sbl.featuretoggle.unleash.UnleashServiceConfig.resolveFromE
         AktorConfig.class,
         SakService.class,
         VeilederService.class,
-        AbacContext.class
+        AbacContext.class,
+        DokumentproduksjonV3Helsesjekk.class
 })
 public class ApplicationConfig implements ApiApplication {
 
