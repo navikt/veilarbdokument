@@ -42,9 +42,9 @@ public class SakService implements Helsesjekk {
         if (oppfolgingssaker.size() == 1) {
             return oppfolgingssaker.get(0);
         } else if (oppfolgingssaker.isEmpty()) {
-            throw new IllegalStateException("Mangler oppføgningssak");
+            throw new IllegalStateException(String.format("Mangler oppføgningssak for aktorId %s", aktorId));
         } else {
-            throw new IllegalStateException("Flere oppføgningssaker");
+            throw new IllegalStateException(String.format("Flere oppføgningssaker for aktorId %s", aktorId));
         }
     }
 
