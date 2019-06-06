@@ -1,6 +1,7 @@
 package no.nav.fo.veilarb.dokument.service;
 
 import lombok.SneakyThrows;
+import lombok.extern.slf4j.Slf4j;
 import no.nav.apiapp.security.veilarbabac.Bruker;
 import no.nav.brukerdialog.security.domain.IdentType;
 import no.nav.common.auth.Subject;
@@ -16,6 +17,7 @@ import org.springframework.stereotype.Component;
 
 import javax.inject.Inject;
 
+@Slf4j
 @Component
 public class DokumentService {
 
@@ -39,7 +41,7 @@ public class DokumentService {
         Bruker bruker = authService.sjekkTilgang(dto.bruker().fnr(), dto.veilederEnhet());
 
         Dokumentbestilling dokumentbestilling = lagDokumentbestilling(dto, bruker.getAktoerId());
-        return produserIkkeredigerbartDokument(dokumentbestilling);
+        return produserIkkeredigerbartDokument(dokumentbestilling, bruker);
     }
 
     private Dokumentbestilling lagDokumentbestilling(DokumentbestillingDto dto, String aktorId) {
@@ -68,12 +70,18 @@ public class DokumentService {
     }
 
     @SneakyThrows
-    private DokumentbestillingResponsDto produserIkkeredigerbartDokument(Dokumentbestilling dokumentbestilling) {
+    private DokumentbestillingResponsDto produserIkkeredigerbartDokument(Dokumentbestilling dokumentbestilling, Bruker bruker) {
         WSProduserIkkeredigerbartDokumentRequest request =
                 IkkeredigerbartDokumentMapper.mapRequest(dokumentbestilling);
 
-        WSProduserIkkeredigerbartDokumentResponse response =
-                dokumentproduksjon.produserIkkeredigerbartDokument(request);
+        WSProduserIkkeredigerbartDokumentResponse response;
+
+        try {
+            response = dokumentproduksjon.produserIkkeredigerbartDokument(request);
+        } catch(Exception e) {
+            log.error(String.format("Kunne ikke produsere dokument for aktorId %s", bruker.getAktoerId()), e);
+            throw e;
+        }
 
         return IkkeredigerbartDokumentMapper.mapRespons(response);
     }
@@ -87,13 +95,18 @@ public class DokumentService {
 
     @SneakyThrows
     public byte[] produserDokumentutkast(DokumentbestillingDto dto) {
-        authService.sjekkTilgang(dto.bruker().fnr(), dto.veilederEnhet());
+        Bruker bruker = authService.sjekkTilgang(dto.bruker().fnr(), dto.veilederEnhet());
 
         Brevdata brevdata = lagBrevdata(dto);
         WSProduserDokumentutkastRequest dokumentutkastRequest =
                 DokumentutkastMapper.produserDokumentutkastRequest(brevdata);
 
-        return dokumentproduksjon.produserDokumentutkast(dokumentutkastRequest).getDokumentutkast();
+        try {
+            return dokumentproduksjon.produserDokumentutkast(dokumentutkastRequest).getDokumentutkast();
+        } catch(Exception e) {
+            log.error(String.format("Kunne ikke produsere dokumentutkast for aktorId %s", bruker.getAktoerId()), e);
+            throw e;
+        }
     }
 
 }
