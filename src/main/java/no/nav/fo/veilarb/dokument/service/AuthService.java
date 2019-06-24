@@ -36,17 +36,23 @@ public class AuthService {
         Bruker bruker = Bruker.fraAktoerId(aktorId).medFoedselsnummer(fnr);
 
         pepClient.sjekkSkrivetilgangTilBruker(bruker);
-
-        sjekkEnhet(fnr, veilederEnhet);
+        sjekkRiktigEnhet(fnr, veilederEnhet);
+        sjekkTilgangTilEnhet(veilederEnhet);
 
         return bruker;
     }
 
-    private void sjekkEnhet(String fnr, String veilederEnhet) {
+    private void sjekkRiktigEnhet(String fnr, String veilederEnhet) {
         String oppfolgingsenhet = arenaService.oppfolgingsenhet(fnr);
 
         if (!veilederEnhet.equals(oppfolgingsenhet)) {
             throw new IngenTilgang("Feil enhet");
+        }
+    }
+
+    private void sjekkTilgangTilEnhet(String enhet) {
+        if(!pepClient.harTilgangTilEnhet(enhet)) {
+            throw new IngenTilgang("Ikke tilgang til enhet");
         }
     }
 
