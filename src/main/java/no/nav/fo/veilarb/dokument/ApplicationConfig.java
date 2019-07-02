@@ -12,21 +12,29 @@ import no.nav.fo.veilarb.dokument.service.*;
 import no.nav.sbl.dialogarena.common.abac.pep.Pep;
 import no.nav.sbl.dialogarena.common.abac.pep.context.AbacContext;
 import no.nav.sbl.dialogarena.common.cxf.CXFClient;
+import no.nav.sbl.dialogarena.common.cxf.StsSecurityConstants;
 import no.nav.sbl.featuretoggle.unleash.UnleashService;
 import no.nav.sbl.rest.RestUtils;
-import no.nav.sbl.util.EnvironmentUtils;
 import no.nav.tjeneste.virksomhet.dokumentproduksjon.v3.DokumentproduksjonV3;
 import no.nav.virksomhet.tjenester.sak.arbeidogaktivitet.v1.ArbeidOgAktivitet;
+import org.apache.cxf.ws.security.wss4j.WSS4JOutInterceptor;
+import org.apache.wss4j.common.ext.WSPasswordCallback;
+import org.apache.wss4j.dom.WSConstants;
+import org.apache.wss4j.dom.handler.WSHandlerConstants;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 
+import javax.security.auth.callback.CallbackHandler;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientRequestContext;
 import javax.ws.rs.client.ClientRequestFilter;
+import java.util.HashMap;
+import java.util.Map;
 
 import static java.lang.System.getProperty;
 import static no.nav.sbl.featuretoggle.unleash.UnleashServiceConfig.resolveFromEnvironment;
+import static no.nav.sbl.util.EnvironmentUtils.getRequiredProperty;
 
 @Configuration
 @Import({
@@ -70,9 +78,20 @@ public class ApplicationConfig implements ApiApplication {
 
     @Bean
     ArbeidOgAktivitet arbeidOgAktivitet() {
+        String username = getRequiredProperty(StsSecurityConstants.SYSTEMUSER_USERNAME);
+        String password = getRequiredProperty(StsSecurityConstants.SYSTEMUSER_PASSWORD);
+
+        Map<String, Object> props = new HashMap<>();
+        props.put(WSHandlerConstants.ACTION, WSHandlerConstants.USERNAME_TOKEN);
+        props.put(WSHandlerConstants.USER, username);
+        props.put(WSHandlerConstants.PASSWORD_TYPE, WSConstants.PW_TEXT);
+        props.put(WSHandlerConstants.PW_CALLBACK_REF, (CallbackHandler) callbacks -> {
+            WSPasswordCallback passwordCallback = (WSPasswordCallback)callbacks[0];
+            passwordCallback.setPassword(password);
+        });
         return new CXFClient<>(ArbeidOgAktivitet.class)
                 .address(getArbeidOgAktivitetUrl())
-                .configureStsForSystemUser()
+                .withOutInterceptor(new WSS4JOutInterceptor(props))
                 .build();
     }
 
@@ -127,22 +146,22 @@ public class ApplicationConfig implements ApiApplication {
     }
 
     public static String getDokumentproduksjonEndpointUrl() {
-        return EnvironmentUtils.getRequiredProperty(DOKUMENTPRODUKSJON_ENDPOINT_URL);
+        return getRequiredProperty(DOKUMENTPRODUKSJON_ENDPOINT_URL);
     }
 
     public static String getAktorEndpointUrl() {
-        return EnvironmentUtils.getRequiredProperty(AKTOR_ENDPOINT_URL);
+        return getRequiredProperty(AKTOR_ENDPOINT_URL);
     }
 
     public static String getSecurityTokenServiceUrl() {
-        return EnvironmentUtils.getRequiredProperty(SECURITYTOKENSERVICE_URL);
+        return getRequiredProperty(SECURITYTOKENSERVICE_URL);
     }
 
     public static String getOidcRedirectUrl() {
-        return EnvironmentUtils.getRequiredProperty(OIDC_REDIRECT_URL);
+        return getRequiredProperty(OIDC_REDIRECT_URL);
     }
 
     public static String getArbeidOgAktivitetUrl() {
-        return  EnvironmentUtils.getRequiredProperty(ARBEID_OG_AKTIVITET_URL_PROPERTY);
+        return  getRequiredProperty(ARBEID_OG_AKTIVITET_URL_PROPERTY);
     }
 }
