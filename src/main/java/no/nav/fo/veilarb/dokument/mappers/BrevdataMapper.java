@@ -77,16 +77,17 @@ public class BrevdataMapper {
 
 
     private static KulepunktListeType mapKilder(List<String> kilder) {
-        return KulepunktListeType.builder()
-                .withKulepunkt(
-                        Optional.ofNullable(kilder).orElse(Collections.emptyList()).stream()
-                                .map(kilde ->
-                                        KulepunktType.builder()
-                                                .withKulepunktTekst(kilde)
-                                                .build()
-                                ).collect(Collectors.toList())
-                )
-                .build();
+        List<KulepunktType> kulepunktTypes = Optional.ofNullable(kilder).orElse(Collections.emptyList()).stream()
+                .map(kilde -> {
+                    KulepunktType kulepunktType = new KulepunktType();
+                    kulepunktType.setKulepunktTekst(kilde);
+                    return kulepunktType;
+                }).collect(Collectors.toList());
+
+        KulepunktListeType kulepunktListeType = new KulepunktListeType();
+        kulepunktListeType.getKulepunkt().addAll(kulepunktTypes);
+
+        return kulepunktListeType;
     }
 
     private static String utledNamespaceUri(String templateUri, MalType malType) {
@@ -114,68 +115,72 @@ public class BrevdataMapper {
     }
 
     private static VeilArbNAVFelles mapFelles(Brevdata brevdata) {
+        VeilArbNAVFelles veilArbNAVFelles = new VeilArbNAVFelles();
+        veilArbNAVFelles.setBehandlendeEnhet(mapBehandlendeEnhet(brevdata.veilederEnhet()));
+        veilArbNAVFelles.setKontaktinformasjon(mapKontaktinformasjon(brevdata.veilederEnhet()));
+        veilArbNAVFelles.setMottaker(mapMottaker(brevdata.mottaker().fnr()));
+        veilArbNAVFelles.setSakspart(mapSakspart(brevdata.bruker().fnr()));
+        veilArbNAVFelles.setSignerendeBeslutter(mapSaksbehandler(brevdata));
+        veilArbNAVFelles.setSignerendeSaksbehandler(mapSaksbehandler(brevdata));
 
-        return VeilArbNAVFelles.builder()
-                .withBehandlendeEnhet(mapBehandlendeEnhet(brevdata.veilederEnhet()))
-                .withKontaktinformasjon(mapKontaktinformasjon(brevdata.veilederEnhet()))
-                .withMottaker(mapMottaker(brevdata.mottaker().fnr()))
-                .withSakspart(mapSakspart(brevdata.bruker().fnr()))
-                .withSignerendeBeslutter(mapSaksbehandler(brevdata))
-                .withSignerendeSaksbehandler(mapSaksbehandler(brevdata))
-                .build();
+        return veilArbNAVFelles;
 
     }
 
 
     private static NavEnhet mapBehandlendeEnhet(String enhet) {
-        return NavEnhet.builder()
-                .withEnhetsId(enhet)
-                .build();
+        NavEnhet navEnhet = new NavEnhet();
+        navEnhet.setEnhetsId(enhet);
+        return navEnhet;
     }
 
     private static Kontaktinformasjon mapKontaktinformasjon(String enhet) {
-        return Kontaktinformasjon.builder()
-                .withBesoksadresse(
-                        Besoksadresse.builder()
-                                .withEnhetsId(enhet)
-                                .build())
-                .withReturadresse(
-                        Returadresse.builder()
-                                .withEnhetsId(enhet)
-                                .build())
-                .withPostadresse(
-                        Postadresse.builder()
-                                .withEnhetsId(enhet)
-                                .build())
-                .build();
+        Besoksadresse besoksadresse = new Besoksadresse();
+        besoksadresse.setEnhetsId(enhet);
+
+        Postadresse postadresse = new Postadresse();
+        postadresse.setEnhetsId(enhet);
+
+        Returadresse returadresse = new Returadresse();
+        returadresse.setEnhetsId(enhet);
+
+        Kontaktinformasjon kontaktinformasjon = new Kontaktinformasjon();
+        kontaktinformasjon.setBesoksadresse(besoksadresse);
+        kontaktinformasjon.setPostadresse(postadresse);
+        kontaktinformasjon.setReturadresse(returadresse);
+
+        return kontaktinformasjon;
     }
 
     private static Person mapMottaker(String id) {
-        return Person.builder()
-                .withId(id)
-                .withTypeKode(AktoerType.PERSON)
-                .build();
+        Person person = new Person();
+        person.setId(id);
+        person.setTypeKode(AktoerType.PERSON);
+
+        return person;
     }
 
     private static Sakspart mapSakspart(String id) {
-        return Sakspart.builder()
-                .withId(id)
-                .withTypeKode(AktoerType.PERSON)
-                .build();
+        Sakspart sakspart = new Sakspart();
+        sakspart.setId(id);
+        sakspart.setTypeKode(AktoerType.PERSON);
+
+        return sakspart;
     }
 
     private static Saksbehandler mapSaksbehandler(Brevdata brevdata) {
-        return Saksbehandler.builder()
-                .withNavAnsatt(
-                        NavAnsatt.builder()
-                                .withBerik(false)
-                                .withAnsattId(brevdata.veilederId())
-                                .withNavn(brevdata.veilederNavn())
-                                .build())
-                .withNavEnhet(
-                        NavEnhet.builder()
-                                .withEnhetsId(brevdata.veilederEnhet())
-                                .build())
-                .build();
+        NavAnsatt navAnsatt = new NavAnsatt();
+        navAnsatt.setBerik(false);
+        navAnsatt.setAnsattId(brevdata.veilederId());
+        navAnsatt.setNavn(brevdata.veilederNavn());
+
+        NavEnhet navEnhet = new NavEnhet();
+        navEnhet.setEnhetsId(brevdata.veilederEnhet());
+
+        Saksbehandler saksbehandler = new Saksbehandler();
+        saksbehandler.setNavAnsatt(navAnsatt);
+        saksbehandler.setNavEnhet(navEnhet);
+
+        return saksbehandler;
     }
 }
