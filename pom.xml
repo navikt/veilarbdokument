@@ -18,6 +18,29 @@
 
     <build>
         <finalName>veilarbdokument</finalName>
+        <plugins>
+            <plugin>
+                <groupId>org.jvnet.jaxb2.maven2</groupId>
+                <artifactId>maven-jaxb2-plugin</artifactId>
+                <version>0.14.0</version>
+                <executions>
+                    <execution>
+                        <id>generate-jaxb</id>
+                        <phase>process-resources</phase>
+                        <goals>
+                            <goal>generate</goal>
+                        </goals>
+                        <configuration>
+                            <schemaDirectory>veilarbdokmaler</schemaDirectory>
+                            <generateDirectory>${project.build.directory}/generated-sources/</generateDirectory>
+                            <strict>false</strict>
+                            <verbose>true</verbose>
+                            <removeOldOutput>true</removeOldOutput>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
     </build>
 
     <dependencyManagement>
@@ -57,10 +80,11 @@
             <version>1.2019.02.06-20.03-9acde4111245</version>
         </dependency>
 
-        <dependency>
+        <!-- Erstattet med lokal generering -->
+        <!--<dependency>
             <groupId>no.nav.dok.metaforcemal</groupId>
             <artifactId>veilarbdokmaler</artifactId>
-            <version>1.0.20</version>
+            <version>1.0.25</version>
             <classifier>jaxb</classifier>
             <exclusions>
                 <exclusion>
@@ -68,7 +92,7 @@
                     <artifactId>commons-logging</artifactId>
                 </exclusion>
             </exclusions>
-        </dependency>
+        </dependency>-->
 
         <!-- test -->
         <dependency>
