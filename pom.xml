@@ -74,6 +74,7 @@
         </dependency>
 
         <!-- Tjenester -->
+
         <dependency>
             <groupId>no.nav.tjenestespesifikasjoner</groupId>
             <artifactId>dokumentproduksjon-v3-tjenestespesifikasjon</artifactId>

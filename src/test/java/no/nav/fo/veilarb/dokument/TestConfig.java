@@ -3,7 +3,6 @@ package no.nav.fo.veilarb.dokument;
 import no.nav.fasit.ServiceUser;
 import no.nav.fasit.WebServiceEndpoint;
 import no.nav.fasit.dto.RestService;
-import no.nav.sbl.util.EnvironmentUtils;
 import no.nav.testconfig.ApiAppTest;
 
 import static no.nav.brukerdialog.security.Constants.*;
@@ -15,10 +14,9 @@ import static no.nav.sbl.dialogarena.common.abac.pep.service.AbacServiceConfig.A
 import static no.nav.sbl.dialogarena.common.cxf.StsSecurityConstants.SYSTEMUSER_PASSWORD;
 import static no.nav.sbl.dialogarena.common.cxf.StsSecurityConstants.SYSTEMUSER_USERNAME;
 import static no.nav.sbl.featuretoggle.unleash.UnleashServiceConfig.UNLEASH_API_URL_PROPERTY_NAME;
+import static no.nav.sbl.util.EnvironmentUtils.*;
 import static no.nav.sbl.util.EnvironmentUtils.Type.PUBLIC;
 import static no.nav.sbl.util.EnvironmentUtils.Type.SECRET;
-import static no.nav.sbl.util.EnvironmentUtils.resolveSrvUserPropertyName;
-import static no.nav.sbl.util.EnvironmentUtils.resolverSrvPasswordPropertyName;
 
 public class TestConfig {
 
@@ -33,43 +31,47 @@ public class TestConfig {
         ServiceUser issoRpUser = getServiceUser("isso-rp-user", APPLICATION_NAME, FSS);
         RestService sak = getRestService("sak.saker");
 
-        EnvironmentUtils.setProperty(SYSTEMUSER_USERNAME, serviceUser.getUsername(), PUBLIC);
-        EnvironmentUtils.setProperty(SYSTEMUSER_PASSWORD, serviceUser.getPassword(), SECRET);
-        EnvironmentUtils.setProperty(resolveSrvUserPropertyName(), serviceUser.getUsername(), PUBLIC);
-        EnvironmentUtils.setProperty(resolverSrvPasswordPropertyName(), serviceUser.getPassword(), SECRET);
-        EnvironmentUtils.setProperty(ISSO_HOST_URL_PROPERTY_NAME, getBaseUrl("isso-host"), PUBLIC);
-        EnvironmentUtils.setProperty(ISSO_RP_USER_USERNAME_PROPERTY_NAME, issoRpUser.username, PUBLIC);
-        EnvironmentUtils.setProperty(ISSO_RP_USER_PASSWORD_PROPERTY_NAME, issoRpUser.password, SECRET);
-        EnvironmentUtils.setProperty(ISSO_JWKS_URL_PROPERTY_NAME, getBaseUrl("isso-jwks"), PUBLIC);
-        EnvironmentUtils.setProperty(ISSO_ISSUER_URL_PROPERTY_NAME, getBaseUrl("isso-issuer"), PUBLIC);
-        EnvironmentUtils.setProperty(OIDC_REDIRECT_URL, veilarbLogin.getUrl(), PUBLIC);
-        EnvironmentUtils.setProperty(ISSO_ISALIVE_URL_PROPERTY_NAME, getBaseUrl("isso.isalive", FSS), PUBLIC);
-        EnvironmentUtils.setProperty(UNLEASH_API_URL_PROPERTY_NAME, "https://unleash.nais.adeo.no/api/", PUBLIC);
-        EnvironmentUtils.setProperty(VEILARBABAC_API_URL_PROPERTY, lagFssUrl("veilarbabac", false), PUBLIC);
-        EnvironmentUtils.setProperty(ABAC_ENDPOINT_URL_PROPERTY_NAME, "https://wasapp-" + getDefaultEnvironment() + ".adeo.no/asm-pdp/authorize", PUBLIC);
-        EnvironmentUtils.setProperty(VEILARBARENA_API_URL_PROPERTY, lagFssUrl("veilarbarena", true) + "api/", PUBLIC);
-        EnvironmentUtils.setProperty(VEILARBVEILEDER_API_URL_PROPERTY, lagFssUrl("veilarbveileder", true) + "api/", PUBLIC);
+        setProperty(SYSTEMUSER_USERNAME, serviceUser.getUsername(), PUBLIC);
+        setProperty(SYSTEMUSER_PASSWORD, serviceUser.getPassword(), SECRET);
+        setProperty(resolveSrvUserPropertyName(), serviceUser.getUsername(), PUBLIC);
+        setProperty(resolverSrvPasswordPropertyName(), serviceUser.getPassword(), SECRET);
+        setProperty(ISSO_HOST_URL_PROPERTY_NAME, getBaseUrl("isso-host"), PUBLIC);
+        setProperty(ISSO_RP_USER_USERNAME_PROPERTY_NAME, issoRpUser.username, PUBLIC);
+        setProperty(ISSO_RP_USER_PASSWORD_PROPERTY_NAME, issoRpUser.password, SECRET);
+        setProperty(ISSO_JWKS_URL_PROPERTY_NAME, getBaseUrl("isso-jwks"), PUBLIC);
+        setProperty(ISSO_ISSUER_URL_PROPERTY_NAME, getBaseUrl("isso-issuer"), PUBLIC);
+        setProperty(OIDC_REDIRECT_URL, veilarbLogin.getUrl(), PUBLIC);
+        setProperty(ISSO_ISALIVE_URL_PROPERTY_NAME, getBaseUrl("isso.isalive", FSS), PUBLIC);
+        setProperty(UNLEASH_API_URL_PROPERTY_NAME, "https://unleash.nais.adeo.no/api/", PUBLIC);
+        setProperty(VEILARBABAC_API_URL_PROPERTY, lagFssUrl("veilarbabac", false), PUBLIC);
+        setProperty(ABAC_ENDPOINT_URL_PROPERTY_NAME, "https://wasapp-" + getDefaultEnvironment() + ".adeo.no/asm-pdp/authorize", PUBLIC);
+        setProperty(VEILARBARENA_API_URL_PROPERTY, lagFssUrl("veilarbarena", true) + "api/", PUBLIC);
+        setProperty(VEILARBVEILEDER_API_URL_PROPERTY, lagFssUrl("veilarbveileder", true) + "api/", PUBLIC);
 
-        EnvironmentUtils.setProperty(SAK_API_URL, sak.getUrl(), PUBLIC);
+        if (requireNamespace().equals("q1")) {
+            setProperty(SAK_API_URL, "https://sak-q1.nais.preprod.local/api/v1/saker", PUBLIC);
+        } else {
+            setProperty(SAK_API_URL, sak.getUrl(), PUBLIC);
+        }
 
         WebServiceEndpoint dokumentproduksjonEndpoint = getWebServiceEndpoint("Dokumentproduksjon_v3", getDefaultEnvironment());
-        EnvironmentUtils.setProperty(
+        setProperty(
                 DOKUMENTPRODUKSJON_ENDPOINT_URL,
                 dokumentproduksjonEndpoint.getUrl(),
                 PUBLIC);
 
         WebServiceEndpoint aktorEndpoint = getWebServiceEndpoint("Aktoer_v2", getDefaultEnvironment());
-        EnvironmentUtils.setProperty(
+        setProperty(
                 AKTOR_ENDPOINT_URL,
                 aktorEndpoint.getUrl(),
                 PUBLIC);
 
-        EnvironmentUtils.setProperty(
+        setProperty(
                 SECURITYTOKENSERVICE_URL,
                 getBaseUrl("securityTokenService", FSS),
                 PUBLIC
         );
 
-        EnvironmentUtils.setProperty("VEILARBABAC", "https://veilarbabac-" + getDefaultEnvironment() + ".nais.preprod.local", SECRET);
+        setProperty("VEILARBABAC", "https://veilarbabac-" + getDefaultEnvironment() + ".nais.preprod.local", PUBLIC);
     }
 }

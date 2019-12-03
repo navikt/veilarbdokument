@@ -33,7 +33,8 @@ public class DokumentRessurs {
     private final UnleashService unleashService;
 
     @Inject
-    public DokumentRessurs(DokumentService dokumentService, UnleashService unleashService) {
+    public DokumentRessurs(DokumentService dokumentService,
+                           UnleashService unleashService) {
         this.dokumentService = dokumentService;
         this.unleashService = unleashService;
     }
