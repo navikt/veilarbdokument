@@ -3,7 +3,6 @@ package no.nav.fo.veilarb.dokument;
 import no.nav.apiapp.ApiApplication;
 import no.nav.apiapp.config.ApiAppConfigurator;
 import no.nav.apiapp.security.veilarbabac.VeilarbAbacPepClient;
-import no.nav.apiapp.selftest.Helsesjekk;
 import no.nav.brukerdialog.security.oidc.SystemUserTokenProvider;
 import no.nav.brukerdialog.security.oidc.SystemUserTokenProviderConfig;
 import no.nav.common.auth.Subject;
@@ -16,7 +15,6 @@ import no.nav.sbl.dialogarena.common.abac.pep.context.AbacContext;
 import no.nav.sbl.dialogarena.common.cxf.CXFClient;
 import no.nav.sbl.featuretoggle.unleash.UnleashService;
 import no.nav.sbl.rest.RestUtils;
-import no.nav.sbl.util.EnvironmentUtils;
 import no.nav.tjeneste.virksomhet.dokumentproduksjon.v3.DokumentproduksjonV3;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -28,6 +26,7 @@ import javax.ws.rs.client.ClientRequestFilter;
 
 import static java.lang.System.getProperty;
 import static no.nav.sbl.featuretoggle.unleash.UnleashServiceConfig.resolveFromEnvironment;
+import static no.nav.sbl.util.EnvironmentUtils.getRequiredProperty;
 
 @Configuration
 @Import({
@@ -39,7 +38,9 @@ import static no.nav.sbl.featuretoggle.unleash.UnleashServiceConfig.resolveFromE
         SakService.class,
         VeilederService.class,
         AbacContext.class,
-        DokumentproduksjonV3Helsesjekk.class
+        DokumentproduksjonV3Helsesjekk.class,
+        AbacContext.class,
+        OppfolgingssakService.class
 })
 public class ApplicationConfig implements ApiApplication {
 
@@ -118,18 +119,18 @@ public class ApplicationConfig implements ApiApplication {
     }
 
     public static String getDokumentproduksjonEndpointUrl() {
-        return EnvironmentUtils.getRequiredProperty(DOKUMENTPRODUKSJON_ENDPOINT_URL);
+        return getRequiredProperty(DOKUMENTPRODUKSJON_ENDPOINT_URL);
     }
 
     public static String getAktorEndpointUrl() {
-        return EnvironmentUtils.getRequiredProperty(AKTOR_ENDPOINT_URL);
+        return getRequiredProperty(AKTOR_ENDPOINT_URL);
     }
 
     public static String getSecurityTokenServiceUrl() {
-        return EnvironmentUtils.getRequiredProperty(SECURITYTOKENSERVICE_URL);
+        return getRequiredProperty(SECURITYTOKENSERVICE_URL);
     }
 
     public static String getOidcRedirectUrl() {
-        return EnvironmentUtils.getRequiredProperty(OIDC_REDIRECT_URL);
+        return getRequiredProperty(OIDC_REDIRECT_URL);
     }
 }
