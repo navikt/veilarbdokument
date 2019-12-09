@@ -29,7 +29,6 @@ public class TestConfig {
         ServiceUser serviceUser = getServiceUser(SERVICE_USER_NAME, APPLICATION_NAME, FSS);
         RestService veilarbLogin = getRestService("veilarblogin.redirect-url");
         ServiceUser issoRpUser = getServiceUser("isso-rp-user", APPLICATION_NAME, FSS);
-        RestService sak = getRestService("sak.saker");
 
         setProperty(SYSTEMUSER_USERNAME, serviceUser.getUsername(), PUBLIC);
         setProperty(SYSTEMUSER_PASSWORD, serviceUser.getPassword(), SECRET);
@@ -45,14 +44,10 @@ public class TestConfig {
         setProperty(UNLEASH_API_URL_PROPERTY_NAME, "https://unleash.nais.adeo.no/api/", PUBLIC);
         setProperty(VEILARBABAC_API_URL_PROPERTY, lagFssUrl("veilarbabac", false), PUBLIC);
         setProperty(ABAC_ENDPOINT_URL_PROPERTY_NAME, "https://wasapp-" + getDefaultEnvironment() + ".adeo.no/asm-pdp/authorize", PUBLIC);
-        setProperty(VEILARBARENA_API_URL_PROPERTY, lagFssUrl("veilarbarena", true) + "api/", PUBLIC);
+        setProperty(VEILARBARENA_API_URL_PROPERTY, lagFssUrl("veilarbarena", false), PUBLIC);
         setProperty(VEILARBVEILEDER_API_URL_PROPERTY, lagFssUrl("veilarbveileder", true) + "api/", PUBLIC);
-
-        if (requireNamespace().equals("q1")) {
-            setProperty(SAK_API_URL, "https://sak-q1.nais.preprod.local/api/v1/saker", PUBLIC);
-        } else {
-            setProperty(SAK_API_URL, sak.getUrl(), PUBLIC);
-        }
+        setProperty(SAK_API_URL, lagFssUrl("sak", false), PUBLIC);
+        setProperty("VEILARBABAC", lagFssUrl("veilarbabac", false), PUBLIC);
 
         WebServiceEndpoint dokumentproduksjonEndpoint = getWebServiceEndpoint("Dokumentproduksjon_v3", getDefaultEnvironment());
         setProperty(
@@ -72,6 +67,5 @@ public class TestConfig {
                 PUBLIC
         );
 
-        setProperty("VEILARBABAC", "https://veilarbabac-" + getDefaultEnvironment() + ".nais.preprod.local", PUBLIC);
     }
 }
