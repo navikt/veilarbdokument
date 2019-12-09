@@ -14,11 +14,11 @@ import javax.ws.rs.client.Client;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.core.GenericType;
 import javax.ws.rs.core.Response;
-import java.net.URL;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
+import static no.nav.apiapp.util.UrlUtils.clusterUrlForApplication;
 import static no.nav.fo.veilarb.dokument.ApplicationConfig.SAK_API_URL;
 
 @Component
@@ -33,13 +33,15 @@ public class SakService implements Helsesjekk {
     @Inject
     public SakService(Client restClient) {
         this.restClient = restClient;
-        this.host = EnvironmentUtils.getRequiredProperty(SAK_API_URL);
+        this.host = EnvironmentUtils.getOptionalProperty(SAK_API_URL)
+                .orElseGet(() -> clusterUrlForApplication("sak"));
     }
 
     public List<Sak> finnOppfolgingssaker(String aktorId) {
 
         Response response = restClient
                 .target(host)
+                .path("/api/v1/saker")
                 .queryParam("aktoerId", aktorId)
                 .queryParam("tema", OPPFOLGING_KODE)
                 .request()
@@ -75,9 +77,8 @@ public class SakService implements Helsesjekk {
     @SneakyThrows
     public void helsesjekk() {
         int status = restClient
-                .target(new URL(new URL(host), "/").toString())
-                .path("internal")
-                .path("alive")
+                .target(host)
+                .path("/internal/alive")
                 .request()
                 .get()
                 .getStatus();

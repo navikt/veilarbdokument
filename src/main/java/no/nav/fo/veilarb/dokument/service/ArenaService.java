@@ -12,9 +12,10 @@ import javax.ws.rs.client.Client;
 
 import java.util.Optional;
 
+import static no.nav.apiapp.util.UrlUtils.clusterUrlForApplication;
 import static no.nav.apiapp.util.UrlUtils.joinPaths;
 import static no.nav.fo.veilarb.dokument.ApplicationConfig.VEILARBARENA_API_URL_PROPERTY;
-import static no.nav.sbl.util.EnvironmentUtils.getRequiredProperty;
+import static no.nav.sbl.util.EnvironmentUtils.getOptionalProperty;
 
 @Slf4j
 @Service
@@ -26,8 +27,11 @@ public class ArenaService implements Helsesjekk {
     @Inject
     public ArenaService(Client restClient) {
         this.restClient = restClient;
-        host = getRequiredProperty(VEILARBARENA_API_URL_PROPERTY);
+        host = getOptionalProperty(VEILARBARENA_API_URL_PROPERTY)
+                .orElseGet(() ->
+                        joinPaths(clusterUrlForApplication("veilarbarena"), "/veilarbarena/api"));
     }
+
     public String oppfolgingsenhet(String fnr) {
         return restClient
                 .target(joinPaths(host, "oppfolgingsbruker", fnr))
