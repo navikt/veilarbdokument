@@ -9,9 +9,10 @@ import org.springframework.stereotype.Service;
 import javax.inject.Inject;
 import javax.ws.rs.client.Client;
 
+import static no.nav.apiapp.util.UrlUtils.clusterUrlForApplication;
 import static no.nav.apiapp.util.UrlUtils.joinPaths;
 import static no.nav.fo.veilarb.dokument.ApplicationConfig.VEILARBVEILEDER_API_URL_PROPERTY;
-import static no.nav.sbl.util.EnvironmentUtils.getRequiredProperty;
+import static no.nav.sbl.util.EnvironmentUtils.getOptionalProperty;
 
 @Slf4j
 @Service
@@ -23,7 +24,9 @@ public class VeilederService implements Helsesjekk {
     @Inject
     public VeilederService(Client restClient) {
         this.restClient = restClient;
-        host = getRequiredProperty(VEILARBVEILEDER_API_URL_PROPERTY);
+        host = getOptionalProperty(VEILARBVEILEDER_API_URL_PROPERTY)
+                .orElseGet(() ->
+                        joinPaths(clusterUrlForApplication("veilarbveileder"), "/veilarbveileder/api"));
     }
 
     public String veiledernavn() {

@@ -61,6 +61,7 @@ public class SakServiceTest {
         WebTarget target = mock(WebTarget.class);
         Invocation.Builder builder = mock(Invocation.Builder.class);
         Response response = mock(Response.class);
+        when(target.path(any())).thenReturn(target);
         when(target.queryParam(any(), any())).thenReturn(target);
         when(target.request()).thenReturn(builder);
         when(builder.get()).thenReturn(response);
