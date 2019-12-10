@@ -105,9 +105,9 @@ public class ApplicationConfig implements ApiApplication {
         VeilarbAbacPepClient.Builder builder = VeilarbAbacPepClient.ny()
                 .medPep(pep)
                 .medSystemUserTokenProvider(() -> systemUserTokenProvider().getToken())
-                .brukAktoerId(() -> true)
+                .brukAktoerId(() -> false)
                 .sammenlikneTilgang(() -> false)
-                .foretrekkVeilarbAbacResultat(() -> true);
+                .foretrekkVeilarbAbacResultat(() -> false);
 
         if (overrideUrl != null) {
             return builder
