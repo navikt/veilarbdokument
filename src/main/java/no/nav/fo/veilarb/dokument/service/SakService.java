@@ -58,6 +58,7 @@ public class SakService implements Helsesjekk {
 
         return restClient
                 .target(host)
+                .path("/api/v1/saker")
                 .request()
                 .post(Entity.json(entity))
                 .readEntity(Sak.class);
