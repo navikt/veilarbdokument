@@ -40,9 +40,8 @@ spec:
         mountPath: /var/run/secrets/nais.io/service_user
       - kvPath: /kv/preprod/fss/veilarbdokument/{{namespace}}
         mountPath: /var/run/secrets/nais.io/vault
-  configMaps:
-    files:
-      - pto-config
+  filesFrom:
+    - configmap: pto-config
   webproxy: true
   env:
     - APPDYNAMICS_CONTROLLER_HOST_NAME
