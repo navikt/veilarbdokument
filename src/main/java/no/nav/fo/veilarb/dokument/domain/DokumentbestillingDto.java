@@ -8,8 +8,7 @@ import java.util.List;
 @Value
 @Accessors(fluent = true)
 public class DokumentbestillingDto {
-    Person bruker;
-    Person mottaker;
+    String brukerFnr;
     MalType malType;
     String veilederEnhet;
     String begrunnelse;
