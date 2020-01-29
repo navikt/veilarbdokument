@@ -38,7 +38,7 @@ public class DokumentService {
     }
 
     public DokumentbestillingResponsDto bestillDokument(DokumentbestillingDto dto) {
-        Bruker bruker = authService.sjekkTilgang(dto.bruker().fnr(), dto.veilederEnhet());
+        Bruker bruker = authService.sjekkTilgang(dto.brukerFnr(), dto.veilederEnhet());
 
         Dokumentbestilling dokumentbestilling = lagDokumentbestilling(dto, bruker);
         return produserIkkeredigerbartDokument(dokumentbestilling, bruker);
@@ -59,8 +59,7 @@ public class DokumentService {
         String veilederNavn = veilederService.veiledernavn();
 
         return Brevdata.builder()
-                .bruker(dokumentbestilling.bruker())
-                .mottaker(dokumentbestilling.mottaker())
+                .brukerFnr(dokumentbestilling.brukerFnr())
                 .malType(dokumentbestilling.malType())
                 .veilederEnhet(dokumentbestilling.veilederEnhet())
                 .veilederId(getVeilederId())
@@ -96,7 +95,7 @@ public class DokumentService {
 
     @SneakyThrows
     public byte[] produserDokumentutkast(DokumentbestillingDto dto) {
-        Bruker bruker = authService.sjekkTilgang(dto.bruker().fnr(), dto.veilederEnhet());
+        Bruker bruker = authService.sjekkTilgang(dto.brukerFnr(), dto.veilederEnhet());
 
         Brevdata brevdata = lagBrevdata(dto);
         WSProduserDokumentutkastRequest dokumentutkastRequest =

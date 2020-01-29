@@ -10,8 +10,7 @@ import java.util.List;
 @Accessors(fluent = true)
 @Builder
 public class Brevdata {
-    Person bruker;
-    Person mottaker;
+    String brukerFnr;
     MalType malType;
     String veilederEnhet;
     String veilederId;

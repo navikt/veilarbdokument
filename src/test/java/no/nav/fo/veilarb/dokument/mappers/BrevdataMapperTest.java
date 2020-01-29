@@ -3,7 +3,6 @@ package no.nav.fo.veilarb.dokument.mappers;
 
 import no.nav.fo.veilarb.dokument.domain.Brevdata;
 import no.nav.fo.veilarb.dokument.domain.MalType;
-import no.nav.fo.veilarb.dokument.domain.Person;
 import org.junit.Test;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -40,8 +39,7 @@ public class BrevdataMapperTest {
         return Brevdata.builder()
                 .kilder(Arrays.asList("kilde1", "kilde2"))
                 .begrunnelse("begrunnelse")
-                .bruker(new Person("fnr"))
-                .mottaker(new Person("fnr"))
+                .brukerFnr("fnr")
                 .veilederEnhet("enhet")
                 .veilederId("veilederId")
                 .veilederNavn("veilederNavn")
