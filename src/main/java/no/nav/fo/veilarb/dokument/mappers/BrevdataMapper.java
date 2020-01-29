@@ -118,8 +118,8 @@ public class BrevdataMapper {
         VeilArbNAVFelles veilArbNAVFelles = new VeilArbNAVFelles();
         veilArbNAVFelles.setBehandlendeEnhet(mapBehandlendeEnhet(brevdata.veilederEnhet()));
         veilArbNAVFelles.setKontaktinformasjon(mapKontaktinformasjon(brevdata.veilederEnhet()));
-        veilArbNAVFelles.setMottaker(mapMottaker(brevdata.mottaker().fnr()));
-        veilArbNAVFelles.setSakspart(mapSakspart(brevdata.bruker().fnr()));
+        veilArbNAVFelles.setMottaker(mapMottaker(brevdata.brukerFnr()));
+        veilArbNAVFelles.setSakspart(mapSakspart(brevdata.brukerFnr()));
         veilArbNAVFelles.setSignerendeBeslutter(mapSaksbehandler(brevdata));
         veilArbNAVFelles.setSignerendeSaksbehandler(mapSaksbehandler(brevdata));
 
