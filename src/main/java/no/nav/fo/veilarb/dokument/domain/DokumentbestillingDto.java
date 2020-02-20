@@ -10,7 +10,7 @@ import java.util.List;
 public class DokumentbestillingDto {
     String brukerFnr;
     MalType malType;
-    String veilederEnhet;
+    String enhetId;
     String begrunnelse;
     List<String> opplysninger;
 }
