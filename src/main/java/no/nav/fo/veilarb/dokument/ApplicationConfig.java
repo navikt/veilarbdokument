@@ -69,11 +69,6 @@ public class ApplicationConfig implements ApiApplication {
     }
 
     @Bean
-    public SystemUserTokenProvider systemUserTokenProvider() {
-        return new SystemUserTokenProvider(SystemUserTokenProviderConfig.resolveFromSystemProperties());
-    }
-
-    @Bean
     public UnleashService unleashService() {
         return new UnleashService(resolveFromEnvironment());
     }
