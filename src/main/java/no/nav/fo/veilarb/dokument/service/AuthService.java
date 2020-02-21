@@ -1,11 +1,10 @@
 package no.nav.fo.veilarb.dokument.service;
 
-
 import no.nav.apiapp.feil.IngenTilgang;
-import no.nav.apiapp.security.veilarbabac.Bruker;
-import no.nav.apiapp.security.veilarbabac.VeilarbAbacPepClient;
+import no.nav.apiapp.security.PepClient;
 import no.nav.common.auth.SubjectHandler;
 import no.nav.dialogarena.aktor.AktorService;
+import no.nav.fo.veilarb.dokument.domain.Bruker;
 import org.springframework.stereotype.Service;
 
 import javax.inject.Inject;
@@ -16,12 +15,12 @@ import static no.nav.brukerdialog.security.domain.IdentType.InternBruker;
 public class AuthService {
 
     private AktorService aktorService;
-    private VeilarbAbacPepClient pepClient;
+    private PepClient pepClient;
     private ArenaService arenaService;
 
     @Inject
     public AuthService(AktorService aktorService,
-                       VeilarbAbacPepClient pepClient,
+                       PepClient pepClient,
                        ArenaService arenaService) {
         this.aktorService = aktorService;
         this.pepClient = pepClient;
@@ -33,13 +32,12 @@ public class AuthService {
         sjekkInternBruker();
 
         String aktorId = getAktorIdOrThrow(fnr);
-        Bruker bruker = Bruker.fraAktoerId(aktorId).medFoedselsnummer(fnr);
 
-        pepClient.sjekkSkrivetilgangTilBruker(bruker);
+        pepClient.sjekkSkrivetilgangTilAktorId(aktorId);
         sjekkRiktigEnhet(fnr, veilederEnhet);
         sjekkTilgangTilEnhet(veilederEnhet);
 
-        return bruker;
+        return new Bruker(fnr, aktorId);
     }
 
     private void sjekkRiktigEnhet(String fnr, String veilederEnhet) {
