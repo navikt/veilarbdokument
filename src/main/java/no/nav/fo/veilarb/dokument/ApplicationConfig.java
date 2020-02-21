@@ -3,8 +3,6 @@ package no.nav.fo.veilarb.dokument;
 import no.nav.apiapp.ApiApplication;
 import no.nav.apiapp.config.ApiAppConfigurator;
 import no.nav.apiapp.security.PepClient;
-import no.nav.brukerdialog.security.oidc.SystemUserTokenProvider;
-import no.nav.brukerdialog.security.oidc.SystemUserTokenProviderConfig;
 import no.nav.common.auth.Subject;
 import no.nav.common.auth.SubjectHandler;
 import no.nav.dialogarena.aktor.AktorConfig;
