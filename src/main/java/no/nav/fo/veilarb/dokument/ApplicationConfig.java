@@ -2,7 +2,7 @@ package no.nav.fo.veilarb.dokument;
 
 import no.nav.apiapp.ApiApplication;
 import no.nav.apiapp.config.ApiAppConfigurator;
-import no.nav.apiapp.security.veilarbabac.VeilarbAbacPepClient;
+import no.nav.apiapp.security.PepClient;
 import no.nav.brukerdialog.security.oidc.SystemUserTokenProvider;
 import no.nav.brukerdialog.security.oidc.SystemUserTokenProviderConfig;
 import no.nav.common.auth.Subject;
@@ -12,6 +12,7 @@ import no.nav.fo.veilarb.dokument.helsesjekk.DokumentproduksjonV3Helsesjekk;
 import no.nav.fo.veilarb.dokument.service.*;
 import no.nav.sbl.dialogarena.common.abac.pep.Pep;
 import no.nav.sbl.dialogarena.common.abac.pep.context.AbacContext;
+import no.nav.sbl.dialogarena.common.abac.pep.domain.ResourceType;
 import no.nav.sbl.dialogarena.common.cxf.CXFClient;
 import no.nav.sbl.featuretoggle.unleash.UnleashService;
 import no.nav.sbl.rest.RestUtils;
@@ -24,7 +25,6 @@ import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientRequestContext;
 import javax.ws.rs.client.ClientRequestFilter;
 
-import static java.lang.System.getProperty;
 import static no.nav.sbl.featuretoggle.unleash.UnleashServiceConfig.resolveFromEnvironment;
 import static no.nav.sbl.util.EnvironmentUtils.getRequiredProperty;
 
@@ -69,11 +69,6 @@ public class ApplicationConfig implements ApiApplication {
     }
 
     @Bean
-    public SystemUserTokenProvider systemUserTokenProvider() {
-        return new SystemUserTokenProvider(SystemUserTokenProviderConfig.resolveFromSystemProperties());
-    }
-
-    @Bean
     public UnleashService unleashService() {
         return new UnleashService(resolveFromEnvironment());
     }
@@ -96,26 +91,9 @@ public class ApplicationConfig implements ApiApplication {
         }
     }
 
-
     @Bean
-    public VeilarbAbacPepClient pepClient(Pep pep) {
-
-        String overrideUrl = getProperty(VEILARBABAC_API_URL_PROPERTY);
-
-        VeilarbAbacPepClient.Builder builder = VeilarbAbacPepClient.ny()
-                .medPep(pep)
-                .medSystemUserTokenProvider(() -> systemUserTokenProvider().getToken())
-                .brukAktoerId(() -> false)
-                .sammenlikneTilgang(() -> false)
-                .foretrekkVeilarbAbacResultat(() -> false);
-
-        if (overrideUrl != null) {
-            return builder
-                    .medVeilarbAbacUrl(overrideUrl)
-                    .bygg();
-        } else {
-            return builder.bygg();
-        }
+    public PepClient pepClient(Pep pep) {
+        return new PepClient(pep, "veilarb", ResourceType.VeilArbPerson);
     }
 
     public static String getDokumentproduksjonEndpointUrl() {

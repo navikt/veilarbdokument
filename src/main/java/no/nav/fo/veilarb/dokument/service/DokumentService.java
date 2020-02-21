@@ -2,7 +2,6 @@ package no.nav.fo.veilarb.dokument.service;
 
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
-import no.nav.apiapp.security.veilarbabac.Bruker;
 import no.nav.brukerdialog.security.domain.IdentType;
 import no.nav.common.auth.Subject;
 import no.nav.common.auth.SubjectHandler;
@@ -79,7 +78,7 @@ public class DokumentService {
         try {
             response = dokumentproduksjon.produserIkkeredigerbartDokument(request);
         } catch(Exception e) {
-            log.error(String.format("Kunne ikke produsere dokument for aktorId %s", bruker.getAktoerId()), e);
+            log.error(String.format("Kunne ikke produsere dokument for aktorId %s", bruker.getAktorId()), e);
             throw e;
         }
 
@@ -104,7 +103,7 @@ public class DokumentService {
         try {
             return dokumentproduksjon.produserDokumentutkast(dokumentutkastRequest).getDokumentutkast();
         } catch(Exception e) {
-            log.error(String.format("Kunne ikke produsere dokumentutkast for aktorId %s", bruker.getAktoerId()), e);
+            log.error(String.format("Kunne ikke produsere dokumentutkast for aktorId %s", bruker.getAktorId()), e);
             throw e;
         }
     }
