@@ -43,8 +43,5 @@ spec:
   filesFrom:
     - configmap: pto-config
   webproxy: true
-  env:
-    - APPDYNAMICS_CONTROLLER_HOST_NAME
-    - APPDYNAMICS_AGENT_ACCOUNT_NAME
-    - APPDYNAMICS_CONTROLLER_PORT
-    - APPDYNAMICS_CONTROLLER_SSL_ENABLED
+  envFrom:
+    - configmap: pto-config
