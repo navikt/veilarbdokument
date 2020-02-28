@@ -18,26 +18,28 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
+import static javax.ws.rs.core.HttpHeaders.AUTHORIZATION;
 import static no.nav.apiapp.util.UrlUtils.clusterUrlForApplication;
 import static no.nav.fo.veilarb.dokument.ApplicationConfig.SAK_API_URL;
+import static no.nav.fo.veilarb.dokument.util.AuthUtils.createBearerToken;
 
 @Component
-public class SakService implements Helsesjekk {
+public class SakClient implements Helsesjekk {
 
-    private Client restClient;
-    private String host;
+    private final Client restClient;
+    private final String host;
 
     public static String ARENA_KODE = "AO01";
     public static String OPPFOLGING_KODE = "OPP";
 
     @Inject
-    public SakService(Client restClient) {
+    public SakClient(Client restClient) {
         this.restClient = restClient;
         this.host = EnvironmentUtils.getOptionalProperty(SAK_API_URL)
                 .orElseGet(() -> clusterUrlForApplication("sak"));
     }
 
-    public List<Sak> finnOppfolgingssaker(String aktorId) {
+    public List<Sak> hentOppfolgingssaker(String aktorId) {
 
         Response response = restClient
                 .target(host)
@@ -45,6 +47,7 @@ public class SakService implements Helsesjekk {
                 .queryParam("aktoerId", aktorId)
                 .queryParam("tema", OPPFOLGING_KODE)
                 .request()
+                .header(AUTHORIZATION, createBearerToken())
                 .get();
 
         List<Sak> saker = response.readEntity(new GenericType<List<Sak>>() {
@@ -60,6 +63,7 @@ public class SakService implements Helsesjekk {
                 .target(host)
                 .path("/api/v1/saker")
                 .request()
+                .header(AUTHORIZATION, createBearerToken())
                 .post(Entity.json(entity))
                 .readEntity(Sak.class);
     }

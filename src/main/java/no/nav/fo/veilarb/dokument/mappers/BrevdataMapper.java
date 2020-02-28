@@ -116,8 +116,8 @@ public class BrevdataMapper {
 
     private static VeilArbNAVFelles mapFelles(Brevdata brevdata) {
         VeilArbNAVFelles veilArbNAVFelles = new VeilArbNAVFelles();
-        veilArbNAVFelles.setBehandlendeEnhet(mapBehandlendeEnhet(brevdata.veilederEnhet()));
-        veilArbNAVFelles.setKontaktinformasjon(mapKontaktinformasjon(brevdata.veilederEnhet()));
+        veilArbNAVFelles.setBehandlendeEnhet(mapBehandlendeEnhet(brevdata.enhet()));
+        veilArbNAVFelles.setKontaktinformasjon(mapKontaktinformasjon(brevdata.enhet()));
         veilArbNAVFelles.setMottaker(mapMottaker(brevdata.brukerFnr()));
         veilArbNAVFelles.setSakspart(mapSakspart(brevdata.brukerFnr()));
         veilArbNAVFelles.setSignerendeBeslutter(mapSaksbehandler(brevdata));
@@ -175,7 +175,7 @@ public class BrevdataMapper {
         navAnsatt.setNavn(brevdata.veilederNavn());
 
         NavEnhet navEnhet = new NavEnhet();
-        navEnhet.setEnhetsId(brevdata.veilederEnhet());
+        navEnhet.setEnhetsId(brevdata.enhet());
 
         Saksbehandler saksbehandler = new Saksbehandler();
         saksbehandler.setNavAnsatt(navAnsatt);

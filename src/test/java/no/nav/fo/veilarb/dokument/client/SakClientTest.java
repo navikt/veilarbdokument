@@ -1,6 +1,7 @@
-package no.nav.fo.veilarb.dokument.service;
+package no.nav.fo.veilarb.dokument.client;
 
 import no.nav.fo.veilarb.dokument.domain.Sak;
+import no.nav.fo.veilarb.dokument.service.SakClient;
 import no.nav.sbl.dialogarena.test.junit.SystemPropertiesRule;
 import org.junit.Before;
 import org.junit.Rule;
@@ -15,17 +16,17 @@ import java.util.Arrays;
 import java.util.List;
 
 import static no.nav.fo.veilarb.dokument.ApplicationConfig.SAK_API_URL;
-import static no.nav.fo.veilarb.dokument.service.SakService.ARENA_KODE;
-import static no.nav.fo.veilarb.dokument.service.SakService.OPPFOLGING_KODE;
+import static no.nav.fo.veilarb.dokument.service.SakClient.ARENA_KODE;
+import static no.nav.fo.veilarb.dokument.service.SakClient.OPPFOLGING_KODE;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-public class SakServiceTest {
+public class SakClientTest {
 
     private Client restClient = mock(Client.class);
-    private SakService sakService;
+    private SakClient sakClient;
 
     @Rule
     public SystemPropertiesRule systemPropertiesRule = new SystemPropertiesRule();
@@ -33,7 +34,7 @@ public class SakServiceTest {
     @Before
     public void setup() {
         systemPropertiesRule.setProperty(SAK_API_URL, "test");
-        sakService = new SakService(restClient);
+        sakClient = new SakClient(restClient);
     }
 
     @Test
@@ -53,7 +54,7 @@ public class SakServiceTest {
         mockRestClient(saker);
 
         assertThat(
-                sakService.finnOppfolgingssaker("aktorId").stream().map(Sak::id)
+                sakClient.hentOppfolgingssaker("aktorId").stream().map(Sak::id)
         ).containsExactly(2, 9);
     }
 

@@ -12,7 +12,7 @@ import java.util.List;
 public class Brevdata {
     String brukerFnr;
     MalType malType;
-    String veilederEnhet;
+    String enhet;
     String veilederId;
     String veilederNavn;
     String begrunnelse;

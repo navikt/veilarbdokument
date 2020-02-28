@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import no.nav.brukerdialog.security.domain.IdentType;
 import no.nav.common.auth.Subject;
 import no.nav.common.auth.SubjectHandler;
+import no.nav.fo.veilarb.dokument.client.VeilederClient;
 import no.nav.fo.veilarb.dokument.domain.*;
 import no.nav.fo.veilarb.dokument.mappers.DokumentutkastMapper;
 import no.nav.fo.veilarb.dokument.mappers.IkkeredigerbartDokumentMapper;
@@ -20,20 +21,23 @@ import javax.inject.Inject;
 @Component
 public class DokumentService {
 
-    private DokumentproduksjonV3 dokumentproduksjon;
-    private AuthService authService;
-    private VeilederService veilederService;
-    private OppfolgingssakService oppfolgingssakService;
+    private final DokumentproduksjonV3 dokumentproduksjon;
+    private final AuthService authService;
+    private final VeilederClient veilederClient;
+    private final OppfolgingssakService oppfolgingssakService;
+    private final AvsenderEnhetService avsenderEnhetService;
 
     @Inject
     public DokumentService(DokumentproduksjonV3 dokumentproduksjon,
                            AuthService authService,
-                           VeilederService veilederService,
-                           OppfolgingssakService oppfolgingssakService) {
+                           VeilederClient veilederClient,
+                           OppfolgingssakService oppfolgingssakService,
+                           AvsenderEnhetService avsenderEnhetService) {
         this.dokumentproduksjon = dokumentproduksjon;
         this.authService = authService;
-        this.veilederService = veilederService;
+        this.veilederClient = veilederClient;
         this.oppfolgingssakService = oppfolgingssakService;
+        this.avsenderEnhetService = avsenderEnhetService;
     }
 
     public DokumentbestillingResponsDto bestillDokument(DokumentbestillingDto dto) {
@@ -55,12 +59,14 @@ public class DokumentService {
     }
 
     private Brevdata lagBrevdata(DokumentbestillingDto dokumentbestilling) {
-        String veilederNavn = veilederService.veiledernavn();
+        String veilederNavn = veilederClient.hentVeiledernavn();
+
+        String enhet = avsenderEnhetService.utledAvsenderEnhetId(dokumentbestilling.enhetId());
 
         return Brevdata.builder()
                 .brukerFnr(dokumentbestilling.brukerFnr())
                 .malType(dokumentbestilling.malType())
-                .veilederEnhet(dokumentbestilling.enhetId())
+                .enhet(enhet)
                 .veilederId(getVeilederId())
                 .veilederNavn(veilederNavn)
                 .begrunnelse(dokumentbestilling.begrunnelse())

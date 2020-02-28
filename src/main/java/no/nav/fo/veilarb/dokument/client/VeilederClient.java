@@ -1,4 +1,4 @@
-package no.nav.fo.veilarb.dokument.service;
+package no.nav.fo.veilarb.dokument.client;
 
 import lombok.extern.slf4j.Slf4j;
 import no.nav.apiapp.selftest.Helsesjekk;
@@ -9,30 +9,33 @@ import org.springframework.stereotype.Service;
 import javax.inject.Inject;
 import javax.ws.rs.client.Client;
 
+import static javax.ws.rs.core.HttpHeaders.AUTHORIZATION;
 import static no.nav.apiapp.util.UrlUtils.clusterUrlForApplication;
 import static no.nav.apiapp.util.UrlUtils.joinPaths;
 import static no.nav.fo.veilarb.dokument.ApplicationConfig.VEILARBVEILEDER_API_URL_PROPERTY;
+import static no.nav.fo.veilarb.dokument.util.AuthUtils.createBearerToken;
 import static no.nav.sbl.util.EnvironmentUtils.getOptionalProperty;
 
 @Slf4j
 @Service
-public class VeilederService implements Helsesjekk {
+public class VeilederClient implements Helsesjekk {
 
-    private Client restClient;
-    private String host;
+    private final Client restClient;
+    private final String host;
 
     @Inject
-    public VeilederService(Client restClient) {
+    public VeilederClient(Client restClient) {
         this.restClient = restClient;
         host = getOptionalProperty(VEILARBVEILEDER_API_URL_PROPERTY)
                 .orElseGet(() ->
                         joinPaths(clusterUrlForApplication("veilarbveileder"), "/veilarbveileder/api"));
     }
 
-    public String veiledernavn() {
+    public String hentVeiledernavn() {
         return restClient
                 .target(joinPaths(host, "veileder", "me"))
                 .request()
+                .header(AUTHORIZATION, createBearerToken())
                 .get(VeilederDto.class)
                 .navn();
     }

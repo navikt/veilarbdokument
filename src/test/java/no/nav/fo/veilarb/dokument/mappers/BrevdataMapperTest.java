@@ -40,7 +40,7 @@ public class BrevdataMapperTest {
                 .kilder(Arrays.asList("kilde1", "kilde2"))
                 .begrunnelse("begrunnelse")
                 .brukerFnr("fnr")
-                .veilederEnhet("enhet")
+                .enhet("enhet")
                 .veilederId("veilederId")
                 .veilederNavn("veilederNavn")
                 .malType(malType)

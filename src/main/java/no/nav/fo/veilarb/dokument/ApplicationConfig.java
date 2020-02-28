@@ -3,9 +3,10 @@ package no.nav.fo.veilarb.dokument;
 import no.nav.apiapp.ApiApplication;
 import no.nav.apiapp.config.ApiAppConfigurator;
 import no.nav.apiapp.security.PepClient;
-import no.nav.common.auth.Subject;
-import no.nav.common.auth.SubjectHandler;
 import no.nav.dialogarena.aktor.AktorConfig;
+import no.nav.fo.veilarb.dokument.client.ArenaClient;
+import no.nav.fo.veilarb.dokument.client.EnhetClient;
+import no.nav.fo.veilarb.dokument.client.VeilederClient;
 import no.nav.fo.veilarb.dokument.helsesjekk.DokumentproduksjonV3Helsesjekk;
 import no.nav.fo.veilarb.dokument.service.*;
 import no.nav.sbl.dialogarena.common.abac.pep.Pep;
@@ -20,25 +21,24 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 
 import javax.ws.rs.client.Client;
-import javax.ws.rs.client.ClientRequestContext;
-import javax.ws.rs.client.ClientRequestFilter;
 
 import static no.nav.sbl.featuretoggle.unleash.UnleashServiceConfig.resolveFromEnvironment;
 import static no.nav.sbl.util.EnvironmentUtils.getRequiredProperty;
 
 @Configuration
 @Import({
-        DokumentRessurs.class,
-        DokumentService.class,
-        AuthService.class,
-        ArenaService.class,
+        AbacContext.class,
         AktorConfig.class,
-        SakService.class,
-        VeilederService.class,
-        AbacContext.class,
+        ArenaClient.class,
+        SakClient.class,
+        VeilederClient.class,
+        EnhetClient.class,
+        AuthService.class,
         DokumentproduksjonV3Helsesjekk.class,
-        AbacContext.class,
-        OppfolgingssakService.class
+        DokumentService.class,
+        OppfolgingssakService.class,
+        AvsenderEnhetService.class,
+        DokumentRessurs.class
 })
 public class ApplicationConfig implements ApiApplication {
 
@@ -49,7 +49,8 @@ public class ApplicationConfig implements ApiApplication {
     public static final String SAK_API_URL = "SAK_API_URL";
     public static final String VEILARBABAC_API_URL_PROPERTY = "VEILARBABAC_API_URL";
     public static final String VEILARBARENA_API_URL_PROPERTY = "VEILARBARENAAPI_URL";
-    public static final String VEILARBVEILEDER_API_URL_PROPERTY = "VEILARBVEILEDERAPI_URL";
+    public static final String VEILARBVEILEDER_API_URL_PROPERTY = "VEILARBVEILEDER_API_URL";
+    public static final String NORG2_API_URL_PROPERTY = "NORG2_API_URL";
 
     @Override
     public void configure(ApiAppConfigurator apiAppConfigurator) {
@@ -73,20 +74,7 @@ public class ApplicationConfig implements ApiApplication {
 
     @Bean
     public Client client() {
-        Client client = RestUtils.createClient();
-        client.register(new SubjectOidcTokenFilter());
-        return client;
-    }
-
-    private static class SubjectOidcTokenFilter implements ClientRequestFilter {
-        @Override
-        public void filter(ClientRequestContext requestContext) {
-            SubjectHandler.getSubject()
-                    .map(Subject::getSsoToken)
-                    .ifPresent(ssoToken ->
-                            requestContext.getHeaders().putSingle("Authorization", "Bearer " + ssoToken.getToken()));
-
-        }
+        return RestUtils.createClient();
     }
 
     @Bean

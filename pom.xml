@@ -65,12 +65,20 @@
             <artifactId>aktor-klient</artifactId>
         </dependency>
         <dependency>
+            <groupId>no.nav.common</groupId>
+            <artifactId>nais</artifactId>
+        </dependency>
+        <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
         </dependency>
         <dependency>
             <groupId>no.nav.common</groupId>
             <artifactId>feature-toggle</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.datatype</groupId>
+            <artifactId>jackson-datatype-jsr310</artifactId>
         </dependency>
 
         <!-- Tjenester -->
@@ -99,6 +107,12 @@
         <dependency>
             <groupId>no.nav.common</groupId>
             <artifactId>test-config</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.github.tomakehurst</groupId>
+            <artifactId>wiremock-standalone</artifactId>
+            <version>2.26.1</version>
             <scope>test</scope>
         </dependency>
 
