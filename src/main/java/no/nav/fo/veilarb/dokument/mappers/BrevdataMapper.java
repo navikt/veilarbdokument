@@ -116,8 +116,8 @@ public class BrevdataMapper {
 
     private static VeilArbNAVFelles mapFelles(Brevdata brevdata) {
         VeilArbNAVFelles veilArbNAVFelles = new VeilArbNAVFelles();
-        veilArbNAVFelles.setBehandlendeEnhet(mapBehandlendeEnhet(brevdata.enhet()));
-        veilArbNAVFelles.setKontaktinformasjon(mapKontaktinformasjon(brevdata.enhet()));
+        veilArbNAVFelles.setBehandlendeEnhet(mapBehandlendeEnhet(brevdata.enhetId()));
+        veilArbNAVFelles.setKontaktinformasjon(mapKontaktinformasjon(brevdata.enhetIdKontakt()));
         veilArbNAVFelles.setMottaker(mapMottaker(brevdata.brukerFnr()));
         veilArbNAVFelles.setSakspart(mapSakspart(brevdata.brukerFnr()));
         veilArbNAVFelles.setSignerendeBeslutter(mapSaksbehandler(brevdata));
@@ -128,21 +128,21 @@ public class BrevdataMapper {
     }
 
 
-    private static NavEnhet mapBehandlendeEnhet(String enhet) {
+    private static NavEnhet mapBehandlendeEnhet(String enhetId) {
         NavEnhet navEnhet = new NavEnhet();
-        navEnhet.setEnhetsId(enhet);
+        navEnhet.setEnhetsId(enhetId);
         return navEnhet;
     }
 
-    private static Kontaktinformasjon mapKontaktinformasjon(String enhet) {
+    private static Kontaktinformasjon mapKontaktinformasjon(String enhetId) {
         Besoksadresse besoksadresse = new Besoksadresse();
-        besoksadresse.setEnhetsId(enhet);
+        besoksadresse.setEnhetsId(enhetId);
 
         Postadresse postadresse = new Postadresse();
-        postadresse.setEnhetsId(enhet);
+        postadresse.setEnhetsId(enhetId);
 
         Returadresse returadresse = new Returadresse();
-        returadresse.setEnhetsId(enhet);
+        returadresse.setEnhetsId(enhetId);
 
         Kontaktinformasjon kontaktinformasjon = new Kontaktinformasjon();
         kontaktinformasjon.setBesoksadresse(besoksadresse);
@@ -175,7 +175,7 @@ public class BrevdataMapper {
         navAnsatt.setNavn(brevdata.veilederNavn());
 
         NavEnhet navEnhet = new NavEnhet();
-        navEnhet.setEnhetsId(brevdata.enhet());
+        navEnhet.setEnhetsId(brevdata.enhetId());
 
         Saksbehandler saksbehandler = new Saksbehandler();
         saksbehandler.setNavAnsatt(navAnsatt);

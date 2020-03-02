@@ -12,7 +12,8 @@ import java.util.List;
 public class Brevdata {
     String brukerFnr;
     MalType malType;
-    String enhet;
+    String enhetId;
+    String enhetIdKontakt;
     String veilederId;
     String veilederNavn;
     String begrunnelse;

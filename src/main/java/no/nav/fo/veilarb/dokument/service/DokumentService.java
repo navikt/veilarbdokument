@@ -25,19 +25,19 @@ public class DokumentService {
     private final AuthService authService;
     private final VeilederClient veilederClient;
     private final OppfolgingssakService oppfolgingssakService;
-    private final AvsenderEnhetService avsenderEnhetService;
+    private final KontaktEnhetService kontaktEnhetService;
 
     @Inject
     public DokumentService(DokumentproduksjonV3 dokumentproduksjon,
                            AuthService authService,
                            VeilederClient veilederClient,
                            OppfolgingssakService oppfolgingssakService,
-                           AvsenderEnhetService avsenderEnhetService) {
+                           KontaktEnhetService kontaktEnhetService) {
         this.dokumentproduksjon = dokumentproduksjon;
         this.authService = authService;
         this.veilederClient = veilederClient;
         this.oppfolgingssakService = oppfolgingssakService;
-        this.avsenderEnhetService = avsenderEnhetService;
+        this.kontaktEnhetService = kontaktEnhetService;
     }
 
     public DokumentbestillingResponsDto bestillDokument(DokumentbestillingDto dto) {
@@ -61,12 +61,13 @@ public class DokumentService {
     private Brevdata lagBrevdata(DokumentbestillingDto dokumentbestilling) {
         String veilederNavn = veilederClient.hentVeiledernavn();
 
-        String enhet = avsenderEnhetService.utledAvsenderEnhetId(dokumentbestilling.enhetId());
+        String enhetIdKontakt = kontaktEnhetService.utledKontaktEnhetId(dokumentbestilling.enhetId());
 
         return Brevdata.builder()
                 .brukerFnr(dokumentbestilling.brukerFnr())
                 .malType(dokumentbestilling.malType())
-                .enhet(enhet)
+                .enhetId(dokumentbestilling.enhetId())
+                .enhetIdKontakt(enhetIdKontakt)
                 .veilederId(getVeilederId())
                 .veilederNavn(veilederNavn)
                 .begrunnelse(dokumentbestilling.begrunnelse())

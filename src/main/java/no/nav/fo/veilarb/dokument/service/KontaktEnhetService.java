@@ -14,16 +14,16 @@ import java.util.stream.Collectors;
 import static java.lang.String.format;
 
 @Component
-public class AvsenderEnhetService {
+public class KontaktEnhetService {
 
     private final EnhetClient enhetClient;
 
     @Inject
-    public AvsenderEnhetService(EnhetClient enhetClient) {
+    public KontaktEnhetService(EnhetClient enhetClient) {
         this.enhetClient = enhetClient;
     }
 
-    public String utledAvsenderEnhetId(String enhetId) {
+    public String utledKontaktEnhetId(String enhetId) {
         EnhetKontaktinformasjon enhetKontaktinformasjon = enhetClient.hentKontaktinfo(enhetId);
 
         if (enhetKontaktinformasjon.getPostadresse() != null) {

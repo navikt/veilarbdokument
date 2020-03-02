@@ -41,7 +41,7 @@ public class IkkeredigerbartDokumentMapper {
         informasjon.setBruker(mapFnr(brevdata.brukerFnr()));
         informasjon.setMottaker(mapFnr(brevdata.brukerFnr()));
         informasjon.setJournalsakId(Integer.toString(dokumentbestilling.sak().id()));
-        informasjon.setJournalfoerendeEnhet(brevdata.enhet());
+        informasjon.setJournalfoerendeEnhet(brevdata.enhetId());
         informasjon.setUtledRegisterInfo(true);
 
         informasjon.setInkludererEksterneVedlegg(false);

@@ -1,39 +1,43 @@
 package no.nav.fo.veilarb.dokument.client;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.github.tomakehurst.wiremock.junit.WireMockRule;
+import lombok.SneakyThrows;
 import no.nav.fo.veilarb.dokument.domain.Sak;
 import no.nav.fo.veilarb.dokument.service.SakClient;
+import no.nav.json.JsonProvider;
 import no.nav.sbl.dialogarena.test.junit.SystemPropertiesRule;
+import org.glassfish.jersey.client.JerseyClientBuilder;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 
 import javax.ws.rs.client.Client;
-import javax.ws.rs.client.Invocation;
-import javax.ws.rs.client.WebTarget;
-import javax.ws.rs.core.GenericType;
-import javax.ws.rs.core.Response;
+import java.io.ByteArrayOutputStream;
 import java.util.Arrays;
 import java.util.List;
 
+import static com.github.tomakehurst.wiremock.client.WireMock.*;
 import static no.nav.fo.veilarb.dokument.ApplicationConfig.SAK_API_URL;
 import static no.nav.fo.veilarb.dokument.service.SakClient.ARENA_KODE;
 import static no.nav.fo.veilarb.dokument.service.SakClient.OPPFOLGING_KODE;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 
 public class SakClientTest {
 
-    private Client restClient = mock(Client.class);
+    private Client restClient;
     private SakClient sakClient;
 
     @Rule
     public SystemPropertiesRule systemPropertiesRule = new SystemPropertiesRule();
 
+    @Rule
+    public WireMockRule wireMockRule = new WireMockRule();
+
     @Before
     public void setup() {
-        systemPropertiesRule.setProperty(SAK_API_URL, "test");
+        systemPropertiesRule.setProperty(SAK_API_URL, "http://localhost:" + wireMockRule.port());
+        restClient = new JerseyClientBuilder().build();
         sakClient = new SakClient(restClient);
     }
 
@@ -58,16 +62,21 @@ public class SakClientTest {
         ).containsExactly(2, 9);
     }
 
+    @SneakyThrows
     private void mockRestClient(List<Sak> saker) {
-        WebTarget target = mock(WebTarget.class);
-        Invocation.Builder builder = mock(Invocation.Builder.class);
-        Response response = mock(Response.class);
-        when(target.path(any())).thenReturn(target);
-        when(target.queryParam(any(), any())).thenReturn(target);
-        when(target.request()).thenReturn(builder);
-        when(builder.get()).thenReturn(response);
-        when(response.readEntity(any(GenericType.class))).thenReturn(saker);
-        when(restClient.target(any(String.class))).thenReturn(target);
+        ObjectMapper objectMapper = JsonProvider.createObjectMapper();
 
+        final ByteArrayOutputStream out = new ByteArrayOutputStream();
+        objectMapper.writeValue(out, saker);
+        final byte[] data = out.toByteArray();
+        String response = new String(data);
+
+        givenThat(
+                get(urlPathEqualTo("/api/v1/saker"))
+                        .willReturn(aResponse()
+                                .withStatus(200)
+                                .withHeader("Content-Type", "applicaition/json")
+                                .withBody(response)
+        ));
     }
 }

@@ -37,7 +37,7 @@ import static no.nav.sbl.util.EnvironmentUtils.getRequiredProperty;
         DokumentproduksjonV3Helsesjekk.class,
         DokumentService.class,
         OppfolgingssakService.class,
-        AvsenderEnhetService.class,
+        KontaktEnhetService.class,
         DokumentRessurs.class
 })
 public class ApplicationConfig implements ApiApplication {
