@@ -1,9 +1,10 @@
-package no.nav.fo.veilarb.dokument;
+package no.nav.fo.veilarb.dokument.config;
 
 import no.nav.apiapp.ApiApplication;
 import no.nav.apiapp.config.ApiAppConfigurator;
 import no.nav.apiapp.security.PepClient;
 import no.nav.dialogarena.aktor.AktorConfig;
+import no.nav.fo.veilarb.dokument.resource.DokumentRessurs;
 import no.nav.fo.veilarb.dokument.client.ArenaClient;
 import no.nav.fo.veilarb.dokument.client.EnhetClient;
 import no.nav.fo.veilarb.dokument.client.VeilederClient;
@@ -38,7 +39,8 @@ import static no.nav.sbl.util.EnvironmentUtils.getRequiredProperty;
         DokumentService.class,
         OppfolgingssakService.class,
         KontaktEnhetService.class,
-        DokumentRessurs.class
+        DokumentRessurs.class,
+        CacheConfig.class
 })
 public class ApplicationConfig implements ApiApplication {
 

@@ -1,4 +1,4 @@
-package no.nav.fo.veilarb.dokument;
+package no.nav.fo.veilarb.dokument.resource;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;

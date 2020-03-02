@@ -18,7 +18,7 @@ import java.util.Optional;
 import java.util.stream.Stream;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.*;
-import static no.nav.fo.veilarb.dokument.ApplicationConfig.NORG2_API_URL_PROPERTY;
+import static no.nav.fo.veilarb.dokument.config.ApplicationConfig.NORG2_API_URL_PROPERTY;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.Assert.assertEquals;
 

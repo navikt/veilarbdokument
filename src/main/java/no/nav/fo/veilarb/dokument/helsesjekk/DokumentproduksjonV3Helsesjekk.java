@@ -6,7 +6,7 @@ import no.nav.apiapp.selftest.HelsesjekkMetadata;
 import no.nav.tjeneste.virksomhet.dokumentproduksjon.v3.DokumentproduksjonV3;
 import org.springframework.stereotype.Component;
 
-import static no.nav.fo.veilarb.dokument.ApplicationConfig.getDokumentproduksjonEndpointUrl;
+import static no.nav.fo.veilarb.dokument.config.ApplicationConfig.getDokumentproduksjonEndpointUrl;
 
 @Component
 public class DokumentproduksjonV3Helsesjekk implements Helsesjekk {

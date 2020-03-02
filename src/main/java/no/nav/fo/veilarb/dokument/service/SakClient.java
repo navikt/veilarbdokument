@@ -20,7 +20,7 @@ import java.util.stream.Collectors;
 
 import static javax.ws.rs.core.HttpHeaders.AUTHORIZATION;
 import static no.nav.apiapp.util.UrlUtils.clusterUrlForApplication;
-import static no.nav.fo.veilarb.dokument.ApplicationConfig.SAK_API_URL;
+import static no.nav.fo.veilarb.dokument.config.ApplicationConfig.SAK_API_URL;
 import static no.nav.fo.veilarb.dokument.util.AuthUtils.createBearerToken;
 
 @Component

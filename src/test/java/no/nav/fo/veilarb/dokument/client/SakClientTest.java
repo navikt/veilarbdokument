@@ -18,7 +18,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.*;
-import static no.nav.fo.veilarb.dokument.ApplicationConfig.SAK_API_URL;
+import static no.nav.fo.veilarb.dokument.config.ApplicationConfig.SAK_API_URL;
 import static no.nav.fo.veilarb.dokument.service.SakClient.ARENA_KODE;
 import static no.nav.fo.veilarb.dokument.service.SakClient.OPPFOLGING_KODE;
 import static org.assertj.core.api.Assertions.assertThat;
