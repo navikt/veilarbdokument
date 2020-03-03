@@ -9,9 +9,9 @@ import org.w3c.dom.Element;
 
 public class IkkeredigerbartDokumentMapper {
 
-    private static String BESTILLENDE_FAGSYSTEM_KODE = "AO01";
-    private static String SAKSTILHORENDE_FAGSYSTEM_KODE = "FS22";
-    private static String DOKUMENTTILHORENDE_FAGOMRAADE = "OPP";
+    private static final String BESTILLENDE_FAGSYSTEM_KODE = "AO01";
+    private static final String SAKSTILHORENDE_FAGSYSTEM_KODE = "FS22";
+    private static final String DOKUMENTTILHORENDE_FAGOMRAADE = "OPP";
 
     @SneakyThrows
     public static WSProduserIkkeredigerbartDokumentRequest mapRequest(Dokumentbestilling dokumentbestilling) {
@@ -41,7 +41,7 @@ public class IkkeredigerbartDokumentMapper {
         informasjon.setBruker(mapFnr(brevdata.brukerFnr()));
         informasjon.setMottaker(mapFnr(brevdata.brukerFnr()));
         informasjon.setJournalsakId(Integer.toString(dokumentbestilling.sak().id()));
-        informasjon.setJournalfoerendeEnhet(brevdata.veilederEnhet());
+        informasjon.setJournalfoerendeEnhet(brevdata.enhetId());
         informasjon.setUtledRegisterInfo(true);
 
         informasjon.setInkludererEksterneVedlegg(false);

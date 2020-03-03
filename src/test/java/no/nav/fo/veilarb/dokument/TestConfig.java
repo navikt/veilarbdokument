@@ -8,7 +8,7 @@ import no.nav.testconfig.ApiAppTest;
 import static no.nav.brukerdialog.security.Constants.*;
 import static no.nav.fasit.FasitUtils.*;
 import static no.nav.fasit.FasitUtils.Zone.FSS;
-import static no.nav.fo.veilarb.dokument.ApplicationConfig.*;
+import static no.nav.fo.veilarb.dokument.config.ApplicationConfig.*;
 import static no.nav.fo.veilarb.dokument.utils.TestUtils.lagFssUrl;
 import static no.nav.sbl.dialogarena.common.abac.pep.service.AbacServiceConfig.ABAC_ENDPOINT_URL_PROPERTY_NAME;
 import static no.nav.sbl.dialogarena.common.cxf.StsSecurityConstants.SYSTEMUSER_PASSWORD;
