@@ -2,13 +2,13 @@ package no.nav.fo.veilarb.dokument.mappers;
 
 import lombok.SneakyThrows;
 import lombok.val;
-import no.nav.dok.brevdata.felles.v1.navfelles.*;
+import no.nav.dok.brevdata.felles.v2.navfelles.*;
 import no.nav.dok.brevdata.felles.v1.simpletypes.AktoerType;
 import no.nav.dok.veilarbdokmaler._000135.BrevdataType;
 import no.nav.dok.veilarbdokmaler._000135.FagType;
 import no.nav.dok.veilarbdokmaler._000135.KulepunktListeType;
 import no.nav.dok.veilarbdokmaler._000135.KulepunktType;
-import no.nav.dok.veilarbdokmaler.felles.arena_felles.VeilArbNAVFelles;
+import no.nav.dok.veilarbdokmaler.felles.veilarb_felles.VeilArbNAVFelles;
 import no.nav.fo.veilarb.dokument.domain.Brevdata;
 import no.nav.fo.veilarb.dokument.domain.MalType;
 import org.w3c.dom.Document;
@@ -135,9 +135,6 @@ public class BrevdataMapper {
     }
 
     private static Kontaktinformasjon mapKontaktinformasjon(String enhetId) {
-        Besoksadresse besoksadresse = new Besoksadresse();
-        besoksadresse.setEnhetsId(enhetId);
-
         Postadresse postadresse = new Postadresse();
         postadresse.setEnhetsId(enhetId);
 
@@ -145,7 +142,6 @@ public class BrevdataMapper {
         returadresse.setEnhetsId(enhetId);
 
         Kontaktinformasjon kontaktinformasjon = new Kontaktinformasjon();
-        kontaktinformasjon.setBesoksadresse(besoksadresse);
         kontaktinformasjon.setPostadresse(postadresse);
         kontaktinformasjon.setReturadresse(returadresse);
 

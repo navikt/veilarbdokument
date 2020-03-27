@@ -51,8 +51,8 @@ public class BrevdataMapperTest {
     private static void sjekkXml(Element element, MalType malType) {
         String xml = elementTilString(element);
 
-        assertThat(xml.contains("xmlns:ns1=\"http://nav.no/dok/brevdata/felles/v1/NAVFelles\"")).isTrue();
-        assertThat(xml.contains("xmlns:ns2=\"http://nav.no/dok/veilarbdokmaler/felles/arena_felles\"")).isTrue();
+        assertThat(xml.contains("xmlns:ns1=\"http://nav.no/dok/brevdata/felles/v2/NAVFelles\"")).isTrue();
+        assertThat(xml.contains("xmlns:ns2=\"http://nav.no/dok/veilarbdokmaler/felles/veilarb_felles\"")).isTrue();
         assertThat(xml.contains("xmlns:ns3=\"http://nav.no/dok/veilarbdokmaler/" + MalType.getMalKode(malType) + "\"")).isTrue();
         assertThat(xml.contains("xmlns=")).isFalse();
         assertThat(xml.contains("xmlns:ns4=")).isFalse();
