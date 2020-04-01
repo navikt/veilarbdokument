@@ -136,7 +136,8 @@ public class BrevdataMapper {
 
     private static Kontaktinformasjon mapKontaktinformasjon(String enhetId) {
         Besoksadresse besoksadresse = new Besoksadresse();
-        besoksadresse.setEnhetsId(enhetId);
+        besoksadresse.setBerik(false);
+        //besoksadresse.setEnhetsId(enhetId);
 
         Postadresse postadresse = new Postadresse();
         postadresse.setEnhetsId(enhetId);
