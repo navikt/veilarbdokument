@@ -1,9 +1,13 @@
 package no.nav.fo.veilarb.dokument;
 
-import no.nav.common.nais.utils.NaisUtils;
 import no.nav.sbl.dialogarena.common.abac.pep.CredentialConstants;
 import no.nav.sbl.dialogarena.common.cxf.StsSecurityConstants;
 import no.nav.testconfig.ApiAppTest;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Map;
+import java.util.Properties;
 
 import static no.nav.fo.veilarb.dokument.config.ApplicationConfig.*;
 import static no.nav.fo.veilarb.dokument.utils.TestUtils.lagFssUrl;
@@ -16,23 +20,24 @@ import static no.nav.sbl.util.EnvironmentUtils.Type.SECRET;
 public class TestConfig {
 
     private static final String APPLICATION_NAME = "veilarbdokument";
-    private static final String SERVICE_USER_NAME = "srv" + APPLICATION_NAME;
     private static final String TESTMILJO = "q1";
 
     public static void setupTestContext() {
-        ApiAppTest.setupTestContext(ApiAppTest.Config.builder().applicationName(APPLICATION_NAME).build());
 
-        NaisUtils.Credentials serviceUser = null; // TODO
+        loadProperties(".credentials.properties");
 
-        setProperty(resolveSrvUserPropertyName(), serviceUser.username, PUBLIC);
-        setProperty(resolverSrvPasswordPropertyName(), serviceUser.password, SECRET);
-        setProperty(CredentialConstants.SYSTEMUSER_USERNAME, serviceUser.username, PUBLIC);
-        setProperty(CredentialConstants.SYSTEMUSER_PASSWORD, serviceUser.password, SECRET);
-        setProperty(StsSecurityConstants.SYSTEMUSER_USERNAME, serviceUser.username, PUBLIC);
-        setProperty(StsSecurityConstants.SYSTEMUSER_PASSWORD, serviceUser.password, SECRET);
+        ApiAppTest.setupTestContext(
+                ApiAppTest.Config.builder().applicationName(APPLICATION_NAME).environment(TESTMILJO).build());
+
+        String serviceUserUsername = getRequiredProperty(resolveSrvUserPropertyName());
+        String serviceUserPassword = getRequiredProperty(resolverSrvPasswordPropertyName());
+
+        setProperty(CredentialConstants.SYSTEMUSER_USERNAME, serviceUserUsername, PUBLIC);
+        setProperty(CredentialConstants.SYSTEMUSER_PASSWORD, serviceUserPassword, SECRET);
+        setProperty(StsSecurityConstants.SYSTEMUSER_USERNAME, serviceUserUsername, PUBLIC);
+        setProperty(StsSecurityConstants.SYSTEMUSER_PASSWORD, serviceUserPassword, SECRET);
 
         setProperty(OPENAM_DISCOVERY_URL, "https://isso-q.adeo.no/isso/oauth2/.well-known/openid-configuration", PUBLIC);
-        setProperty(VEILARBLOGIN_OPENAM_CLIENT_ID, "TODO", PUBLIC);
         setProperty(VEILARBLOGIN_OPENAM_REFRESH_URL, "trengs ikke", PUBLIC);
 
         setProperty(UNLEASH_API_URL_PROPERTY_NAME, "https://unleash.nais.adeo.no/api/", PUBLIC);
@@ -43,5 +48,18 @@ public class TestConfig {
         setProperty(DOKUMENTPRODUKSJON_ENDPOINT_URL, lagFssUrl("dokprod", TESTMILJO, true) + "ws/dokumentproduksjon/v3", PUBLIC);
         setProperty(AKTOR_ENDPOINT_URL, "https://app-" + TESTMILJO + ".adeo.no/aktoerregister/ws/Aktoer/v2", PUBLIC);
         setProperty(SECURITYTOKENSERVICE_URL, "https://sts-" + TESTMILJO + ".preprod.local/SecurityTokenServiceProvider/", PUBLIC);
+        setProperty(NORG2_API_URL_PROPERTY, "https://app-" + TESTMILJO + ".adeo.no/norg2/api", PUBLIC);
+    }
+
+    private static void loadProperties(String resourcePath) {
+        Properties properties = new Properties();
+        try (InputStream inputStream = TestConfig.class.getClassLoader().getResourceAsStream(resourcePath)) {
+            properties.load(inputStream);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        for (Map.Entry<Object, Object> entry : properties.entrySet()) {
+            System.setProperty((String) entry.getKey(), (String) entry.getValue());
+        }
     }
 }
