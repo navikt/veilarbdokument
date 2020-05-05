@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xs:schema	attributeFormDefault="unqualified"
               elementFormDefault="qualified"
-              targetNamespace="http://nav.no/dok/brevdata/felles/v2/NAVFelles"
-              xmlns="http://nav.no/dok/brevdata/felles/v2/NAVFelles"
+              targetNamespace="http://nav.no/dok/brevdata/felles/v1/NAVFelles"
+              xmlns="http://nav.no/dok/brevdata/felles/v1/NAVFelles"
               xmlns:xs="http://www.w3.org/2001/XMLSchema"
               xmlns:st="http://nav.no/dok/brevdata/felles/v1/SimpleTypes">
 
