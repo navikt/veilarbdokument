@@ -55,7 +55,7 @@ public class KontaktEnhetService {
         LocalDate now = LocalDate.now();
 
         Boolean gyldigFra = Optional.ofNullable(x.getFra()).map(fra -> fra.isBefore(now) || fra.isEqual(now)).orElse(true);
-        Boolean gyldigTil = Optional.ofNullable(x.getTil()).map(fra -> fra.isAfter(now) || fra.isEqual(now)).orElse(true);
+        Boolean gyldigTil = Optional.ofNullable(x.getTil()).map(til -> til.isAfter(now) || til.isEqual(now)).orElse(true);
 
         return gyldigFra && gyldigTil;
     }
