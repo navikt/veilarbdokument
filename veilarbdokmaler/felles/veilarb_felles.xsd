@@ -5,9 +5,9 @@
            xmlns="http://nav.no/dok/veilarbdokmaler/felles/veilarb_felles"
            xmlns:xs="http://www.w3.org/2001/XMLSchema"
            xmlns:st="http://nav.no/dok/brevdata/felles/v1/SimpleTypes"
-           xmlns:felles="http://nav.no/dok/brevdata/felles/v2/NAVFelles">
+           xmlns:felles="http://nav.no/dok/brevdata/felles/v1/NAVFelles">
 
-    <xs:import namespace="http://nav.no/dok/brevdata/felles/v2/NAVFelles" schemaLocation="navfelles/v2.NAVFelles.xsd" />
+    <xs:import namespace="http://nav.no/dok/brevdata/felles/v1/NAVFelles" schemaLocation="navfelles/v1.NAVFelles.xsd" />
     <xs:import namespace="http://nav.no/dok/brevdata/felles/v1/SimpleTypes" schemaLocation="navfelles/v1.SimpleTypes.xsd"/>
 
     <!--NAVFelles delen av xml-->

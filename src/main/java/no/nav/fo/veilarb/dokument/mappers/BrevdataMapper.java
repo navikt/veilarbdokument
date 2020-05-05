@@ -2,7 +2,7 @@ package no.nav.fo.veilarb.dokument.mappers;
 
 import lombok.SneakyThrows;
 import lombok.val;
-import no.nav.dok.brevdata.felles.v2.navfelles.*;
+import no.nav.dok.brevdata.felles.v1.navfelles.*;
 import no.nav.dok.brevdata.felles.v1.simpletypes.AktoerType;
 import no.nav.dok.veilarbdokmaler._000135.BrevdataType;
 import no.nav.dok.veilarbdokmaler._000135.FagType;
@@ -146,7 +146,7 @@ public class BrevdataMapper {
         returadresse.setEnhetsId(enhetId);
 
         Kontaktinformasjon kontaktinformasjon = new Kontaktinformasjon();
-        kontaktinformasjon.setBesoksadresse(besoksadresse);
+        //kontaktinformasjon.setBesoksadresse(besoksadresse);
         kontaktinformasjon.setPostadresse(postadresse);
         kontaktinformasjon.setReturadresse(returadresse);
 

@@ -106,7 +106,7 @@
         <!--<dependency>
             <groupId>no.nav.dok.metaforcemal</groupId>
             <artifactId>veilarbdokmaler</artifactId>
-            <version>1.0.29</version>
+            <version>1.0.33</version>
             <classifier>jaxb</classifier>
             <exclusions>
                 <exclusion>
