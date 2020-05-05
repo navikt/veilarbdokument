@@ -146,7 +146,7 @@ public class BrevdataMapper {
         returadresse.setEnhetsId(enhetId);
 
         Kontaktinformasjon kontaktinformasjon = new Kontaktinformasjon();
-        kontaktinformasjon.setBesoksadresse(besoksadresse);
+        //kontaktinformasjon.setBesoksadresse(besoksadresse);
         kontaktinformasjon.setPostadresse(postadresse);
         kontaktinformasjon.setReturadresse(returadresse);
 
