@@ -1,9 +1,11 @@
+import no.nav.apiapp.ApiApp;
 import no.nav.fo.veilarb.dokument.TestConfig;
+import no.nav.fo.veilarb.dokument.config.ApplicationConfig;
 
 public class MainTest {
 
     public static void main(String... args) {
         TestConfig.setupTestContext();
-        Main.main("8674");
+        ApiApp.runApp(ApplicationConfig.class, new String[]{"8674"});
     }
 }
