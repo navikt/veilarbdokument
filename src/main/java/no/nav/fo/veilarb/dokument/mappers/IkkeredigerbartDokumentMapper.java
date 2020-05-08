@@ -9,7 +9,7 @@ import org.w3c.dom.Element;
 
 public class IkkeredigerbartDokumentMapper {
 
-    private static final String BESTILLENDE_FAGSYSTEM_KODE = "AO01";
+    private static final String BESTILLENDE_FAGSYSTEM_KODE = "BD11";
     private static final String SAKSTILHORENDE_FAGSYSTEM_KODE = "FS22";
     private static final String DOKUMENTTILHORENDE_FAGOMRAADE = "OPP";
 
