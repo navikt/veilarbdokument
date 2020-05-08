@@ -7,6 +7,7 @@ import no.nav.apiapp.security.PepClient;
 import no.nav.brukerdialog.security.domain.IdentType;
 import no.nav.common.oidc.auth.OidcAuthenticatorConfig;
 import no.nav.dialogarena.aktor.AktorConfig;
+import no.nav.fo.veilarb.dokument.client.SakClient;
 import no.nav.fo.veilarb.dokument.resource.DokumentRessurs;
 import no.nav.fo.veilarb.dokument.client.ArenaClient;
 import no.nav.fo.veilarb.dokument.client.EnhetClient;

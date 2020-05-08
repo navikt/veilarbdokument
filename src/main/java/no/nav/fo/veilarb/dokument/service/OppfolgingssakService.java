@@ -1,6 +1,7 @@
 package no.nav.fo.veilarb.dokument.service;
 
 import no.nav.fo.veilarb.dokument.client.ArenaClient;
+import no.nav.fo.veilarb.dokument.client.SakClient;
 import no.nav.fo.veilarb.dokument.domain.ArenaOppfolgingssak;
 import no.nav.fo.veilarb.dokument.domain.Bruker;
 import no.nav.fo.veilarb.dokument.domain.Sak;
@@ -25,17 +26,23 @@ public class OppfolgingssakService {
         List<Sak> oppfolgingssaker = sakClient.hentOppfolgingssaker(bruker.getAktorId());
 
         if (oppfolgingssaker.size() == 1) {
+            MetrikkService.rapporterSak("funnet");
             return oppfolgingssaker.get(0);
         } else if (oppfolgingssaker.size() == 0) {
             String fagsakNr = getArenaOppfolgingssak(bruker).getOppfolgingssakId();
-            return sakClient.opprettOppfolgingssak(bruker.getAktorId(), fagsakNr);
+            return opprettOppfolgingssak(bruker, fagsakNr);
         } else {
             String fagsakNr = getArenaOppfolgingssak(bruker).getOppfolgingssakId();
             return oppfolgingssaker.stream()
                     .filter(sak -> sak.fagsakNr().equals(fagsakNr))
                     .findFirst()
-                    .orElseGet(() -> sakClient.opprettOppfolgingssak(bruker.getAktorId(), fagsakNr));
+                    .orElseGet(() -> opprettOppfolgingssak(bruker, fagsakNr));
         }
+    }
+
+    private Sak opprettOppfolgingssak(Bruker bruker, String fagsakNr) {
+        MetrikkService.rapporterSak("opprettet");
+        return sakClient.opprettOppfolgingssak(bruker.getAktorId(), fagsakNr);
     }
 
     private ArenaOppfolgingssak getArenaOppfolgingssak(Bruker bruker) {
