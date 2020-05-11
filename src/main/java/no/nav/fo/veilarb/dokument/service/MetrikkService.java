@@ -9,7 +9,7 @@ public class MetrikkService {
     private static final MeterRegistry meterRegistry = MetricsFactory.getMeterRegistry();;
 
     public static void rapporterSak(String status) {
-        meterRegistry.counter("sak", "status", status);
+        meterRegistry.counter("sak", "status", status).increment();
     }
 
     public static void rapporterDokumentutkast(MalType mal) {
