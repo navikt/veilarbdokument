@@ -1,4 +1,4 @@
-package no.nav.fo.veilarb.dokument.service;
+package no.nav.fo.veilarb.dokument.client;
 
 import no.nav.fo.veilarb.dokument.domain.OpprettSakDto;
 import lombok.SneakyThrows;

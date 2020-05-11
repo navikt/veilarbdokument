@@ -4,7 +4,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.tomakehurst.wiremock.junit.WireMockRule;
 import lombok.SneakyThrows;
 import no.nav.fo.veilarb.dokument.domain.Sak;
-import no.nav.fo.veilarb.dokument.service.SakClient;
 import no.nav.json.JsonProvider;
 import no.nav.sbl.dialogarena.test.junit.SystemPropertiesRule;
 import org.glassfish.jersey.client.JerseyClientBuilder;
@@ -19,8 +18,8 @@ import java.util.List;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.*;
 import static no.nav.fo.veilarb.dokument.config.ApplicationConfig.SAK_API_URL;
-import static no.nav.fo.veilarb.dokument.service.SakClient.ARENA_KODE;
-import static no.nav.fo.veilarb.dokument.service.SakClient.OPPFOLGING_KODE;
+import static no.nav.fo.veilarb.dokument.client.SakClient.ARENA_KODE;
+import static no.nav.fo.veilarb.dokument.client.SakClient.OPPFOLGING_KODE;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class SakClientTest {
