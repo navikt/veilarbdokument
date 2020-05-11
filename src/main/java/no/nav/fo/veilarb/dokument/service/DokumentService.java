@@ -80,15 +80,13 @@ public class DokumentService {
         WSProduserIkkeredigerbartDokumentRequest request =
                 IkkeredigerbartDokumentMapper.mapRequest(dokumentbestilling);
 
-        WSProduserIkkeredigerbartDokumentResponse response;
-
         try {
-            response = dokumentproduksjon.produserIkkeredigerbartDokument(request);
-            MetrikkService.rapporterDokumentbestilling(dokumentbestilling.brevdata().malType().kode);
+            WSProduserIkkeredigerbartDokumentResponse response = dokumentproduksjon.produserIkkeredigerbartDokument(request);
+            MetrikkService.rapporterDokumentbestilling(dokumentbestilling.brevdata().malType());
             return IkkeredigerbartDokumentMapper.mapRespons(response);
         } catch (Exception e) {
             log.error(String.format("Kunne ikke produsere dokument for aktorId %s", bruker.getAktorId()), e);
-            MetrikkService.rapporterFeilendeDokumentbestilling(dokumentbestilling.brevdata().malType().kode);
+            MetrikkService.rapporterFeilendeDokumentbestilling(dokumentbestilling.brevdata().malType());
             throw e;
         }
 
@@ -111,11 +109,11 @@ public class DokumentService {
 
         try {
             byte[] dokumentutkast = dokumentproduksjon.produserDokumentutkast(dokumentutkastRequest).getDokumentutkast();
-            MetrikkService.rapporterDokumentutkast(dto.malType().kode);
+            MetrikkService.rapporterDokumentutkast(dto.malType());
             return dokumentutkast;
         } catch (Exception e) {
             log.error(String.format("Kunne ikke produsere dokumentutkast for aktorId %s", bruker.getAktorId()), e);
-            MetrikkService.rapporterFeilendeDokumentutkast(dto.malType().kode);
+            MetrikkService.rapporterFeilendeDokumentutkast(dto.malType());
             throw e;
         }
     }
