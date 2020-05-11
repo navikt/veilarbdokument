@@ -1,13 +1,12 @@
 package no.nav.fo.veilarb.dokument.service;
 
 import io.micrometer.core.instrument.MeterRegistry;
-import io.micrometer.prometheus.PrometheusConfig;
-import io.micrometer.prometheus.PrometheusMeterRegistry;
 import no.nav.fo.veilarb.dokument.domain.MalType;
+import no.nav.metrics.MetricsFactory;
 
 public class MetrikkService {
 
-    private static final MeterRegistry meterRegistry = new PrometheusMeterRegistry(PrometheusConfig.DEFAULT);
+    private static final MeterRegistry meterRegistry = MetricsFactory.getMeterRegistry();;
 
     public static void rapporterSak(String status) {
         meterRegistry.counter("sak", "status", status);
