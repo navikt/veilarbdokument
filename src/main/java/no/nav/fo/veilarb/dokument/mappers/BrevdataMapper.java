@@ -135,10 +135,6 @@ public class BrevdataMapper {
     }
 
     private static Kontaktinformasjon mapKontaktinformasjon(String enhetId) {
-        Besoksadresse besoksadresse = new Besoksadresse();
-        besoksadresse.setBerik(false);
-        //besoksadresse.setEnhetsId(enhetId);
-
         Postadresse postadresse = new Postadresse();
         postadresse.setEnhetsId(enhetId);
 
@@ -146,7 +142,6 @@ public class BrevdataMapper {
         returadresse.setEnhetsId(enhetId);
 
         Kontaktinformasjon kontaktinformasjon = new Kontaktinformasjon();
-        //kontaktinformasjon.setBesoksadresse(besoksadresse);
         kontaktinformasjon.setPostadresse(postadresse);
         kontaktinformasjon.setReturadresse(returadresse);
 
