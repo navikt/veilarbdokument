@@ -68,7 +68,7 @@ public class ArenaClient implements Helsesjekk {
                 "veilarbarena helsesjekk",
                 host,
                 "veilarbarena - ping",
-                true
+                false
         );
     }
 }
