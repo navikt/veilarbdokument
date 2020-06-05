@@ -4,4 +4,4 @@ target
 !.idea/runConfigurations/
 *.log
 ignore
-
+src/test/resources/.credentials.properties

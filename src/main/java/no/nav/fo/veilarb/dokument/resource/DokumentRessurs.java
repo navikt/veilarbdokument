@@ -1,4 +1,4 @@
-package no.nav.fo.veilarb.dokument;
+package no.nav.fo.veilarb.dokument.resource;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -28,6 +28,7 @@ import static org.apache.cxf.helpers.HttpHeaderHelper.AUTHORIZATION;
 public class DokumentRessurs {
 
     static final String VEILARBDOKUMENT_ENABLED_TOGGLE = "veilarbdokument.enabled";
+    static final String PTO_VEDTAKSSTOTTE_PILOT_TOGGLE = "pto.vedtaksstotte.pilot";
 
     private final DokumentService dokumentService;
     private final UnleashService unleashService;
@@ -46,7 +47,7 @@ public class DokumentRessurs {
             @ApiParam(value = "a oidc-token representing the consuming application", example = "Bearer ")
             @HeaderParam(AUTHORIZATION) String authorization,
             DokumentbestillingDto dokumentBestilling) {
-        if (unleashService.isEnabled(VEILARBDOKUMENT_ENABLED_TOGGLE)) {
+        if (unleashService.isEnabled(VEILARBDOKUMENT_ENABLED_TOGGLE) || unleashService.isEnabled(PTO_VEDTAKSSTOTTE_PILOT_TOGGLE)) {
             return dokumentService.bestillDokument(dokumentBestilling);
         } else {
             throw new IllegalStateException("ikke tilgjengelig");
@@ -62,7 +63,7 @@ public class DokumentRessurs {
             @ApiParam(value = "a oidc-token representing the consuming application", example = "Bearer ")
             @HeaderParam(AUTHORIZATION) String authorization,
             DokumentbestillingDto dokumentBestilling) {
-        if (unleashService.isEnabled(VEILARBDOKUMENT_ENABLED_TOGGLE)) {
+        if (unleashService.isEnabled(VEILARBDOKUMENT_ENABLED_TOGGLE) || unleashService.isEnabled(PTO_VEDTAKSSTOTTE_PILOT_TOGGLE)) {
             byte[] dokumentutkast = dokumentService.produserDokumentutkast(dokumentBestilling);
             return Response.ok(dokumentutkast).build();
 

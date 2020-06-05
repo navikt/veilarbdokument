@@ -8,7 +8,7 @@ import no.nav.dok.veilarbdokmaler._000135.BrevdataType;
 import no.nav.dok.veilarbdokmaler._000135.FagType;
 import no.nav.dok.veilarbdokmaler._000135.KulepunktListeType;
 import no.nav.dok.veilarbdokmaler._000135.KulepunktType;
-import no.nav.dok.veilarbdokmaler.felles.arena_felles.VeilArbNAVFelles;
+import no.nav.dok.veilarbdokmaler.felles.veilarb_felles.VeilArbNAVFelles;
 import no.nav.fo.veilarb.dokument.domain.Brevdata;
 import no.nav.fo.veilarb.dokument.domain.MalType;
 import org.w3c.dom.Document;
@@ -116,8 +116,8 @@ public class BrevdataMapper {
 
     private static VeilArbNAVFelles mapFelles(Brevdata brevdata) {
         VeilArbNAVFelles veilArbNAVFelles = new VeilArbNAVFelles();
-        veilArbNAVFelles.setBehandlendeEnhet(mapBehandlendeEnhet(brevdata.veilederEnhet()));
-        veilArbNAVFelles.setKontaktinformasjon(mapKontaktinformasjon(brevdata.veilederEnhet()));
+        veilArbNAVFelles.setBehandlendeEnhet(mapBehandlendeEnhet(brevdata.enhetId()));
+        veilArbNAVFelles.setKontaktinformasjon(mapKontaktinformasjon(brevdata.enhetIdKontakt()));
         veilArbNAVFelles.setMottaker(mapMottaker(brevdata.brukerFnr()));
         veilArbNAVFelles.setSakspart(mapSakspart(brevdata.brukerFnr()));
         veilArbNAVFelles.setSignerendeBeslutter(mapSaksbehandler(brevdata));
@@ -128,24 +128,20 @@ public class BrevdataMapper {
     }
 
 
-    private static NavEnhet mapBehandlendeEnhet(String enhet) {
+    private static NavEnhet mapBehandlendeEnhet(String enhetId) {
         NavEnhet navEnhet = new NavEnhet();
-        navEnhet.setEnhetsId(enhet);
+        navEnhet.setEnhetsId(enhetId);
         return navEnhet;
     }
 
-    private static Kontaktinformasjon mapKontaktinformasjon(String enhet) {
-        Besoksadresse besoksadresse = new Besoksadresse();
-        besoksadresse.setEnhetsId(enhet);
-
+    private static Kontaktinformasjon mapKontaktinformasjon(String enhetId) {
         Postadresse postadresse = new Postadresse();
-        postadresse.setEnhetsId(enhet);
+        postadresse.setEnhetsId(enhetId);
 
         Returadresse returadresse = new Returadresse();
-        returadresse.setEnhetsId(enhet);
+        returadresse.setEnhetsId(enhetId);
 
         Kontaktinformasjon kontaktinformasjon = new Kontaktinformasjon();
-        kontaktinformasjon.setBesoksadresse(besoksadresse);
         kontaktinformasjon.setPostadresse(postadresse);
         kontaktinformasjon.setReturadresse(returadresse);
 
@@ -175,7 +171,7 @@ public class BrevdataMapper {
         navAnsatt.setNavn(brevdata.veilederNavn());
 
         NavEnhet navEnhet = new NavEnhet();
-        navEnhet.setEnhetsId(brevdata.veilederEnhet());
+        navEnhet.setEnhetsId(brevdata.enhetId());
 
         Saksbehandler saksbehandler = new Saksbehandler();
         saksbehandler.setNavAnsatt(navAnsatt);

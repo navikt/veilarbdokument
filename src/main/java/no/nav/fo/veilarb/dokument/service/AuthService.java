@@ -4,6 +4,7 @@ import no.nav.apiapp.feil.IngenTilgang;
 import no.nav.apiapp.security.PepClient;
 import no.nav.common.auth.SubjectHandler;
 import no.nav.dialogarena.aktor.AktorService;
+import no.nav.fo.veilarb.dokument.client.ArenaClient;
 import no.nav.fo.veilarb.dokument.domain.Bruker;
 import org.springframework.stereotype.Service;
 
@@ -14,17 +15,17 @@ import static no.nav.brukerdialog.security.domain.IdentType.InternBruker;
 @Service
 public class AuthService {
 
-    private AktorService aktorService;
-    private PepClient pepClient;
-    private ArenaService arenaService;
+    private final AktorService aktorService;
+    private final PepClient pepClient;
+    private final ArenaClient arenaClient;
 
     @Inject
     public AuthService(AktorService aktorService,
                        PepClient pepClient,
-                       ArenaService arenaService) {
+                       ArenaClient arenaClient) {
         this.aktorService = aktorService;
         this.pepClient = pepClient;
-        this.arenaService = arenaService;
+        this.arenaClient = arenaClient;
     }
 
 
@@ -41,7 +42,7 @@ public class AuthService {
     }
 
     private void sjekkRiktigEnhet(String fnr, String veilederEnhet) {
-        String oppfolgingsenhet = arenaService.oppfolgingsenhet(fnr);
+        String oppfolgingsenhet = arenaClient.oppfolgingsenhet(fnr);
 
         if (!veilederEnhet.equals(oppfolgingsenhet)) {
             throw new IngenTilgang("Feil enhet");

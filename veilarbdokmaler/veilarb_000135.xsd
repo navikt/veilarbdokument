@@ -4,10 +4,10 @@
 		   targetNamespace="http://nav.no/dok/veilarbdokmaler/000135"
 		   xmlns="http://nav.no/dok/veilarbdokmaler/000135"
 		   xmlns:xs="http://www.w3.org/2001/XMLSchema"
-           xmlns:st="http://nav.no/dok/brevdata/felles/v1/SimpleTypes"
-		   xmlns:veilarbfelles="http://nav.no/dok/veilarbdokmaler/felles/arena_felles">
+		   xmlns:st="http://nav.no/dok/brevdata/felles/v1/SimpleTypes"
+		   xmlns:veilarbfelles="http://nav.no/dok/veilarbdokmaler/felles/veilarb_felles">
 
-	<xs:import namespace="http://nav.no/dok/veilarbdokmaler/felles/arena_felles" schemaLocation="felles/arena_felles.xsd" />
+	<xs:import namespace="http://nav.no/dok/veilarbdokmaler/felles/veilarb_felles" schemaLocation="felles/veilarb_felles.xsd" />
 	<xs:import namespace="http://nav.no/dok/brevdata/felles/v1/SimpleTypes" schemaLocation="felles/navfelles/v1.SimpleTypes.xsd"/>
 
 	<xs:element name="brevdata" type="brevdataType"/>
@@ -18,7 +18,7 @@
 			<xs:element name="fag" type="fagType" />
 		</xs:sequence>
 	</xs:complexType>
-	
+
 	<xs:complexType name="fagType">
 		<xs:all>
 			<xs:element name="fritekstBegrunnelse" type="xs:string" minOccurs="0"/>

@@ -28,11 +28,11 @@ spec:
     cpuThresholdPercentage: 50
   resources:
     limits:
+      cpu: "2"
+      memory: 1024Mi
+    requests:
       cpu: 500m
       memory: 512Mi
-    requests:
-      cpu: 200m
-      memory: 256Mi
   vault:
     enabled: true
     paths:
@@ -40,8 +40,6 @@ spec:
         mountPath: /var/run/secrets/nais.io/service_user
       - kvPath: /kv/preprod/fss/veilarbdokument/{{namespace}}
         mountPath: /var/run/secrets/nais.io/vault
-  filesFrom:
-    - configmap: pto-config
   webproxy: true
   envFrom:
     - configmap: pto-config

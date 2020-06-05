@@ -197,7 +197,7 @@
         <xs:all>
             <xs:element name="returadresse" type="Returadresse"/>
             <xs:element name="postadresse" type="Postadresse"/>
-            <xs:element name="besoksadresse" type="Besoksadresse"/>
+            <xs:element name="besoksadresse" type="Besoksadresse" minOccurs="0"/>
         </xs:all>
     </xs:complexType>
 
