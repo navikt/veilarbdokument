@@ -66,8 +66,8 @@ public class ArenaClient implements Helsesjekk {
     public HelsesjekkMetadata getMetadata() {
         return new HelsesjekkMetadata(
                 "veilarbarena helsesjekk",
-                host,
-                "veilarbarena - ping",
+                joinPaths(clusterUrlForApplication("veilarbarena"), "/veilarbarena/internal/isAlive"),
+                "veilarbarena - isAlive",
                 false
         );
     }
