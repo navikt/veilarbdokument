@@ -55,7 +55,7 @@ public class VeilederClient implements Helsesjekk {
                 "veilarbveileder helsesjekk",
                 host,
                 "veilarbveileder - ping",
-                true
+                false
         );
     }
 }
