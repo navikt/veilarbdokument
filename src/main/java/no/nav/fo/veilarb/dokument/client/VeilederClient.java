@@ -42,7 +42,7 @@ public class VeilederClient implements Helsesjekk {
 
     @Override
     public void helsesjekk() {
-        int status = restClient.target(host).path("ping").request().get().getStatus();
+        int status = restClient.target(joinPaths(clusterUrlForApplication("veilarbveileder"), "/veilarbveileder/internal/isAlive")).request().get().getStatus();
 
         if (status != 200) {
             throw new IllegalStateException("Rest kall mot veilarbveileder feilet");
@@ -53,7 +53,7 @@ public class VeilederClient implements Helsesjekk {
     public HelsesjekkMetadata getMetadata() {
         return new HelsesjekkMetadata(
                 "veilarbveileder helsesjekk",
-                host,
+                joinPaths(clusterUrlForApplication("veilarbveileder"), "/veilarbveileder/internal/isAlive"),
                 "veilarbveileder - ping",
                 false
         );
