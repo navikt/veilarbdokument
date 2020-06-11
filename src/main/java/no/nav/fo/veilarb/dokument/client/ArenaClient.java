@@ -55,7 +55,7 @@ public class ArenaClient implements Helsesjekk {
 
     @Override
     public void helsesjekk() {
-        int status = restClient.target(host).path("ping").request().get().getStatus();
+        int status = restClient.target(joinPaths(clusterUrlForApplication("veilarbarena"), "/veilarbarena/internal/isAlive")).request().get().getStatus();
 
         if (status != 200) {
             throw new IllegalStateException("Rest kall mot veilarbarena feilet");
