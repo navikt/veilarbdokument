@@ -1,9 +1,5 @@
 package no.nav.fo.veilarb.dokument;
 
-import no.nav.sbl.dialogarena.common.abac.pep.CredentialConstants;
-import no.nav.sbl.dialogarena.common.cxf.StsSecurityConstants;
-import no.nav.testconfig.ApiAppTest;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Map;
@@ -11,11 +7,6 @@ import java.util.Properties;
 
 import static no.nav.fo.veilarb.dokument.config.ApplicationConfig.*;
 import static no.nav.fo.veilarb.dokument.utils.TestUtils.lagFssUrl;
-import static no.nav.sbl.dialogarena.common.abac.pep.service.AbacServiceConfig.ABAC_ENDPOINT_URL_PROPERTY_NAME;
-import static no.nav.sbl.featuretoggle.unleash.UnleashServiceConfig.UNLEASH_API_URL_PROPERTY_NAME;
-import static no.nav.sbl.util.EnvironmentUtils.*;
-import static no.nav.sbl.util.EnvironmentUtils.Type.PUBLIC;
-import static no.nav.sbl.util.EnvironmentUtils.Type.SECRET;
 
 public class TestConfig {
 
@@ -23,7 +14,7 @@ public class TestConfig {
     private static final String TESTMILJO = "q1";
 
     public static void setupTestContext() {
-
+/*
         loadProperties(".credentials.properties");
 
         ApiAppTest.setupTestContext(
@@ -49,6 +40,7 @@ public class TestConfig {
         setProperty(AKTOR_ENDPOINT_URL, "https://app-" + TESTMILJO + ".adeo.no/aktoerregister/ws/Aktoer/v2", PUBLIC);
         setProperty(SECURITYTOKENSERVICE_URL, "https://sts-" + TESTMILJO + ".preprod.local/SecurityTokenServiceProvider/", PUBLIC);
         setProperty(NORG2_API_URL_PROPERTY, "https://app-" + TESTMILJO + ".adeo.no/norg2/api", PUBLIC);
+        */
     }
 
     private static void loadProperties(String resourcePath) {

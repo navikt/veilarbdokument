@@ -1,48 +1,58 @@
 package no.nav.fo.veilarb.dokument.client;
 
+import no.nav.common.rest.client.RestUtils;
 import no.nav.fo.veilarb.dokument.domain.EnhetKontaktinformasjon;
 import no.nav.fo.veilarb.dokument.domain.EnhetOrganisering;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
 import org.springframework.cache.annotation.Cacheable;
-import org.springframework.stereotype.Component;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.server.ResponseStatusException;
 
-import javax.inject.Inject;
-import javax.ws.rs.client.Client;
-import javax.ws.rs.core.GenericType;
+import java.util.Arrays;
 import java.util.List;
 
-import static no.nav.apiapp.util.UrlUtils.joinPaths;
-import static no.nav.fo.veilarb.dokument.config.ApplicationConfig.NORG2_API_URL_PROPERTY;
+import static no.nav.common.utils.UrlUtils.joinPaths;
 import static no.nav.fo.veilarb.dokument.config.CacheConfig.NORG2_ENHET_KONTAKTINFO_CACHE_NAME;
 import static no.nav.fo.veilarb.dokument.config.CacheConfig.NORG2_ENHET_ORGANISERING_CACHE_NAME;
-import static no.nav.sbl.util.EnvironmentUtils.getRequiredProperty;
 
-@Component
 public class EnhetClient {
 
-    private final Client restClient;
+    private final OkHttpClient client;
     private final String host;
 
-    @Inject
-    public EnhetClient(Client restClient) {
-        this.restClient = restClient;
-        host = getRequiredProperty(NORG2_API_URL_PROPERTY);
+    public EnhetClient(OkHttpClient client, String norgUrl) {
+        this.client = client;
+        host = norgUrl;
     }
 
     @Cacheable(NORG2_ENHET_KONTAKTINFO_CACHE_NAME)
     public EnhetKontaktinformasjon hentKontaktinfo(String enhetId) {
-        return restClient
-                .target(joinPaths(host, String.format("v1/enhet/%s/kontaktinformasjon", enhetId)))
-                .request()
-                .get(EnhetKontaktinformasjon.class);
+        Request request = new Request.Builder()
+                .url(joinPaths(host, String.format("v1/enhet/%s/kontaktinformasjon", enhetId)))
+                .build();
+
+        try (Response response = client.newCall(request).execute()) {
+            RestUtils.throwIfNotSuccessful(response);
+            return RestUtils.parseJsonResponseOrThrow(response, EnhetKontaktinformasjon.class);
+        } catch (Exception e) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Feil ved kall mot " + request.url().toString(), e);
+        }
     }
 
     @Cacheable(NORG2_ENHET_ORGANISERING_CACHE_NAME)
     public List<EnhetOrganisering> hentEnhetOrganisering(String enhetId) {
-        return restClient
-                .target(joinPaths(host, String.format("v1/enhet/%s/organisering", enhetId)))
-                .request()
-                .get()
-                .readEntity(new GenericType<List<EnhetOrganisering>>() {
-                });
+
+        Request request = new Request.Builder()
+                .url(joinPaths(host, String.format("v1/enhet/%s/organisering", enhetId)))
+                .build();
+
+        try (Response response = client.newCall(request).execute()) {
+            RestUtils.throwIfNotSuccessful(response);
+            return Arrays.asList(RestUtils.parseJsonResponseOrThrow(response, EnhetOrganisering[].class));
+        } catch (Exception e) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Feil ved kall mot " + request.url().toString(), e);
+        }
     }
 }

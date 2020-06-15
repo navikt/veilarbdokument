@@ -3,9 +3,8 @@ package no.nav.fo.veilarb.dokument.service;
 import no.nav.fo.veilarb.dokument.client.EnhetClient;
 import no.nav.fo.veilarb.dokument.domain.EnhetKontaktinformasjon;
 import no.nav.fo.veilarb.dokument.domain.EnhetOrganisering;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
-import javax.inject.Inject;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
@@ -13,12 +12,11 @@ import java.util.stream.Collectors;
 
 import static java.lang.String.format;
 
-@Component
+@Service
 public class KontaktEnhetService {
 
     private final EnhetClient enhetClient;
 
-    @Inject
     public KontaktEnhetService(EnhetClient enhetClient) {
         this.enhetClient = enhetClient;
     }

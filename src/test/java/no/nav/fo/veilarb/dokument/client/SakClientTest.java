@@ -1,43 +1,41 @@
 package no.nav.fo.veilarb.dokument.client;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.tomakehurst.wiremock.junit.WireMockRule;
 import lombok.SneakyThrows;
+import no.nav.common.auth.subject.IdentType;
+import no.nav.common.auth.subject.SsoToken;
+import no.nav.common.auth.subject.Subject;
+import no.nav.common.auth.subject.SubjectHandler;
+import no.nav.common.json.JsonUtils;
+import no.nav.common.rest.client.RestClient;
 import no.nav.fo.veilarb.dokument.domain.Sak;
-import no.nav.json.JsonProvider;
-import no.nav.sbl.dialogarena.test.junit.SystemPropertiesRule;
-import org.glassfish.jersey.client.JerseyClientBuilder;
+import okhttp3.OkHttpClient;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 
-import javax.ws.rs.client.Client;
-import java.io.ByteArrayOutputStream;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.stream.Stream;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.*;
-import static no.nav.fo.veilarb.dokument.config.ApplicationConfig.SAK_API_URL;
 import static no.nav.fo.veilarb.dokument.client.SakClient.ARENA_KODE;
 import static no.nav.fo.veilarb.dokument.client.SakClient.OPPFOLGING_KODE;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class SakClientTest {
 
-    private Client restClient;
     private SakClient sakClient;
-
-    @Rule
-    public SystemPropertiesRule systemPropertiesRule = new SystemPropertiesRule();
+    private Subject subject = new Subject("test", IdentType.InternBruker, SsoToken.oidcToken("token", new HashMap<>()));
 
     @Rule
     public WireMockRule wireMockRule = new WireMockRule();
 
     @Before
     public void setup() {
-        systemPropertiesRule.setProperty(SAK_API_URL, "http://localhost:" + wireMockRule.port());
-        restClient = new JerseyClientBuilder().build();
-        sakClient = new SakClient(restClient);
+        OkHttpClient client = RestClient.baseClient();
+        sakClient = new SakClient(client, "http://localhost:" + wireMockRule.port());
     }
 
     @Test
@@ -54,28 +52,23 @@ public class SakClientTest {
                 new Sak(6, null, null, null, null)
         );
 
-        mockRestClient(saker);
+        mockSakerResponse(saker);
 
-        assertThat(
-                sakClient.hentOppfolgingssaker("aktorId").stream().map(Sak::id)
-        ).containsExactly(2, 9);
+        Stream<Integer> oppfolgingssaker = SubjectHandler.withSubject(subject, () ->
+                sakClient.hentOppfolgingssaker("aktorId").stream().map(Sak::id));
+
+        assertThat(oppfolgingssaker).containsExactly(2, 9);
     }
 
     @SneakyThrows
-    private void mockRestClient(List<Sak> saker) {
-        ObjectMapper objectMapper = JsonProvider.createObjectMapper();
-
-        final ByteArrayOutputStream out = new ByteArrayOutputStream();
-        objectMapper.writeValue(out, saker);
-        final byte[] data = out.toByteArray();
-        String response = new String(data);
-
+    private void mockSakerResponse(List<Sak> saker) {
+        String json = JsonUtils.toJson(saker);
         givenThat(
                 get(urlPathEqualTo("/api/v1/saker"))
                         .willReturn(aResponse()
                                 .withStatus(200)
                                 .withHeader("Content-Type", "applicaition/json")
-                                .withBody(response)
-        ));
+                                .withBody(json)
+                        ));
     }
 }

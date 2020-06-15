@@ -1,30 +1,31 @@
 package no.nav.fo.veilarb.dokument.service;
 
-import no.nav.apiapp.feil.IngenTilgang;
-import no.nav.apiapp.security.PepClient;
-import no.nav.common.auth.SubjectHandler;
-import no.nav.dialogarena.aktor.AktorService;
+import no.nav.common.abac.Pep;
+import no.nav.common.abac.domain.AbacPersonId;
+import no.nav.common.abac.domain.request.ActionId;
+import no.nav.common.auth.subject.IdentType;
+import no.nav.common.auth.subject.Subject;
+import no.nav.common.auth.subject.SubjectHandler;
+import no.nav.common.client.aktorregister.AktorregisterClient;
 import no.nav.fo.veilarb.dokument.client.ArenaClient;
 import no.nav.fo.veilarb.dokument.domain.Bruker;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
-import javax.inject.Inject;
-
-import static no.nav.brukerdialog.security.domain.IdentType.InternBruker;
 
 @Service
 public class AuthService {
 
-    private final AktorService aktorService;
-    private final PepClient pepClient;
+    private final AktorregisterClient aktorregisterClient;
+    private final Pep pep;
     private final ArenaClient arenaClient;
 
-    @Inject
-    public AuthService(AktorService aktorService,
-                       PepClient pepClient,
+    public AuthService(AktorregisterClient aktorregisterClient,
+                       Pep pep,
                        ArenaClient arenaClient) {
-        this.aktorService = aktorService;
-        this.pepClient = pepClient;
+        this.aktorregisterClient = aktorregisterClient;
+        this.pep = pep;
         this.arenaClient = arenaClient;
     }
 
@@ -32,38 +33,48 @@ public class AuthService {
     public Bruker sjekkTilgang(String fnr, String veilederEnhet) {
         sjekkInternBruker();
 
-        String aktorId = getAktorIdOrThrow(fnr);
+        String aktorId = aktorregisterClient.hentAktorId(fnr);
 
-        pepClient.sjekkSkrivetilgangTilAktorId(aktorId);
+        sjekkTilgangTilPerson(aktorId);
         sjekkRiktigEnhet(fnr, veilederEnhet);
         sjekkTilgangTilEnhet(veilederEnhet);
 
         return new Bruker(fnr, aktorId);
     }
 
+    private void sjekkTilgangTilPerson(String aktorId) {
+        boolean harTilgang = pep.harVeilederTilgangTilPerson(getInnloggetVeilederIdent(), ActionId.WRITE, AbacPersonId.aktorId(aktorId));
+        if (!harTilgang) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN);
+        }
+    }
+
     private void sjekkRiktigEnhet(String fnr, String veilederEnhet) {
         String oppfolgingsenhet = arenaClient.oppfolgingsenhet(fnr);
 
         if (!veilederEnhet.equals(oppfolgingsenhet)) {
-            throw new IngenTilgang("Feil enhet");
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Feil enhet");
         }
     }
 
     private void sjekkTilgangTilEnhet(String enhet) {
-        if(!pepClient.harTilgangTilEnhet(enhet)) {
-            throw new IngenTilgang("Ikke tilgang til enhet");
+        if (!pep.harVeilederTilgangTilEnhet(getInnloggetVeilederIdent(), enhet)) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Ikke tilgang til enhet");
         }
     }
 
     private void sjekkInternBruker() {
         SubjectHandler
                 .getIdentType()
-                .filter(InternBruker::equals)
-                .orElseThrow(() -> new IngenTilgang("Ikke intern bruker"));
+                .filter(IdentType.InternBruker::equals)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.FORBIDDEN, "Ikke intern bruker"));
     }
 
-    private String getAktorIdOrThrow(String fnr) {
-        return aktorService.getAktorId(fnr)
-                .orElseThrow(() -> new IllegalArgumentException("Fant ikke aktør for fnr"));
+    public String getInnloggetVeilederIdent() {
+        return SubjectHandler
+                .getSubject()
+                .filter(subject -> IdentType.InternBruker.equals(subject.getIdentType()))
+                .map(Subject::getUid)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "Fant ikke ident for innlogget veileder"));
     }
 }

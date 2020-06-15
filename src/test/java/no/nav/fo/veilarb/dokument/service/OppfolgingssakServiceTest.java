@@ -20,7 +20,8 @@ public class OppfolgingssakServiceTest {
     private Bruker bruker = new Bruker("fnr", "aktorId");
     private SakClient sakClient = mock(SakClient.class);
     private ArenaClient arenaClient = mock(ArenaClient.class);
-    private OppfolgingssakService oppfolgingssakService = new OppfolgingssakService(sakClient, arenaClient);
+    private MetrikkService metrikkService = mock(MetrikkService.class);
+    private OppfolgingssakService oppfolgingssakService = new OppfolgingssakService(sakClient, arenaClient, metrikkService);
 
     @Test
     public void hentOppfolgingssak__henter_sak_fra_gsak_dersom_en_oppfolgingssak() {

@@ -7,7 +7,6 @@ import no.nav.fo.veilarb.dokument.domain.Bruker;
 import no.nav.fo.veilarb.dokument.domain.Sak;
 import org.springframework.stereotype.Service;
 
-import javax.inject.Inject;
 import java.util.List;
 
 @Service
@@ -15,18 +14,19 @@ public class OppfolgingssakService {
 
     private final SakClient sakClient;
     private final ArenaClient arenaClient;
+    private final MetrikkService metrikkService;
 
-    @Inject
-    OppfolgingssakService(SakClient sakClient, ArenaClient arenaClient) {
+    OppfolgingssakService(SakClient sakClient, ArenaClient arenaClient, MetrikkService metrikkService) {
         this.sakClient = sakClient;
         this.arenaClient = arenaClient;
+        this.metrikkService = metrikkService;
     }
 
     public Sak hentOppfolgingssak(Bruker bruker) {
         List<Sak> oppfolgingssaker = sakClient.hentOppfolgingssaker(bruker.getAktorId());
 
         if (oppfolgingssaker.size() == 1) {
-            MetrikkService.rapporterSak("funnet");
+            metrikkService.rapporterSak("funnet");
             return oppfolgingssaker.get(0);
         } else if (oppfolgingssaker.size() == 0) {
             String fagsakNr = getArenaOppfolgingssak(bruker).getOppfolgingssakId();
@@ -41,7 +41,7 @@ public class OppfolgingssakService {
     }
 
     private Sak opprettOppfolgingssak(Bruker bruker, String fagsakNr) {
-        MetrikkService.rapporterSak("opprettet");
+        metrikkService.rapporterSak("opprettet");
         return sakClient.opprettOppfolgingssak(bruker.getAktorId(), fagsakNr);
     }
 
