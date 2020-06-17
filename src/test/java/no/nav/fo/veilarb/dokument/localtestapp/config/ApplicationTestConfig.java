@@ -9,6 +9,7 @@ import no.nav.common.abac.audit.AuditLogger;
 import no.nav.common.client.aktorregister.AktorregisterClient;
 import no.nav.common.featuretoggle.UnleashService;
 import no.nav.common.utils.Credentials;
+import no.nav.fo.veilarb.dokument.config.SwaggerConfig;
 import no.nav.fo.veilarb.dokument.helsesjekk.DokumentproduksjonV3Helsesjekk;
 import no.nav.fo.veilarb.dokument.localtestapp.stub.AbacClientStub;
 import no.nav.fo.veilarb.dokument.localtestapp.stub.AktorregisterClientStub;
@@ -24,6 +25,7 @@ import static no.nav.fo.veilarb.dokument.localtestapp.stub.Values.TEST_SRV_USERN
 
 @Configuration
 @Import({
+        SwaggerConfig.class,
         ClientTestConfig.class,
         ServiceTestConfig.class,
         ControllerTestConfig.class,
