@@ -2,7 +2,8 @@ package no.nav.fo.veilarb.dokument.service;
 
 import com.github.tomakehurst.wiremock.junit.WireMockRule;
 import no.nav.common.rest.client.RestClient;
-import no.nav.fo.veilarb.dokument.client.EnhetClient;
+import no.nav.fo.veilarb.dokument.client.api.EnhetClient;
+import no.nav.fo.veilarb.dokument.client.impl.EnhetClientImpl;
 import no.nav.fo.veilarb.dokument.domain.Enhet;
 import no.nav.fo.veilarb.dokument.domain.EnhetKontaktinformasjon;
 import no.nav.fo.veilarb.dokument.domain.EnhetOrganisering;
@@ -39,7 +40,7 @@ public class KontaktEnhetServiceTest {
     @Before
     public void setup() {
         OkHttpClient client = RestClient.baseClient();
-        enhetClient = new EnhetClient(client, "http://localhost:" + wireMockRule.port());
+        enhetClient = new EnhetClientImpl(client, "http://localhost:" + wireMockRule.port());
         kontaktEnhetService = new KontaktEnhetService(enhetClient);
     }
 

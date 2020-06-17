@@ -1,6 +1,7 @@
-package no.nav.fo.veilarb.dokument.client;
+package no.nav.fo.veilarb.dokument.client.impl;
 
 import no.nav.common.rest.client.RestUtils;
+import no.nav.fo.veilarb.dokument.client.api.EnhetClient;
 import no.nav.fo.veilarb.dokument.domain.EnhetKontaktinformasjon;
 import no.nav.fo.veilarb.dokument.domain.EnhetOrganisering;
 import okhttp3.OkHttpClient;
@@ -17,12 +18,12 @@ import static no.nav.common.utils.UrlUtils.joinPaths;
 import static no.nav.fo.veilarb.dokument.config.CacheConfig.NORG2_ENHET_KONTAKTINFO_CACHE_NAME;
 import static no.nav.fo.veilarb.dokument.config.CacheConfig.NORG2_ENHET_ORGANISERING_CACHE_NAME;
 
-public class EnhetClient {
+public class EnhetClientImpl implements EnhetClient {
 
     private final OkHttpClient client;
     private final String host;
 
-    public EnhetClient(OkHttpClient client, String norgUrl) {
+    public EnhetClientImpl(OkHttpClient client, String norgUrl) {
         this.client = client;
         host = norgUrl;
     }

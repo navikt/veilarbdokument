@@ -1,10 +1,10 @@
-package no.nav.fo.veilarb.dokument.client;
+package no.nav.fo.veilarb.dokument.client.impl;
 
 import lombok.extern.slf4j.Slf4j;
-import no.nav.common.health.HealthCheck;
 import no.nav.common.health.HealthCheckResult;
 import no.nav.common.health.HealthCheckUtils;
 import no.nav.common.rest.client.RestUtils;
+import no.nav.fo.veilarb.dokument.client.api.VeilederClient;
 import no.nav.fo.veilarb.dokument.domain.VeilederDto;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -17,12 +17,12 @@ import static no.nav.common.utils.UrlUtils.joinPaths;
 import static no.nav.fo.veilarb.dokument.util.AuthUtils.createBearerToken;
 
 @Slf4j
-public class VeilederClient implements HealthCheck {
+public class VeilederClientImpl implements VeilederClient {
 
     private final OkHttpClient client;
     private final String host;
 
-    public VeilederClient(OkHttpClient client, String veilarbveilederUrl) {
+    public VeilederClientImpl(OkHttpClient client, String veilarbveilederUrl) {
         this.client = client;
         host = joinPaths(veilarbveilederUrl, "/veilarbveileder/api");
     }

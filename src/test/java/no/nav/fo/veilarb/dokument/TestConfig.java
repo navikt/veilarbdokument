@@ -5,12 +5,8 @@ import java.io.InputStream;
 import java.util.Map;
 import java.util.Properties;
 
-import static no.nav.fo.veilarb.dokument.config.ApplicationConfig.*;
-import static no.nav.fo.veilarb.dokument.utils.TestUtils.lagFssUrl;
-
 public class TestConfig {
 
-    private static final String APPLICATION_NAME = "veilarbdokument";
     private static final String TESTMILJO = "q1";
 
     public static void setupTestContext() {

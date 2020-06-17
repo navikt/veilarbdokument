@@ -1,6 +1,6 @@
 package no.nav.fo.veilarb.dokument.service;
 
-import no.nav.fo.veilarb.dokument.client.EnhetClient;
+import no.nav.fo.veilarb.dokument.client.api.EnhetClient;
 import no.nav.fo.veilarb.dokument.domain.EnhetKontaktinformasjon;
 import no.nav.fo.veilarb.dokument.domain.EnhetOrganisering;
 import org.springframework.stereotype.Service;

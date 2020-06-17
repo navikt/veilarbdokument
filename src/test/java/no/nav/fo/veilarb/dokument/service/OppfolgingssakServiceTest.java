@@ -1,7 +1,7 @@
 package no.nav.fo.veilarb.dokument.service;
 
-import no.nav.fo.veilarb.dokument.client.ArenaClient;
-import no.nav.fo.veilarb.dokument.client.SakClient;
+import no.nav.fo.veilarb.dokument.client.api.ArenaClient;
+import no.nav.fo.veilarb.dokument.client.api.SakClient;
 import no.nav.fo.veilarb.dokument.domain.ArenaOppfolgingssak;
 import no.nav.fo.veilarb.dokument.domain.Bruker;
 import no.nav.fo.veilarb.dokument.domain.Sak;
@@ -17,11 +17,11 @@ import static org.mockito.internal.verification.VerificationModeFactory.times;
 
 public class OppfolgingssakServiceTest {
 
-    private Bruker bruker = new Bruker("fnr", "aktorId");
-    private SakClient sakClient = mock(SakClient.class);
-    private ArenaClient arenaClient = mock(ArenaClient.class);
-    private MetrikkService metrikkService = mock(MetrikkService.class);
-    private OppfolgingssakService oppfolgingssakService = new OppfolgingssakService(sakClient, arenaClient, metrikkService);
+    private final Bruker bruker = new Bruker("fnr", "aktorId");
+    private final SakClient sakClient = mock(SakClient.class);
+    private final ArenaClient arenaClient = mock(ArenaClient.class);
+    private final MetrikkService metrikkService = mock(MetrikkService.class);
+    private final OppfolgingssakService oppfolgingssakService = new OppfolgingssakService(sakClient, arenaClient, metrikkService);
 
     @Test
     public void hentOppfolgingssak__henter_sak_fra_gsak_dersom_en_oppfolgingssak() {

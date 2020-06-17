@@ -1,4 +1,4 @@
-package no.nav.fo.veilarb.dokument.client;
+package no.nav.fo.veilarb.dokument.client.impl;
 
 import com.github.tomakehurst.wiremock.junit.WireMockRule;
 import lombok.SneakyThrows;
@@ -8,6 +8,7 @@ import no.nav.common.auth.subject.Subject;
 import no.nav.common.auth.subject.SubjectHandler;
 import no.nav.common.json.JsonUtils;
 import no.nav.common.rest.client.RestClient;
+import no.nav.fo.veilarb.dokument.client.api.SakClient;
 import no.nav.fo.veilarb.dokument.domain.Sak;
 import okhttp3.OkHttpClient;
 import org.junit.Before;
@@ -20,11 +21,11 @@ import java.util.List;
 import java.util.stream.Stream;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.*;
-import static no.nav.fo.veilarb.dokument.client.SakClient.ARENA_KODE;
-import static no.nav.fo.veilarb.dokument.client.SakClient.OPPFOLGING_KODE;
+import static no.nav.fo.veilarb.dokument.client.impl.SakClientImpl.ARENA_KODE;
+import static no.nav.fo.veilarb.dokument.client.impl.SakClientImpl.OPPFOLGING_KODE;
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class SakClientTest {
+public class SakClientImplTest {
 
     private SakClient sakClient;
     private Subject subject = new Subject("test", IdentType.InternBruker, SsoToken.oidcToken("token", new HashMap<>()));
@@ -35,7 +36,7 @@ public class SakClientTest {
     @Before
     public void setup() {
         OkHttpClient client = RestClient.baseClient();
-        sakClient = new SakClient(client, "http://localhost:" + wireMockRule.port());
+        sakClient = new SakClientImpl(client, "http://localhost:" + wireMockRule.port());
     }
 
     @Test

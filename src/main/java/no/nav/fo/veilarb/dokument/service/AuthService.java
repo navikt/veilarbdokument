@@ -7,7 +7,7 @@ import no.nav.common.auth.subject.IdentType;
 import no.nav.common.auth.subject.Subject;
 import no.nav.common.auth.subject.SubjectHandler;
 import no.nav.common.client.aktorregister.AktorregisterClient;
-import no.nav.fo.veilarb.dokument.client.ArenaClient;
+import no.nav.fo.veilarb.dokument.client.api.ArenaClient;
 import no.nav.fo.veilarb.dokument.domain.Bruker;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;

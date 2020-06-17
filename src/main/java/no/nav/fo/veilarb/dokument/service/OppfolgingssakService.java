@@ -1,7 +1,7 @@
 package no.nav.fo.veilarb.dokument.service;
 
-import no.nav.fo.veilarb.dokument.client.ArenaClient;
-import no.nav.fo.veilarb.dokument.client.SakClient;
+import no.nav.fo.veilarb.dokument.client.api.ArenaClient;
+import no.nav.fo.veilarb.dokument.client.api.SakClient;
 import no.nav.fo.veilarb.dokument.domain.ArenaOppfolgingssak;
 import no.nav.fo.veilarb.dokument.domain.Bruker;
 import no.nav.fo.veilarb.dokument.domain.Sak;

@@ -1,10 +1,9 @@
-package no.nav.fo.veilarb.dokument.client;
+package no.nav.fo.veilarb.dokument.client.impl;
 
-import lombok.extern.slf4j.Slf4j;
-import no.nav.common.health.HealthCheck;
 import no.nav.common.health.HealthCheckResult;
 import no.nav.common.health.HealthCheckUtils;
 import no.nav.common.rest.client.RestUtils;
+import no.nav.fo.veilarb.dokument.client.api.ArenaClient;
 import no.nav.fo.veilarb.dokument.domain.ArenaOppfolgingssak;
 import no.nav.fo.veilarb.dokument.domain.OppfolgingsenhetDto;
 import okhttp3.OkHttpClient;
@@ -19,13 +18,11 @@ import java.util.Optional;
 import static no.nav.common.utils.UrlUtils.joinPaths;
 import static no.nav.fo.veilarb.dokument.util.AuthUtils.createBearerToken;
 
-@Slf4j
-public class ArenaClient implements HealthCheck {
-
+public class ArenaClientImpl implements ArenaClient {
     private final OkHttpClient client;
     private final String host;
 
-    public ArenaClient(OkHttpClient client, String veilarbarenaUrl) {
+    public ArenaClientImpl(OkHttpClient client, String veilarbarenaUrl) {
         this.client = client;
         host = joinPaths(veilarbarenaUrl, "/veilarbarena/api");
     }

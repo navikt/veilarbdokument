@@ -2,7 +2,7 @@ package no.nav.fo.veilarb.dokument.service;
 
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
-import no.nav.fo.veilarb.dokument.client.VeilederClient;
+import no.nav.fo.veilarb.dokument.client.api.VeilederClient;
 import no.nav.fo.veilarb.dokument.domain.*;
 import no.nav.fo.veilarb.dokument.mappers.DokumentutkastMapper;
 import no.nav.fo.veilarb.dokument.mappers.IkkeredigerbartDokumentMapper;
