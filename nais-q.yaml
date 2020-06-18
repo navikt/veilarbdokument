@@ -12,10 +12,10 @@ spec:
   ingresses:
     - https://veilarbdokument-{{namespace}}.nais.preprod.local
   liveness:
-    path: veilarbdokument/internal/isAlive
+    path: veilarbdokument/internal/health/liveness
     initialDelay: 60
   readiness:
-    path: veilarbdokument/internal/isReady
+    path: veilarbdokument/internal/health/readiness
     initialDelay: 60
   prometheus:
     enabled: true

@@ -37,14 +37,6 @@ public class InternalController {
         );
     }
 
-    @GetMapping("/isReady")
-    public void isReady() {
-    }
-
-    @GetMapping("/isAlive")
-    public void isAlive() {
-    }
-
     @GetMapping("/selftest")
     public ResponseEntity<String> selftest() {
         List<SelftTestCheckResult> checkResults = checkAllParallel(selftestChecks);
