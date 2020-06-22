@@ -5,6 +5,8 @@ import java.io.InputStream;
 import java.util.Map;
 import java.util.Properties;
 
+import static no.nav.common.utils.EnvironmentUtils.NAIS_APP_NAME_PROPERTY_NAME;
+import static no.nav.fo.veilarb.dokument.config.ApplicationConfig.APPLICATION_NAME;
 import static no.nav.fo.veilarb.dokument.utils.TestUtils.lagFssUrl;
 
 public class TestConfig {
@@ -13,6 +15,7 @@ public class TestConfig {
 
     public static void setupTestContext() {
 
+        System.setProperty(NAIS_APP_NAME_PROPERTY_NAME, APPLICATION_NAME);
         System.setProperty("DOKUMENTPRODUKSJON_V3_ENDPOINTURL", lagFssUrl("dokprod", TESTMILJO, true) + "ws/dokumentproduksjon/v3");
         System.setProperty("VEILARBARENAAPI_URL", lagFssUrl("veilarbarena", TESTMILJO, true) + "api");
         System.setProperty("VEILARBVEILEDER_API_URL", lagFssUrl("veilarbveileder", TESTMILJO, true) + "api");
