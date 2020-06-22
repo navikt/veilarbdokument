@@ -17,6 +17,7 @@ public class VeilarbdokumentTestApp {
         System.setProperty(NAIS_APP_NAME_PROPERTY_NAME, APPLICATION_NAME);
 
         SpringApplication application = new SpringApplication(VeilarbdokumentTestApp.class);
+        application.setAdditionalProfiles("local");
         application.run(args);
     }
 
