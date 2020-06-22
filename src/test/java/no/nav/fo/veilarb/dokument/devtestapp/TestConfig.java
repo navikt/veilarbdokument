@@ -1,15 +1,35 @@
-package no.nav.fo.veilarb.dokument;
+package no.nav.fo.veilarb.dokument.devtestapp;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Map;
 import java.util.Properties;
 
+import static no.nav.fo.veilarb.dokument.utils.TestUtils.lagFssUrl;
+
 public class TestConfig {
 
     private static final String TESTMILJO = "q1";
 
     public static void setupTestContext() {
+
+        System.setProperty("DOKUMENTPRODUKSJON_V3_ENDPOINTURL", lagFssUrl("dokprod", TESTMILJO, true) + "ws/dokumentproduksjon/v3");
+        System.setProperty("VEILARBARENAAPI_URL", lagFssUrl("veilarbarena", TESTMILJO, true) + "api");
+        System.setProperty("VEILARBVEILEDER_API_URL", lagFssUrl("veilarbveileder", TESTMILJO, true) + "api");
+        System.setProperty("SAK_API_URL", lagFssUrl("sak", TESTMILJO, false));
+        System.setProperty("UNLEASH_API_URL", "https://unleash.nais.adeo.no/api/");
+        System.setProperty("OPENAM_DISCOVERY_URL", "https://isso-q.adeo.no/isso/oauth2/.well-known/openid-configuration");
+        System.setProperty("SECURITYTOKENSERVICE_URL", "https://sts-" + TESTMILJO + ".preprod.local/SecurityTokenServiceProvider/");
+        System.setProperty("NORG2_API_URL", "https://app-" + TESTMILJO + ".adeo.no/norg2/api");
+        System.setProperty("AKTOERREGISTER_API_V1_URL", "https://app-" + TESTMILJO + ".adeo.no/aktoerregister/api/v1");
+        System.setProperty("SECURITY_TOKEN_SERVICE_DISCOVERY_URL", "https://security-token-service.nais.preprod.local/rest/v1/sts/.well-known/openid-configuration");
+        System.setProperty("ABAC_PDP_ENDPOINT_URL", "https://wasapp-" + TESTMILJO + ".adeo.no/asm-pdp/authorize");
+
+
+//        System.setProperty("VEILARBLOGIN_OPENAM_REFRESH_URL", "");
+
+
+
 /*
         loadProperties(".credentials.properties");
 
@@ -29,9 +49,6 @@ public class TestConfig {
 
         setProperty(UNLEASH_API_URL_PROPERTY_NAME, "https://unleash.nais.adeo.no/api/", PUBLIC);
         setProperty(ABAC_ENDPOINT_URL_PROPERTY_NAME, "https://wasapp-" + TESTMILJO + ".adeo.no/asm-pdp/authorize", PUBLIC);
-        setProperty(VEILARBVEILEDER_API_URL_PROPERTY, lagFssUrl("veilarbveileder", TESTMILJO, true) + "api/", PUBLIC);
-        setProperty(VEILARBARENA_API_URL_PROPERTY, lagFssUrl("veilarbarena", TESTMILJO, true) + "api", PUBLIC);
-        setProperty(SAK_API_URL, lagFssUrl("sak", TESTMILJO, false), PUBLIC);
         setProperty(DOKUMENTPRODUKSJON_ENDPOINT_URL, lagFssUrl("dokprod", TESTMILJO, true) + "ws/dokumentproduksjon/v3", PUBLIC);
         setProperty(AKTOR_ENDPOINT_URL, "https://app-" + TESTMILJO + ".adeo.no/aktoerregister/ws/Aktoer/v2", PUBLIC);
         setProperty(SECURITYTOKENSERVICE_URL, "https://sts-" + TESTMILJO + ".preprod.local/SecurityTokenServiceProvider/", PUBLIC);

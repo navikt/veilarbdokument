@@ -20,11 +20,13 @@ import no.nav.tjeneste.virksomhet.dokumentproduksjon.v3.DokumentproduksjonV3;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
+import org.springframework.context.annotation.Profile;
 
 import static no.nav.fo.veilarb.dokument.localtestapp.stub.Values.TEST_SRV_PASSWORD;
 import static no.nav.fo.veilarb.dokument.localtestapp.stub.Values.TEST_SRV_USERNAME;
 
 @Configuration
+@Profile("local")
 @Import({
         ReadinessDependenciesHealthIndicator.class,
         SwaggerConfig.class,
