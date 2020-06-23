@@ -1,8 +1,8 @@
 package no.nav.fo.veilarb.dokument.domain;
 
-import lombok.Value;
+import lombok.Data;
 
-@Value(staticConstructor = "of")
+@Data
 public class DokumentbestillingResponsDto {
     String journalpostId;
     String dokumentId;

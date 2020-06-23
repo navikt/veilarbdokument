@@ -58,8 +58,9 @@ public class IkkeredigerbartDokumentMapper {
     }
 
     public static DokumentbestillingResponsDto mapRespons(WSProduserIkkeredigerbartDokumentResponse response) {
-        return DokumentbestillingResponsDto.of(
-                response.getJournalpostId(),
-                response.getDokumentId());
+        DokumentbestillingResponsDto dto = new DokumentbestillingResponsDto();
+        dto.setJournalpostId(response.getJournalpostId());
+        dto.setDokumentId(response.getDokumentId());
+        return dto;
     }
 }
