@@ -43,6 +43,8 @@ public class DokumentStubController {
 
     private String pingResponse() {
         return "<soap:Envelope xmlns:soap=\"http://schemas.xmlsoap.org/soap/envelope/\"><soap:Body>" +
+                "<ns2:pingResponse xmlns:ns2=\"http://nav.no/tjeneste/virksomhet/dokumentproduksjon/v3\">" +
+                "</ns2:pingResponse>" +
                 "</soap:Body></soap:Envelope>";
     }
 
