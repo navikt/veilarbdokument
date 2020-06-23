@@ -7,6 +7,7 @@ import no.nav.common.abac.Pep;
 import no.nav.common.abac.VeilarbPep;
 import no.nav.common.abac.audit.AuditLogger;
 import no.nav.common.client.aktorregister.AktorregisterClient;
+import no.nav.common.cxf.CXFClient;
 import no.nav.common.featuretoggle.UnleashService;
 import no.nav.common.utils.Credentials;
 import no.nav.fo.veilarb.dokument.config.ReadinessDependenciesHealthIndicator;
@@ -14,7 +15,6 @@ import no.nav.fo.veilarb.dokument.config.SwaggerConfig;
 import no.nav.fo.veilarb.dokument.helsesjekk.DokumentproduksjonV3Helsesjekk;
 import no.nav.fo.veilarb.dokument.localtestapp.stub.AbacClientStub;
 import no.nav.fo.veilarb.dokument.localtestapp.stub.AktorregisterClientStub;
-import no.nav.fo.veilarb.dokument.localtestapp.stub.DokumentproduksjonV3Stub;
 import no.nav.fo.veilarb.dokument.localtestapp.stub.UnleashServiceMock;
 import no.nav.tjeneste.virksomhet.dokumentproduksjon.v3.DokumentproduksjonV3;
 import org.springframework.context.annotation.Bean;
@@ -65,7 +65,9 @@ public class ApplicationTestConfig {
 
     @Bean
     public DokumentproduksjonV3 dokumentproduksjonV3() {
-        return new DokumentproduksjonV3Stub();
+        return new CXFClient<>(DokumentproduksjonV3.class)
+                .address("http://localhost:8080/veilarbdokument/stub/dokument")
+                .build();
     }
 
     @Bean

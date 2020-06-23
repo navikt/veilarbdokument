@@ -12,4 +12,5 @@ public class Values {
     public static final String TEST_ARENA_OPPFOLGINGSSAK = "890";
     public static final boolean TEST_UNLEASH_ENABLED = true;
     public static final int TEST_SAK_ID = 789;
+    public static final String TEST_DOKUMENTUTKAST_STR = "dokumentutkast";
 }
