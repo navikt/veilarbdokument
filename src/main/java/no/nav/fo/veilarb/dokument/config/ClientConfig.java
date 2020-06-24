@@ -12,8 +12,6 @@ import no.nav.fo.veilarb.dokument.client.impl.VeilederClientImpl;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import java.util.Optional;
-
 import static no.nav.common.utils.UrlUtils.clusterUrlForApplication;
 
 @Configuration
@@ -21,9 +19,7 @@ public class ClientConfig {
 
     @Bean
     public ArenaClient arenaClient(EnvironmentProperties properties) {
-        return new ArenaClientImpl(RestClient.baseClient(),
-                Optional.ofNullable(properties.getVeilarbarenaUrl()).orElseGet(
-                        () -> clusterUrlForApplication("veilarbarena")));
+        return new ArenaClientImpl(RestClient.baseClient(), clusterUrlForApplication("veilarbarena"));
     }
 
     @Bean
@@ -33,14 +29,11 @@ public class ClientConfig {
 
     @Bean
     public SakClient sakClient(EnvironmentProperties properties) {
-        return new SakClientImpl(RestClient.baseClient(),
-                Optional.ofNullable(properties.getSakUrl()).orElseGet(() -> clusterUrlForApplication("sak")));
+        return new SakClientImpl(RestClient.baseClient(), clusterUrlForApplication("sak"));
     }
 
     @Bean
     public VeilederClient veilederClient(EnvironmentProperties properties) {
-        return new VeilederClientImpl(RestClient.baseClient(),
-                Optional.ofNullable(properties.getVeilarbarenaUrl()).orElseGet(
-                        () -> clusterUrlForApplication("veilarbveileder")));
+        return new VeilederClientImpl(RestClient.baseClient(), clusterUrlForApplication("veilarbveileder"));
     }
 }

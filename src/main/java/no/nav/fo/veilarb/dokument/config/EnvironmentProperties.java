@@ -12,9 +12,6 @@ public class EnvironmentProperties {
     private String aktorregisterUrl;
     private String cxfStsUrl;
     private String stsDiscoveryUrl;
-    private String sakUrl;
-    private String veilarbarenaUrl;
-    private String veilarbveilederUrl;
     private String norg2Url;
     private String openAmDiscoveryUrl;
     private String abacUrl;
