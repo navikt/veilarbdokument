@@ -20,17 +20,17 @@ import static no.nav.fo.veilarb.dokument.util.AuthUtils.createBearerToken;
 public class VeilederClientImpl implements VeilederClient {
 
     private final OkHttpClient client;
-    private final String host;
+    private final String veilarbveilederUrl;
 
     public VeilederClientImpl(OkHttpClient client, String veilarbveilederUrl) {
         this.client = client;
-        host = joinPaths(veilarbveilederUrl, "/veilarbveileder/api");
+        this.veilarbveilederUrl = veilarbveilederUrl;
     }
 
     public String hentVeiledernavn() {
 
         Request request = new Request.Builder()
-                .url(joinPaths(host, "veileder", "me"))
+                .url(joinPaths(veilarbveilederUrl, "api", "veileder", "me"))
                 .header(HttpHeaders.AUTHORIZATION, createBearerToken())
                 .build();
 
@@ -44,6 +44,6 @@ public class VeilederClientImpl implements VeilederClient {
 
     @Override
     public HealthCheckResult checkHealth() {
-        return HealthCheckUtils.pingUrl(joinPaths(host, "ping"), client);
+        return HealthCheckUtils.pingUrl(joinPaths(veilarbveilederUrl, "internal", "isAlive"), client);
     }
 }

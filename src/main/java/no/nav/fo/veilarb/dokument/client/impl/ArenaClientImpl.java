@@ -20,16 +20,16 @@ import static no.nav.fo.veilarb.dokument.util.AuthUtils.createBearerToken;
 
 public class ArenaClientImpl implements ArenaClient {
     private final OkHttpClient client;
-    private final String host;
+    private final String veilarbarenaUrl;
 
     public ArenaClientImpl(OkHttpClient client, String veilarbarenaUrl) {
         this.client = client;
-        host = joinPaths(veilarbarenaUrl, "/veilarbarena/api");
+        this.veilarbarenaUrl = veilarbarenaUrl;
     }
 
     public String oppfolgingsenhet(String fnr) {
         Request request = new Request.Builder()
-                .url(joinPaths(host, "oppfolgingsbruker", fnr))
+                .url(joinPaths(veilarbarenaUrl, "api", "oppfolgingsbruker", fnr))
                 .header(HttpHeaders.AUTHORIZATION, createBearerToken())
                 .build();
 
@@ -43,7 +43,7 @@ public class ArenaClientImpl implements ArenaClient {
 
     public Optional<ArenaOppfolgingssak> oppfolgingssak(String fnr) {
         Request request = new Request.Builder()
-                .url(joinPaths(host, "oppfolgingssak", fnr))
+                .url(joinPaths(veilarbarenaUrl, "api", "oppfolgingssak", fnr))
                 .header(HttpHeaders.AUTHORIZATION, createBearerToken())
                 .build();
 
@@ -57,6 +57,6 @@ public class ArenaClientImpl implements ArenaClient {
 
     @Override
     public HealthCheckResult checkHealth() {
-        return HealthCheckUtils.pingUrl(joinPaths(host, "ping"), client);
+        return HealthCheckUtils.pingUrl(joinPaths(veilarbarenaUrl, "internal", "isAlive"), client);
     }
 }

@@ -19,7 +19,7 @@ public class ClientConfig {
 
     @Bean
     public ArenaClient arenaClient(EnvironmentProperties properties) {
-        return new ArenaClientImpl(RestClient.baseClient(), clusterUrlForApplication("veilarbarena"));
+        return new ArenaClientImpl(RestClient.baseClient(), clusterUrlForApplication("veilarbarena", true));
     }
 
     @Bean
@@ -34,6 +34,6 @@ public class ClientConfig {
 
     @Bean
     public VeilederClient veilederClient(EnvironmentProperties properties) {
-        return new VeilederClientImpl(RestClient.baseClient(), clusterUrlForApplication("veilarbveileder"));
+        return new VeilederClientImpl(RestClient.baseClient(), clusterUrlForApplication("veilarbveileder", true));
     }
 }
