@@ -1,5 +1,8 @@
 package no.nav.fo.veilarb.dokument.controller;
 
+import no.nav.common.abac.Pep;
+import no.nav.common.client.aktorregister.AktorregisterClient;
+import no.nav.common.featuretoggle.UnleashService;
 import no.nav.common.health.selftest.SelfTestCheck;
 import no.nav.common.health.selftest.SelfTestUtils;
 import no.nav.common.health.selftest.SelftTestCheckResult;
@@ -28,12 +31,18 @@ public class InternalController {
     public InternalController(VeilederClient veilederClient,
                               ArenaClient arenaClient,
                               SakClient sakClient,
-                              DokumentproduksjonV3Helsesjekk dokumentproduksjonV3Helsesjekk) {
+                              DokumentproduksjonV3Helsesjekk dokumentproduksjonV3Helsesjekk,
+                              AktorregisterClient aktorregisterClient,
+                              UnleashService unleashService,
+                              Pep pep) {
         selftestChecks = Arrays.asList(
-                new SelfTestCheck("veilarbveileder", false, veilederClient),
-                new SelfTestCheck("veilarbarena", false, arenaClient),
-                new SelfTestCheck("sak", false, sakClient),
-                new SelfTestCheck("DokumentproduksjonV3", false, dokumentproduksjonV3Helsesjekk)
+                new SelfTestCheck("DokumentproduksjonV3", true, dokumentproduksjonV3Helsesjekk),
+                new SelfTestCheck("veilarbveileder", true, veilederClient),
+                new SelfTestCheck("veilarbarena", true, arenaClient),
+                new SelfTestCheck("sak", true, sakClient),
+                new SelfTestCheck("Aktorregister", true, aktorregisterClient),
+                new SelfTestCheck("ABAC", true, pep.getAbacClient()),
+                new SelfTestCheck("Unleash", false, unleashService)
         );
     }
 
