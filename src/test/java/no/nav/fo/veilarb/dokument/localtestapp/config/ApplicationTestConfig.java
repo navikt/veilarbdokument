@@ -10,6 +10,7 @@ import no.nav.common.client.aktorregister.AktorregisterClient;
 import no.nav.common.cxf.CXFClient;
 import no.nav.common.featuretoggle.UnleashService;
 import no.nav.common.utils.Credentials;
+import no.nav.fo.veilarb.dokument.config.EnvironmentProperties;
 import no.nav.fo.veilarb.dokument.config.ReadinessDependenciesHealthIndicator;
 import no.nav.fo.veilarb.dokument.config.SwaggerConfig;
 import no.nav.fo.veilarb.dokument.helsesjekk.DokumentproduksjonV3Helsesjekk;
@@ -34,7 +35,6 @@ import static no.nav.fo.veilarb.dokument.localtestapp.stub.Values.TEST_SRV_USERN
         ServiceTestConfig.class,
         ControllerTestConfig.class,
         FilterTestConfig.class,
-        DokumentproduksjonV3Helsesjekk.class
 })
 public class ApplicationTestConfig {
 
@@ -68,6 +68,12 @@ public class ApplicationTestConfig {
         return new CXFClient<>(DokumentproduksjonV3.class)
                 .address("http://localhost:8080/veilarbdokument/stub/dokument")
                 .build();
+    }
+
+    @Bean DokumentproduksjonV3Helsesjekk dokumentproduksjonV3Helsesjekk() {
+        EnvironmentProperties environmentProperties = new EnvironmentProperties();
+        environmentProperties.setDokumentproduksjonUrl("URL");
+        return new DokumentproduksjonV3Helsesjekk(dokumentproduksjonV3(), environmentProperties);
     }
 
     @Bean
