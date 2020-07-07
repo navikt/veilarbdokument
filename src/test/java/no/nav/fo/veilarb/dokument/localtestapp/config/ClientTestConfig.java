@@ -10,10 +10,8 @@ import no.nav.fo.veilarb.dokument.localtestapp.stub.SakClientStub;
 import no.nav.fo.veilarb.dokument.localtestapp.stub.VeilederClientStub;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Profile;
 
 @Configuration
-@Profile("local")
 public class ClientTestConfig {
 
     @Bean
