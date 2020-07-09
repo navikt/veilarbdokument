@@ -11,6 +11,7 @@ import no.nav.common.cxf.CXFClient;
 import no.nav.common.featuretoggle.UnleashService;
 import no.nav.common.utils.Credentials;
 import no.nav.fo.veilarb.dokument.config.EnvironmentProperties;
+import no.nav.fo.veilarb.dokument.config.HelsesjekkConfig;
 import no.nav.fo.veilarb.dokument.config.SwaggerConfig;
 import no.nav.fo.veilarb.dokument.helsesjekk.DokumentproduksjonV3Helsesjekk;
 import no.nav.fo.veilarb.dokument.localtestapp.stub.AbacClientStub;
@@ -31,6 +32,7 @@ import static no.nav.fo.veilarb.dokument.localtestapp.stub.Values.TEST_SRV_USERN
         ServiceTestConfig.class,
         ControllerTestConfig.class,
         FilterTestConfig.class,
+        HelsesjekkConfig.class
 })
 public class ApplicationTestConfig {
 
