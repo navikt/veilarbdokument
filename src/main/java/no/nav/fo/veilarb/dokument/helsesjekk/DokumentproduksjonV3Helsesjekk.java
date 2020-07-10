@@ -22,7 +22,7 @@ public class DokumentproduksjonV3Helsesjekk implements HealthCheck {
         try {
             dokumentproduksjonV3.ping();
         } catch (Throwable t) {
-            return HealthCheckResult.unhealthy("Helsesjekk feilet mot " + properties.getDokumentproduksjonUrl());
+            return HealthCheckResult.unhealthy("Helsesjekk feilet mot " + properties.getDokumentproduksjonUrl(), t);
         }
         return HealthCheckResult.healthy();
     }
