@@ -11,7 +11,6 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.util.Arrays;
 import java.util.List;
 
 import static no.nav.common.utils.UrlUtils.joinPaths;
@@ -51,7 +50,7 @@ public class EnhetClientImpl implements EnhetClient {
 
         try (Response response = client.newCall(request).execute()) {
             RestUtils.throwIfNotSuccessful(response);
-            return Arrays.asList(RestUtils.parseJsonResponseOrThrow(response, EnhetOrganisering[].class));
+            return RestUtils.parseJsonResponseArrayOrThrow(response, EnhetOrganisering.class);
         } catch (Exception e) {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Feil ved kall mot " + request.url().toString(), e);
         }
