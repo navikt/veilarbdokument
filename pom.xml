@@ -19,7 +19,7 @@
 
     <properties>
         <java.version>11</java.version>
-        <common.version>2.2020.08.24_08.36-90324dd6e91a</common.version>
+        <common.version>2.2020.08.24_12.17-ce8722430a1d</common.version>
         <springfox.version>2.9.2</springfox.version>
     </properties>
 
@@ -145,7 +145,7 @@
         <dependency>
             <groupId>com.sun.xml.messaging.saaj</groupId>
             <artifactId>saaj-impl</artifactId>
-            <version>1.5.2</version>
+            <version>1.4.0-b03</version>
         </dependency>
 
         <!-- Tjenester -->
