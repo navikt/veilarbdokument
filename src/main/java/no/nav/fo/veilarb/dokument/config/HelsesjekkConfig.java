@@ -5,11 +5,11 @@ import no.nav.common.client.aktorregister.AktorregisterClient;
 import no.nav.common.featuretoggle.UnleashService;
 import no.nav.common.health.selftest.SelfTestCheck;
 import no.nav.common.health.selftest.SelfTestChecks;
+import no.nav.common.health.selftest.SelfTestMeterBinder;
 import no.nav.fo.veilarb.dokument.client.api.ArenaClient;
 import no.nav.fo.veilarb.dokument.client.api.SakClient;
 import no.nav.fo.veilarb.dokument.client.api.VeilederClient;
 import no.nav.fo.veilarb.dokument.helsesjekk.DokumentproduksjonV3Helsesjekk;
-import no.nav.fo.veilarb.dokument.util.SelfTestMeterBinderTemp;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -41,7 +41,7 @@ public class HelsesjekkConfig {
     }
 
     @Bean
-    public SelfTestMeterBinderTemp selfTestMeterBinder(SelfTestChecks selfTestChecks) {
-        return new SelfTestMeterBinderTemp(selfTestChecks);
+    public SelfTestMeterBinder selfTestMeterBinder(SelfTestChecks selfTestChecks) {
+        return new SelfTestMeterBinder(selfTestChecks);
     }
 }

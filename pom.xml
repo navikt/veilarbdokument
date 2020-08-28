@@ -19,7 +19,7 @@
 
     <properties>
         <java.version>11</java.version>
-        <common.version>2.2020.08.24_12.17-ce8722430a1d</common.version>
+        <common.version>2.2020.08.28_14.16-420d1471cb04</common.version>
         <springfox.version>2.9.2</springfox.version>
     </properties>
 
@@ -141,11 +141,6 @@
             <groupId>io.springfox</groupId>
             <artifactId>springfox-swagger-ui</artifactId>
             <version>${springfox.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>com.sun.xml.messaging.saaj</groupId>
-            <artifactId>saaj-impl</artifactId>
-            <version>1.5.2</version>
         </dependency>
 
         <!-- Tjenester -->

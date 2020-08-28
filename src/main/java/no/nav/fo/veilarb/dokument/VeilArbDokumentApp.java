@@ -9,7 +9,6 @@ public class VeilArbDokumentApp {
 
     public static void main(String... args) {
         SslUtils.setupTruststore();
-        System.setProperty("javax.xml.soap.SAAJMetaFactory", "com.sun.xml.messaging.saaj.soap.SAAJMetaFactoryImpl");
         SpringApplication.run(VeilArbDokumentApp.class, args);
     }
 }

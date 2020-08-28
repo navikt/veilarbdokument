@@ -24,7 +24,7 @@ public class DokumentproduksjonV3Helsesjekk implements HealthCheck {
         try {
             dokumentproduksjonV3.ping();
         } catch (Throwable t) {
-            log.error("Helsesjekk feilet mot " + properties.getDokumentproduksjonUrl(), t);
+            log.warn("Helsesjekk feilet mot " + properties.getDokumentproduksjonUrl(), t);
             return HealthCheckResult.unhealthy("Helsesjekk feilet mot " + properties.getDokumentproduksjonUrl(), t);
         }
         return HealthCheckResult.healthy();
