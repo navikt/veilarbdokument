@@ -1,30 +1,29 @@
 package no.nav.fo.veilarb.dokument.service;
 
 import com.github.tomakehurst.wiremock.junit.WireMockRule;
-import no.nav.fo.veilarb.dokument.client.EnhetClient;
+import no.nav.common.rest.client.RestClient;
+import no.nav.fo.veilarb.dokument.client.api.EnhetClient;
+import no.nav.fo.veilarb.dokument.client.impl.EnhetClientImpl;
 import no.nav.fo.veilarb.dokument.domain.Enhet;
 import no.nav.fo.veilarb.dokument.domain.EnhetKontaktinformasjon;
 import no.nav.fo.veilarb.dokument.domain.EnhetOrganisering;
 import no.nav.fo.veilarb.dokument.domain.EnhetPostadresse;
-import no.nav.sbl.rest.RestUtils;
+import okhttp3.OkHttpClient;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 
-import javax.ws.rs.client.Client;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.Optional;
 import java.util.stream.Stream;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.*;
-import static no.nav.fo.veilarb.dokument.config.ApplicationConfig.NORG2_API_URL_PROPERTY;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.Assert.assertEquals;
 
 public class KontaktEnhetServiceTest {
 
-    private Client restClient;
     private EnhetClient enhetClient;
     private KontaktEnhetService kontaktEnhetService;
 
@@ -40,9 +39,8 @@ public class KontaktEnhetServiceTest {
 
     @Before
     public void setup() {
-        System.setProperty(NORG2_API_URL_PROPERTY, "http://localhost:" + wireMockRule.port());
-        restClient = RestUtils.createClient();
-        enhetClient = new EnhetClient(restClient);
+        OkHttpClient client = RestClient.baseClient();
+        enhetClient = new EnhetClientImpl(client, "http://localhost:" + wireMockRule.port());
         kontaktEnhetService = new KontaktEnhetService(enhetClient);
     }
 
