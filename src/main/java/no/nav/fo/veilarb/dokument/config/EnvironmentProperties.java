@@ -13,7 +13,9 @@ public class EnvironmentProperties {
     private String cxfStsUrl;
     private String stsDiscoveryUrl;
     private String norg2Url;
-    private String openAmDiscoveryUrl;
     private String abacUrl;
-    private String openAmClientId;
+    private String openAmDiscoveryUrl;
+    private String veilarbloginOpenAmClientId;
+    private String aadDiscoveryUrl;
+    private String veilarbloginAadClientId;
 }
