@@ -10,38 +10,46 @@ import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import java.util.Collections;
-
-import static no.nav.common.auth.oidc.filter.OidcAuthenticator.fromConfig;
+import static no.nav.common.auth.oidc.filter.OidcAuthenticator.fromConfigs;
 import static no.nav.common.utils.EnvironmentUtils.isDevelopment;
 import static no.nav.common.utils.EnvironmentUtils.requireApplicationName;
 
 @Configuration
 public class FilterConfig {
 
-    @Bean
-    public FilterRegistrationBean<OidcAuthenticationFilter> authenticationFilterRegistrationBean(EnvironmentProperties properties) {
-        OidcAuthenticatorConfig openAmConfig = new OidcAuthenticatorConfig()
+    private OidcAuthenticatorConfig openAmAuthConfig(EnvironmentProperties properties) {
+        return new OidcAuthenticatorConfig()
                 .withDiscoveryUrl(properties.getOpenAmDiscoveryUrl())
-                .withClientId(properties.getOpenAmClientId())
-                .withIdentType(IdentType.InternBruker)
-                .withIdTokenFinder(new UserTokenFinder());
+                .withClientId(properties.getVeilarbloginOpenAmClientId())
+                .withIdentType(IdentType.InternBruker);
+    }
 
-        FilterRegistrationBean<OidcAuthenticationFilter> registration = new FilterRegistrationBean<>();
-        OidcAuthenticationFilter authenticationFilter = new OidcAuthenticationFilter(Collections.singletonList(fromConfig(openAmConfig)));
+    private OidcAuthenticatorConfig azureAdAuthConfig(EnvironmentProperties properties) {
+        return new OidcAuthenticatorConfig()
+                .withDiscoveryUrl(properties.getAadDiscoveryUrl())
+                .withClientId(properties.getVeilarbloginAadClientId())
+                .withIdentType(IdentType.InternBruker);
+    }
 
-        registration.setFilter(authenticationFilter);
+    @Bean
+    public FilterRegistrationBean logFilterRegistrationBean() {
+        FilterRegistrationBean<LogFilter> registration = new FilterRegistrationBean<>();
+        registration.setFilter(new LogFilter(requireApplicationName(), isDevelopment().orElse(false)));
         registration.setOrder(1);
-        registration.addUrlPatterns("/api/*");
+        registration.addUrlPatterns("/*");
         return registration;
     }
 
     @Bean
-    public FilterRegistrationBean<LogFilter> logFilterRegistrationBean() {
-        FilterRegistrationBean<LogFilter> registration = new FilterRegistrationBean<>();
-        registration.setFilter(new LogFilter(requireApplicationName(), isDevelopment().orElse(false)));
+    public FilterRegistrationBean authenticationFilterRegistrationBean(EnvironmentProperties properties) {
+        FilterRegistrationBean<OidcAuthenticationFilter> registration = new FilterRegistrationBean<>();
+        OidcAuthenticationFilter authenticationFilter = new OidcAuthenticationFilter(
+                fromConfigs(openAmAuthConfig(properties), azureAdAuthConfig(properties))
+        );
+
+        registration.setFilter(authenticationFilter);
         registration.setOrder(2);
-        registration.addUrlPatterns("/*");
+        registration.addUrlPatterns("/api/*");
         return registration;
     }
 
