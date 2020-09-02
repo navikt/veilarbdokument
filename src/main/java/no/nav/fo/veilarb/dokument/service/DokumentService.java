@@ -2,10 +2,7 @@ package no.nav.fo.veilarb.dokument.service;
 
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
-import no.nav.brukerdialog.security.domain.IdentType;
-import no.nav.common.auth.Subject;
-import no.nav.common.auth.SubjectHandler;
-import no.nav.fo.veilarb.dokument.client.VeilederClient;
+import no.nav.fo.veilarb.dokument.client.api.VeilederClient;
 import no.nav.fo.veilarb.dokument.domain.*;
 import no.nav.fo.veilarb.dokument.mappers.DokumentutkastMapper;
 import no.nav.fo.veilarb.dokument.mappers.IkkeredigerbartDokumentMapper;
@@ -13,12 +10,10 @@ import no.nav.tjeneste.virksomhet.dokumentproduksjon.v3.DokumentproduksjonV3;
 import no.nav.tjeneste.virksomhet.dokumentproduksjon.v3.meldinger.WSProduserDokumentutkastRequest;
 import no.nav.tjeneste.virksomhet.dokumentproduksjon.v3.meldinger.WSProduserIkkeredigerbartDokumentRequest;
 import no.nav.tjeneste.virksomhet.dokumentproduksjon.v3.meldinger.WSProduserIkkeredigerbartDokumentResponse;
-import org.springframework.stereotype.Component;
-
-import javax.inject.Inject;
+import org.springframework.stereotype.Service;
 
 @Slf4j
-@Component
+@Service
 public class DokumentService {
 
     private final DokumentproduksjonV3 dokumentproduksjon;
@@ -26,18 +21,20 @@ public class DokumentService {
     private final VeilederClient veilederClient;
     private final OppfolgingssakService oppfolgingssakService;
     private final KontaktEnhetService kontaktEnhetService;
+    private final MetrikkService metrikkService;
 
-    @Inject
     public DokumentService(DokumentproduksjonV3 dokumentproduksjon,
                            AuthService authService,
                            VeilederClient veilederClient,
                            OppfolgingssakService oppfolgingssakService,
-                           KontaktEnhetService kontaktEnhetService) {
+                           KontaktEnhetService kontaktEnhetService,
+                           MetrikkService metrikkService) {
         this.dokumentproduksjon = dokumentproduksjon;
         this.authService = authService;
         this.veilederClient = veilederClient;
         this.oppfolgingssakService = oppfolgingssakService;
         this.kontaktEnhetService = kontaktEnhetService;
+        this.metrikkService = metrikkService;
     }
 
     public DokumentbestillingResponsDto bestillDokument(DokumentbestillingDto dto) {
@@ -59,6 +56,7 @@ public class DokumentService {
     }
 
     private Brevdata lagBrevdata(DokumentbestillingDto dokumentbestilling) {
+        String veilederIdent = authService.getInnloggetVeilederIdent();
         String veilederNavn = veilederClient.hentVeiledernavn();
 
         String enhetIdKontakt = kontaktEnhetService.utledKontaktEnhetId(dokumentbestilling.enhetId());
@@ -68,7 +66,7 @@ public class DokumentService {
                 .malType(dokumentbestilling.malType())
                 .enhetId(dokumentbestilling.enhetId())
                 .enhetIdKontakt(enhetIdKontakt)
-                .veilederId(getVeilederId())
+                .veilederId(veilederIdent)
                 .veilederNavn(veilederNavn)
                 .begrunnelse(dokumentbestilling.begrunnelse())
                 .kilder(dokumentbestilling.opplysninger())
@@ -85,17 +83,10 @@ public class DokumentService {
             return IkkeredigerbartDokumentMapper.mapRespons(response);
         } catch (Exception e) {
             log.error(String.format("Kunne ikke produsere dokument for aktorId %s", bruker.getAktorId()), e);
-            MetrikkService.rapporterFeilendeDokumentbestilling(dokumentbestilling.brevdata().malType());
+            metrikkService.rapporterFeilendeDokumentbestilling(dokumentbestilling.brevdata().malType());
             throw e;
         }
 
-    }
-
-    private String getVeilederId() {
-        return SubjectHandler.getSubject()
-                .filter(subject -> IdentType.InternBruker.equals(subject.getIdentType()))
-                .map(Subject::getUid)
-                .orElseThrow(() -> new IllegalStateException("Mangler veileder token"));
     }
 
     @SneakyThrows
@@ -110,7 +101,7 @@ public class DokumentService {
             return dokumentproduksjon.produserDokumentutkast(dokumentutkastRequest).getDokumentutkast();
         } catch (Exception e) {
             log.error(String.format("Kunne ikke produsere dokumentutkast for aktorId %s", bruker.getAktorId()), e);
-            MetrikkService.rapporterFeilendeDokumentutkast(dto.malType());
+            metrikkService.rapporterFeilendeDokumentutkast(dto.malType());
             throw e;
         }
     }

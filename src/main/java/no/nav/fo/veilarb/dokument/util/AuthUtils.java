@@ -1,7 +1,7 @@
 package no.nav.fo.veilarb.dokument.util;
 
-import no.nav.common.auth.SsoToken;
-import no.nav.common.auth.SubjectHandler;
+import no.nav.common.auth.subject.SsoToken;
+import no.nav.common.auth.subject.SubjectHandler;
 
 public class AuthUtils {
 
