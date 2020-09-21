@@ -116,10 +116,10 @@ public class BrevdataMapper {
 
     private static VeilArbNAVFelles mapFelles(Brevdata brevdata) {
         VeilArbNAVFelles veilArbNAVFelles = new VeilArbNAVFelles();
-        veilArbNAVFelles.setBehandlendeEnhet(mapBehandlendeEnhet(brevdata.enhetId()));
-        veilArbNAVFelles.setKontaktinformasjon(mapKontaktinformasjon(brevdata.enhetIdKontakt()));
-        veilArbNAVFelles.setMottaker(mapMottaker(brevdata.brukerFnr()));
-        veilArbNAVFelles.setSakspart(mapSakspart(brevdata.brukerFnr()));
+        veilArbNAVFelles.setBehandlendeEnhet(mapBehandlendeEnhet(brevdata.enhetId().get()));
+        veilArbNAVFelles.setKontaktinformasjon(mapKontaktinformasjon(brevdata.enhetIdKontakt().get()));
+        veilArbNAVFelles.setMottaker(mapMottaker(brevdata.brukerFnr().get()));
+        veilArbNAVFelles.setSakspart(mapSakspart(brevdata.brukerFnr().get()));
         veilArbNAVFelles.setSignerendeBeslutter(mapSaksbehandler(brevdata));
         veilArbNAVFelles.setSignerendeSaksbehandler(mapSaksbehandler(brevdata));
 
@@ -167,11 +167,11 @@ public class BrevdataMapper {
     private static Saksbehandler mapSaksbehandler(Brevdata brevdata) {
         NavAnsatt navAnsatt = new NavAnsatt();
         navAnsatt.setBerik(false);
-        navAnsatt.setAnsattId(brevdata.veilederId());
+        navAnsatt.setAnsattId(brevdata.veilederId().get());
         navAnsatt.setNavn(brevdata.veilederNavn());
 
         NavEnhet navEnhet = new NavEnhet();
-        navEnhet.setEnhetsId(brevdata.enhetId());
+        navEnhet.setEnhetsId(brevdata.enhetId().get());
 
         Saksbehandler saksbehandler = new Saksbehandler();
         saksbehandler.setNavAnsatt(navAnsatt);

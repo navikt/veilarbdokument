@@ -4,6 +4,7 @@ import no.nav.common.health.HealthCheckResult;
 import no.nav.common.health.HealthCheckUtils;
 import no.nav.common.rest.client.RestClient;
 import no.nav.common.rest.client.RestUtils;
+import no.nav.common.types.identer.AktorId;
 import no.nav.common.utils.StringUtils;
 import no.nav.fo.veilarb.dokument.client.api.SakClient;
 import no.nav.fo.veilarb.dokument.domain.OpprettSakDto;
@@ -36,10 +37,10 @@ public class SakClientImpl implements SakClient {
         this.host = sakUrl;
     }
 
-    public List<Sak> hentOppfolgingssaker(String aktorId) {
+    public List<Sak> hentOppfolgingssaker(AktorId aktorId) {
         HttpUrl url = HttpUrl.parse(host).newBuilder()
                 .addPathSegments("api/v1/saker")
-                .addQueryParameter("aktoerId", aktorId)
+                .addQueryParameter("aktoerId", aktorId.get())
                 .addQueryParameter("tema", OPPFOLGING_KODE)
                 .build();
 
@@ -57,7 +58,7 @@ public class SakClientImpl implements SakClient {
         }
     }
 
-    public Sak opprettOppfolgingssak(String aktorId, String fagsakNr) {
+    public Sak opprettOppfolgingssak(AktorId aktorId, String fagsakNr) {
         OpprettSakDto entity = new OpprettSakDto(OPPFOLGING_KODE, ARENA_KODE, aktorId, fagsakNr);
 
         Request request = new Request.Builder()

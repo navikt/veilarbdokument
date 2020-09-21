@@ -2,6 +2,8 @@ package no.nav.fo.veilarb.dokument.service;
 
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
+import no.nav.common.types.identer.EnhetId;
+import no.nav.common.types.identer.NavIdent;
 import no.nav.fo.veilarb.dokument.client.api.VeilederClient;
 import no.nav.fo.veilarb.dokument.domain.*;
 import no.nav.fo.veilarb.dokument.mappers.DokumentutkastMapper;
@@ -56,10 +58,10 @@ public class DokumentService {
     }
 
     private Brevdata lagBrevdata(DokumentbestillingDto dokumentbestilling) {
-        String veilederIdent = authService.getInnloggetVeilederIdent();
+        NavIdent veilederIdent = authService.getInnloggetVeilederIdent();
         String veilederNavn = veilederClient.hentVeiledernavn();
 
-        String enhetIdKontakt = kontaktEnhetService.utledKontaktEnhetId(dokumentbestilling.enhetId());
+        EnhetId enhetIdKontakt = kontaktEnhetService.utledKontaktEnhetId(dokumentbestilling.enhetId());
 
         return Brevdata.builder()
                 .brukerFnr(dokumentbestilling.brukerFnr())

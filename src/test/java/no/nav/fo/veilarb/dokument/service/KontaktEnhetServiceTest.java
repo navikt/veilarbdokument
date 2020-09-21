@@ -2,6 +2,7 @@ package no.nav.fo.veilarb.dokument.service;
 
 import com.github.tomakehurst.wiremock.junit.WireMockRule;
 import no.nav.common.rest.client.RestClient;
+import no.nav.common.types.identer.EnhetId;
 import no.nav.fo.veilarb.dokument.client.api.EnhetClient;
 import no.nav.fo.veilarb.dokument.client.impl.EnhetClientImpl;
 import no.nav.fo.veilarb.dokument.domain.Enhet;
@@ -27,8 +28,8 @@ public class KontaktEnhetServiceTest {
     private EnhetClient enhetClient;
     private KontaktEnhetService kontaktEnhetService;
 
-    private final String ENHET_NR = "1234";
-    private final String EIER_ENHET_NR = "4321";
+    private final EnhetId ENHET_NR = EnhetId.of("1234");
+    private final EnhetId EIER_ENHET_NR = EnhetId.of("4321");
     private final LocalDate GYLDIG_FRA = LocalDate.now().minusDays(2);
     private final LocalDate UGYLDIG_FRA = LocalDate.now().plusDays(1);
     private final LocalDate GYLDIG_TIL = LocalDate.now().plusDays(2);
@@ -50,7 +51,7 @@ public class KontaktEnhetServiceTest {
         gittKontaktinformasjon(new EnhetKontaktinformasjon(ENHET_NR,
                 new EnhetPostadresse("postnummer", "poststed")));
 
-        String enhetId = kontaktEnhetService.utledKontaktEnhetId(ENHET_NR);
+        EnhetId enhetId = kontaktEnhetService.utledKontaktEnhetId(ENHET_NR);
 
         assertEquals(ENHET_NR, enhetId);
     }
@@ -61,12 +62,12 @@ public class KontaktEnhetServiceTest {
         gittKontaktinformasjon(new EnhetKontaktinformasjon(EIER_ENHET_NR,
                 new EnhetPostadresse("postnummer", "poststed")));
         gittEnhetOrganisering(ENHET_NR,
-                new EnhetOrganisering("ANNEN_1", null, null, new Enhet("ANNEN_1", "navn")),
+                new EnhetOrganisering("ANNEN_1", null, null, new Enhet(EnhetId.of("ANNEN_1"), "navn")),
                 new EnhetOrganisering("EIER", null, null, new Enhet(EIER_ENHET_NR, "navn")),
-                new EnhetOrganisering("ANNEN_2", null, null, new Enhet("ANNEN_2", "navn"))
+                new EnhetOrganisering("ANNEN_2", null, null, new Enhet(EnhetId.of("ANNEN_2"), "navn"))
         );
 
-        String enhetId = kontaktEnhetService.utledKontaktEnhetId(ENHET_NR);
+        EnhetId enhetId = kontaktEnhetService.utledKontaktEnhetId(ENHET_NR);
 
         assertEquals(EIER_ENHET_NR, enhetId);
     }
@@ -86,8 +87,8 @@ public class KontaktEnhetServiceTest {
     public void flere_eiere() {
         gittKontaktinformasjon(new EnhetKontaktinformasjon(ENHET_NR, null));
         gittEnhetOrganisering(ENHET_NR,
-                new EnhetOrganisering("EIER", null, null, new Enhet("EIER_1", "navn")),
-                new EnhetOrganisering("EIER", null, null, new Enhet("EIER_2", "navn")));
+                new EnhetOrganisering("EIER", null, null, new Enhet(EnhetId.of("EIER_1"), "navn")),
+                new EnhetOrganisering("EIER", null, null, new Enhet(EnhetId.of("EIER_2"), "navn")));
 
         assertThatThrownBy(() ->
                 kontaktEnhetService.utledKontaktEnhetId(ENHET_NR)
@@ -178,13 +179,13 @@ public class KontaktEnhetServiceTest {
 
     private void gittKontaktinformasjon(EnhetKontaktinformasjon kontaktinformasjon) {
 
-        String enhetNr = kontaktinformasjon.getEnhetNr();
+        EnhetId enhetNr = kontaktinformasjon.getEnhetNr();
 
         String postadresse = Optional.ofNullable(kontaktinformasjon.getPostadresse())
                 .map(x -> String.format("{\"postnummer\": %s, \"poststed\": %s }",
                         wrapQuotes(x.getPostnummer()), wrapQuotes(x.getPoststed()))).orElse(null);
 
-        String response = String.format("{\"enhetNr\": %s, \"postadresse\": %s }", wrapQuotes(enhetNr), postadresse);
+        String response = String.format("{\"enhetNr\": %s, \"postadresse\": %s }", wrapQuotes(enhetNr.get()), postadresse);
 
         givenThat(
                 get(urlEqualTo("/v1/enhet/" + kontaktinformasjon.getEnhetNr() + "/kontaktinformasjon"))
@@ -195,10 +196,10 @@ public class KontaktEnhetServiceTest {
                         ));
     }
 
-    private void gittEnhetOrganisering(String enhetNr, EnhetOrganisering... organisering) {
+    private void gittEnhetOrganisering(EnhetId enhetNr, EnhetOrganisering... organisering) {
         String response = "[" + Stream.of(organisering).map(x -> {
             String enhet = String.format("{\"nr\": %s, \"navn\": %s}",
-                    wrapQuotes(x.getOrganiserer().getNr()), wrapQuotes(x.getOrganiserer().getNavn()));
+                    wrapQuotes(x.getOrganiserer().getNr().get()), wrapQuotes(x.getOrganiserer().getNavn()));
             return String.format("{\"orgType\": %s, \"organiserer\": %s, \"fra\": %s, \"til\": %s}",
                     wrapQuotes(x.getOrgType()), enhet,
                     wrapQuotes(formatDate(x.getFra())), wrapQuotes(formatDate(x.getTil())));
