@@ -1,6 +1,9 @@
 package no.nav.fo.veilarb.dokument.mappers;
 
 
+import no.nav.common.types.identer.EnhetId;
+import no.nav.common.types.identer.Fnr;
+import no.nav.common.types.identer.NavIdent;
 import no.nav.fo.veilarb.dokument.domain.Brevdata;
 import no.nav.fo.veilarb.dokument.domain.MalType;
 import org.junit.Test;
@@ -39,10 +42,10 @@ public class BrevdataMapperTest {
         return Brevdata.builder()
                 .kilder(Arrays.asList("kilde1", "kilde2"))
                 .begrunnelse("begrunnelse")
-                .brukerFnr("fnr")
-                .enhetId("enhetId")
-                .enhetIdKontakt("enhetKontaktId")
-                .veilederId("veilederId")
+                .brukerFnr(Fnr.of("fnr"))
+                .enhetId(EnhetId.of("enhetId"))
+                .enhetIdKontakt(EnhetId.of("enhetKontaktId"))
+                .veilederId(NavIdent.of("veilederId"))
                 .veilederNavn("veilederNavn")
                 .malType(malType)
                 .build();

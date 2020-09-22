@@ -1,13 +1,16 @@
 package no.nav.fo.veilarb.dokument.client.impl;
 
 import com.github.tomakehurst.wiremock.junit.WireMockRule;
+import com.nimbusds.jwt.JWT;
+import com.nimbusds.jwt.JWTClaimsSet;
+import com.nimbusds.jwt.PlainJWT;
 import lombok.SneakyThrows;
-import no.nav.common.auth.subject.IdentType;
-import no.nav.common.auth.subject.SsoToken;
-import no.nav.common.auth.subject.Subject;
-import no.nav.common.auth.subject.SubjectHandler;
+import no.nav.common.auth.context.AuthContext;
+import no.nav.common.auth.context.AuthContextHolder;
+import no.nav.common.auth.context.UserRole;
 import no.nav.common.json.JsonUtils;
 import no.nav.common.rest.client.RestClient;
+import no.nav.common.types.identer.AktorId;
 import no.nav.fo.veilarb.dokument.client.api.SakClient;
 import no.nav.fo.veilarb.dokument.domain.Sak;
 import okhttp3.OkHttpClient;
@@ -16,7 +19,6 @@ import org.junit.Rule;
 import org.junit.Test;
 
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Stream;
 
@@ -28,7 +30,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class SakClientImplTest {
 
     private SakClient sakClient;
-    private Subject subject = new Subject("test", IdentType.InternBruker, SsoToken.oidcToken("token", new HashMap<>()));
 
     @Rule
     public WireMockRule wireMockRule = new WireMockRule();
@@ -55,8 +56,8 @@ public class SakClientImplTest {
 
         mockSakerResponse(saker);
 
-        Stream<Integer> oppfolgingssaker = SubjectHandler.withSubject(subject, () ->
-                sakClient.hentOppfolgingssaker("aktorId").stream().map(Sak::id));
+        Stream<Integer> oppfolgingssaker = AuthContextHolder.withContext(authContext("test"), () ->
+                sakClient.hentOppfolgingssaker(AktorId.of("aktorId")).stream().map(Sak::id));
 
         assertThat(oppfolgingssaker).containsExactly(2, 9);
     }
@@ -71,5 +72,15 @@ public class SakClientImplTest {
                                 .withHeader("Content-Type", "applicaition/json")
                                 .withBody(json)
                         ));
+    }
+
+    private AuthContext authContext(String subject) {
+        JWTClaimsSet claimsSet = new JWTClaimsSet.Builder()
+                .subject(subject)
+                .build();
+
+        JWT jwt = new PlainJWT(claimsSet);
+
+        return new AuthContext(UserRole.INTERN, jwt);
     }
 }

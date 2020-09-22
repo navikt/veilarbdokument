@@ -3,6 +3,8 @@ package no.nav.fo.veilarb.dokument.client.impl;
 import no.nav.common.health.HealthCheckResult;
 import no.nav.common.health.HealthCheckUtils;
 import no.nav.common.rest.client.RestUtils;
+import no.nav.common.types.identer.EnhetId;
+import no.nav.common.types.identer.Fnr;
 import no.nav.fo.veilarb.dokument.client.api.ArenaClient;
 import no.nav.fo.veilarb.dokument.domain.ArenaOppfolgingssak;
 import no.nav.fo.veilarb.dokument.domain.OppfolgingsenhetDto;
@@ -27,9 +29,9 @@ public class ArenaClientImpl implements ArenaClient {
         this.veilarbarenaUrl = veilarbarenaUrl;
     }
 
-    public String oppfolgingsenhet(String fnr) {
+    public EnhetId oppfolgingsenhet(Fnr fnr) {
         Request request = new Request.Builder()
-                .url(joinPaths(veilarbarenaUrl, "api", "oppfolgingsbruker", fnr))
+                .url(joinPaths(veilarbarenaUrl, "api", "oppfolgingsbruker", fnr.get()))
                 .header(HttpHeaders.AUTHORIZATION, createBearerToken())
                 .build();
 
@@ -41,9 +43,9 @@ public class ArenaClientImpl implements ArenaClient {
         }
     }
 
-    public Optional<ArenaOppfolgingssak> oppfolgingssak(String fnr) {
+    public Optional<ArenaOppfolgingssak> oppfolgingssak(Fnr fnr) {
         Request request = new Request.Builder()
-                .url(joinPaths(veilarbarenaUrl, "api", "oppfolgingssak", fnr))
+                .url(joinPaths(veilarbarenaUrl, "api", "oppfolgingssak", fnr.get()))
                 .header(HttpHeaders.AUTHORIZATION, createBearerToken())
                 .build();
 

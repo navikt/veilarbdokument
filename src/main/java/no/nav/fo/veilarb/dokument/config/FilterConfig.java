@@ -1,9 +1,8 @@
 package no.nav.fo.veilarb.dokument.config;
 
+import no.nav.common.auth.context.UserRole;
 import no.nav.common.auth.oidc.filter.OidcAuthenticationFilter;
 import no.nav.common.auth.oidc.filter.OidcAuthenticatorConfig;
-import no.nav.common.auth.subject.IdentType;
-import no.nav.common.auth.utils.UserTokenFinder;
 import no.nav.common.log.LogFilter;
 import no.nav.common.rest.filter.SetStandardHttpHeadersFilter;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
@@ -21,14 +20,14 @@ public class FilterConfig {
         return new OidcAuthenticatorConfig()
                 .withDiscoveryUrl(properties.getOpenAmDiscoveryUrl())
                 .withClientId(properties.getVeilarbloginOpenAmClientId())
-                .withIdentType(IdentType.InternBruker);
+                .withUserRole(UserRole.INTERN);
     }
 
     private OidcAuthenticatorConfig azureAdAuthConfig(EnvironmentProperties properties) {
         return new OidcAuthenticatorConfig()
                 .withDiscoveryUrl(properties.getAadDiscoveryUrl())
                 .withClientId(properties.getVeilarbloginAadClientId())
-                .withIdentType(IdentType.InternBruker);
+                .withUserRole(UserRole.INTERN);
     }
 
     @Bean
