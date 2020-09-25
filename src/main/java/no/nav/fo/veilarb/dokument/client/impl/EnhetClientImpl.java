@@ -1,6 +1,7 @@
 package no.nav.fo.veilarb.dokument.client.impl;
 
 import no.nav.common.rest.client.RestUtils;
+import no.nav.common.types.identer.EnhetId;
 import no.nav.fo.veilarb.dokument.client.api.EnhetClient;
 import no.nav.fo.veilarb.dokument.domain.EnhetKontaktinformasjon;
 import no.nav.fo.veilarb.dokument.domain.EnhetOrganisering;
@@ -28,7 +29,7 @@ public class EnhetClientImpl implements EnhetClient {
     }
 
     @Cacheable(NORG2_ENHET_KONTAKTINFO_CACHE_NAME)
-    public EnhetKontaktinformasjon hentKontaktinfo(String enhetId) {
+    public EnhetKontaktinformasjon hentKontaktinfo(EnhetId enhetId) {
         Request request = new Request.Builder()
                 .url(joinPaths(host, String.format("v1/enhet/%s/kontaktinformasjon", enhetId)))
                 .build();
@@ -42,7 +43,7 @@ public class EnhetClientImpl implements EnhetClient {
     }
 
     @Cacheable(NORG2_ENHET_ORGANISERING_CACHE_NAME)
-    public List<EnhetOrganisering> hentEnhetOrganisering(String enhetId) {
+    public List<EnhetOrganisering> hentEnhetOrganisering(EnhetId enhetId) {
 
         Request request = new Request.Builder()
                 .url(joinPaths(host, String.format("v1/enhet/%s/organisering", enhetId)))

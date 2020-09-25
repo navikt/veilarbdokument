@@ -19,7 +19,7 @@
 
     <properties>
         <java.version>11</java.version>
-        <common.version>2.2020.08.28_14.16-420d1471cb04</common.version>
+        <common.version>2.2020.09.22_16.17-3d1c24298d49</common.version>
         <springfox.version>2.9.2</springfox.version>
     </properties>
 
@@ -180,6 +180,12 @@
             <groupId>com.github.tomakehurst</groupId>
             <artifactId>wiremock-standalone</artifactId>
             <version>2.26.3</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>no.nav.common</groupId>
+            <artifactId>test</artifactId>
+            <version>${common.version}</version>
             <scope>test</scope>
         </dependency>
 

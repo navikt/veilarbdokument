@@ -1,5 +1,6 @@
 package no.nav.fo.veilarb.dokument.service;
 
+import no.nav.common.types.identer.EnhetId;
 import no.nav.fo.veilarb.dokument.client.api.EnhetClient;
 import no.nav.fo.veilarb.dokument.domain.EnhetKontaktinformasjon;
 import no.nav.fo.veilarb.dokument.domain.EnhetOrganisering;
@@ -21,7 +22,7 @@ public class KontaktEnhetService {
         this.enhetClient = enhetClient;
     }
 
-    public String utledKontaktEnhetId(String enhetId) {
+    public EnhetId utledKontaktEnhetId(EnhetId enhetId) {
         EnhetKontaktinformasjon enhetKontaktinformasjon = enhetClient.hentKontaktinfo(enhetId);
 
         if (enhetKontaktinformasjon.getPostadresse() != null) {

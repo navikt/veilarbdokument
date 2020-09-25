@@ -38,10 +38,10 @@ public class IkkeredigerbartDokumentMapper {
         informasjon.setBestillendeFagsystem(new WSFagsystemer().withValue(BESTILLENDE_FAGSYSTEM_KODE));
         informasjon.setSakstilhoerendeFagsystem(new WSFagsystemer().withValue(SAKSTILHORENDE_FAGSYSTEM_KODE));
         informasjon.setDokumenttilhoerendeFagomraade(new WSFagomraader().withValue(DOKUMENTTILHORENDE_FAGOMRAADE));
-        informasjon.setBruker(mapFnr(brevdata.brukerFnr()));
-        informasjon.setMottaker(mapFnr(brevdata.brukerFnr()));
+        informasjon.setBruker(mapFnr(brevdata.brukerFnr().get()));
+        informasjon.setMottaker(mapFnr(brevdata.brukerFnr().get()));
         informasjon.setJournalsakId(Integer.toString(dokumentbestilling.sak().id()));
-        informasjon.setJournalfoerendeEnhet(brevdata.enhetId());
+        informasjon.setJournalfoerendeEnhet(brevdata.enhetId().get());
         informasjon.setUtledRegisterInfo(true);
 
         informasjon.setInkludererEksterneVedlegg(false);
