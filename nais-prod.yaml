@@ -2,15 +2,14 @@ kind: Application
 apiVersion: nais.io/v1alpha1
 metadata:
   name: veilarbdokument
-  namespace: {{namespace}}
+  namespace: pto
   labels:
     team: pto
-  cluster: dev-fss
 spec:
   image: docker.pkg.github.com/navikt/veilarbdokument/veilarbdokument:{{version}}
   port: 8080
   ingresses:
-    - https://veilarbdokument-{{namespace}}.nais.preprod.local
+    - https://veilarbdokument.nais.adeo.no
   liveness:
     path: veilarbdokument/internal/health/liveness
     initialDelay: 30
@@ -21,8 +20,8 @@ spec:
     enabled: true
     path: veilarbdokument/internal/prometheus
   replicas:
-    min: 1
-    max: 2
+    min: 2
+    max: 4
     cpuThresholdPercentage: 50
   resources:
     limits:
@@ -34,9 +33,9 @@ spec:
   vault:
     enabled: true
     paths:
-      - kvPath: /serviceuser/data/dev/srvveilarbdokument
+      - kvPath: /serviceuser/data/prod/srvveilarbdokument
         mountPath: /var/run/secrets/nais.io/service_user
-      - kvPath: /kv/preprod/fss/veilarbdokument/{{namespace}}
+      - kvPath: /kv/prod/fss/veilarbdokument/default
         mountPath: /var/run/secrets/nais.io/vault
   webproxy: true
   envFrom:

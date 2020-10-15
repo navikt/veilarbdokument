@@ -1,6 +1,7 @@
 package no.nav.fo.veilarb.dokument.config;
 
 import no.nav.common.rest.client.RestClient;
+import no.nav.common.utils.EnvironmentUtils;
 import no.nav.fo.veilarb.dokument.client.api.ArenaClient;
 import no.nav.fo.veilarb.dokument.client.api.EnhetClient;
 import no.nav.fo.veilarb.dokument.client.api.SakClient;
@@ -12,14 +13,15 @@ import no.nav.fo.veilarb.dokument.client.impl.VeilederClientImpl;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import static no.nav.common.utils.UrlUtils.clusterUrlForApplication;
+import static no.nav.common.utils.UrlUtils.createNaisAdeoIngressUrl;
+import static no.nav.common.utils.UrlUtils.createNaisPreprodIngressUrl;
 
 @Configuration
 public class ClientConfig {
 
     @Bean
-    public ArenaClient arenaClient(EnvironmentProperties properties) {
-        return new ArenaClientImpl(RestClient.baseClient(), clusterUrlForApplication("veilarbarena", true));
+    public ArenaClient arenaClient() {
+        return new ArenaClientImpl(RestClient.baseClient(), naisPreprodOrNaisAdeoIngress("veilarbarena", true));
     }
 
     @Bean
@@ -28,12 +30,19 @@ public class ClientConfig {
     }
 
     @Bean
-    public SakClient sakClient(EnvironmentProperties properties) {
-        return new SakClientImpl(RestClient.baseClient(), clusterUrlForApplication("sak"));
+    public SakClient sakClient() {
+        return new SakClientImpl(RestClient.baseClient(), naisPreprodOrNaisAdeoIngress("sak", false));
     }
 
     @Bean
-    public VeilederClient veilederClient(EnvironmentProperties properties) {
-        return new VeilederClientImpl(RestClient.baseClient(), clusterUrlForApplication("veilarbveileder", true));
+    public VeilederClient veilederClient() {
+        return new VeilederClientImpl(RestClient.baseClient(), naisPreprodOrNaisAdeoIngress("veilarbveileder", true));
     }
+
+    private static String naisPreprodOrNaisAdeoIngress(String appName, boolean withAppContextPath) {
+        return EnvironmentUtils.isProduction().orElseThrow(() -> new IllegalStateException("Unable to find cluster"))
+                ? createNaisAdeoIngressUrl(appName, withAppContextPath)
+                : createNaisPreprodIngressUrl(appName, "q1", withAppContextPath);
+    }
+
 }
