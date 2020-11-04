@@ -1,11 +1,19 @@
 package no.nav.fo.veilarb.dokument.utils;
 
+import lombok.SneakyThrows;
+import no.nav.fo.veilarb.dokument.service.KontaktEnhetServiceTest;
+
+import java.net.URL;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+
 public class TestUtils {
-
-    private TestUtils(){}
-
-    public static String lagFssUrl (String appName, String testmiljo, boolean withAppContext) {
-        String url = withAppContext ? "https://%s-%s.nais.preprod.local/%s/" : "https://%s-%s.nais.preprod.local/";
-        return String.format(url, appName, testmiljo, appName);
+    @SneakyThrows
+    public static String readTestResourceFile(String fileName) {
+        URL fileUrl = KontaktEnhetServiceTest.class.getClassLoader().getResource(fileName);
+        Path resPath = Paths.get(fileUrl.toURI());
+        return new String(Files.readAllBytes(resPath), StandardCharsets.UTF_8);
     }
 }

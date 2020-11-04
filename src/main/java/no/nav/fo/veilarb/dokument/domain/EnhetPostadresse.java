@@ -1,9 +1,15 @@
 package no.nav.fo.veilarb.dokument.domain;
 
-import lombok.Value;
+import com.fasterxml.jackson.annotation.JsonSubTypes;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
 
-@Value
-public class EnhetPostadresse {
-    String postnummer;
-    String poststed;
+@JsonTypeInfo(use = JsonTypeInfo.Id.NAME, property = "type")
+@JsonSubTypes({
+        @JsonSubTypes.Type(value = EnhetPostboksadresse.class, name = "postboksadresse"),
+        @JsonSubTypes.Type(value = EnhetStedsadresse.class, name = "stedsadresse")
+})
+public abstract class EnhetPostadresse {
 }
+
+
+

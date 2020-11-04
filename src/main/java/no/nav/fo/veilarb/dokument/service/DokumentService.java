@@ -61,7 +61,7 @@ public class DokumentService {
         NavIdent veilederIdent = authService.getInnloggetVeilederIdent();
         String veilederNavn = veilederClient.hentVeiledernavn();
 
-        EnhetId enhetIdKontakt = kontaktEnhetService.utledKontaktEnhetId(dokumentbestilling.enhetId());
+        EnhetId enhetIdKontakt = kontaktEnhetService.utledEnhetKontaktinformasjon(dokumentbestilling.enhetId()).getEnhetNr();
 
         return Brevdata.builder()
                 .brukerFnr(dokumentbestilling.brukerFnr())
