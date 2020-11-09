@@ -25,6 +25,7 @@ import java.util.stream.Stream;
 import static com.github.tomakehurst.wiremock.client.WireMock.*;
 import static no.nav.fo.veilarb.dokument.client.impl.SakClientImpl.ARENA_KODE;
 import static no.nav.fo.veilarb.dokument.client.impl.SakClientImpl.OPPFOLGING_KODE;
+import static no.nav.fo.veilarb.dokument.utils.TestUtils.authContext;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class SakClientImplTest {
@@ -72,15 +73,5 @@ public class SakClientImplTest {
                                 .withHeader("Content-Type", "applicaition/json")
                                 .withBody(json)
                         ));
-    }
-
-    private AuthContext authContext(String subject) {
-        JWTClaimsSet claimsSet = new JWTClaimsSet.Builder()
-                .subject(subject)
-                .build();
-
-        JWT jwt = new PlainJWT(claimsSet);
-
-        return new AuthContext(UserRole.INTERN, jwt);
     }
 }

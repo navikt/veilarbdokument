@@ -7,4 +7,12 @@ import no.nav.common.types.identer.EnhetId;
 public class EnhetKontaktinformasjon {
     EnhetId enhetNr;
     EnhetPostadresse postadresse;
+
+    public EnhetId getEnhetNr() {
+        return this.enhetNr;
+    }
+
+    public EnhetPostadresse getPostadresse() {
+        return this.postadresse;
+    }
 }

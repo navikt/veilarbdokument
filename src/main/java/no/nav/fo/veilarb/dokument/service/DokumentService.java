@@ -40,7 +40,7 @@ public class DokumentService {
     }
 
     public DokumentbestillingResponsDto bestillDokument(DokumentbestillingDto dto) {
-        Bruker bruker = authService.sjekkTilgang(dto.brukerFnr(), dto.enhetId());
+        Bruker bruker = authService.sjekkTilgang(dto.getBrukerFnr(), dto.getEnhetId());
 
         Dokumentbestilling dokumentbestilling = lagDokumentbestilling(dto, bruker);
         return produserIkkeredigerbartDokument(dokumentbestilling, bruker);
@@ -61,17 +61,17 @@ public class DokumentService {
         NavIdent veilederIdent = authService.getInnloggetVeilederIdent();
         String veilederNavn = veilederClient.hentVeiledernavn();
 
-        EnhetId enhetIdKontakt = kontaktEnhetService.utledEnhetKontaktinformasjon(dokumentbestilling.enhetId()).getEnhetNr();
+        EnhetId enhetIdKontakt = kontaktEnhetService.utledEnhetKontaktinformasjon(dokumentbestilling.getEnhetId()).getEnhetNr();
 
         return Brevdata.builder()
-                .brukerFnr(dokumentbestilling.brukerFnr())
-                .malType(dokumentbestilling.malType())
-                .enhetId(dokumentbestilling.enhetId())
+                .brukerFnr(dokumentbestilling.getBrukerFnr())
+                .malType(dokumentbestilling.getMalType())
+                .enhetId(dokumentbestilling.getEnhetId())
                 .enhetIdKontakt(enhetIdKontakt)
                 .veilederId(veilederIdent)
                 .veilederNavn(veilederNavn)
-                .begrunnelse(dokumentbestilling.begrunnelse())
-                .kilder(dokumentbestilling.opplysninger())
+                .begrunnelse(dokumentbestilling.getBegrunnelse())
+                .kilder(dokumentbestilling.getOpplysninger())
                 .build();
     }
 
@@ -93,7 +93,7 @@ public class DokumentService {
 
     @SneakyThrows
     public byte[] produserDokumentutkast(DokumentbestillingDto dto) {
-        Bruker bruker = authService.sjekkTilgang(dto.brukerFnr(), dto.enhetId());
+        Bruker bruker = authService.sjekkTilgang(dto.getBrukerFnr(), dto.getEnhetId());
 
         Brevdata brevdata = lagBrevdata(dto);
         WSProduserDokumentutkastRequest dokumentutkastRequest =
@@ -103,7 +103,7 @@ public class DokumentService {
             return dokumentproduksjon.produserDokumentutkast(dokumentutkastRequest).getDokumentutkast();
         } catch (Exception e) {
             log.error(String.format("Kunne ikke produsere dokumentutkast for aktorId %s", bruker.getAktorId()), e);
-            metrikkService.rapporterFeilendeDokumentutkast(dto.malType());
+            metrikkService.rapporterFeilendeDokumentutkast(dto.getMalType());
             throw e;
         }
     }

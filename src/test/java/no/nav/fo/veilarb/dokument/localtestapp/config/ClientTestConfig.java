@@ -1,13 +1,7 @@
 package no.nav.fo.veilarb.dokument.localtestapp.config;
 
-import no.nav.fo.veilarb.dokument.client.api.ArenaClient;
-import no.nav.fo.veilarb.dokument.client.api.EnhetClient;
-import no.nav.fo.veilarb.dokument.client.api.SakClient;
-import no.nav.fo.veilarb.dokument.client.api.VeilederClient;
-import no.nav.fo.veilarb.dokument.localtestapp.stub.ArenaClientStub;
-import no.nav.fo.veilarb.dokument.localtestapp.stub.EnhetClientStub;
-import no.nav.fo.veilarb.dokument.localtestapp.stub.SakClientStub;
-import no.nav.fo.veilarb.dokument.localtestapp.stub.VeilederClientStub;
+import no.nav.fo.veilarb.dokument.client.api.*;
+import no.nav.fo.veilarb.dokument.localtestapp.stub.*;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -32,5 +26,15 @@ public class ClientTestConfig {
     @Bean
     public VeilederClient veilederClient() {
         return new VeilederClientStub();
+    }
+
+    @Bean
+    public BrevClient brevClient() {
+        return new BrevClientStub();
+    }
+
+    @Bean
+    public PersonClient personClient() {
+        return new PersonClientStub();
     }
 }
