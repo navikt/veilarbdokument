@@ -6,9 +6,9 @@ import no.nav.fo.veilarb.dokument.client.api.VeilederClient
 import no.nav.fo.veilarb.dokument.domain.Adresse
 import no.nav.fo.veilarb.dokument.domain.DokumentbestillingDto
 import no.nav.fo.veilarb.dokument.domain.EnhetKontaktinformasjon
+import no.nav.fo.veilarb.dokument.util.DateUtils
 import org.springframework.stereotype.Service
 import java.time.LocalDate
-import java.time.format.DateTimeFormatter
 
 @Service
 class DokumentV2Service(val brevClient: BrevClient,
@@ -34,7 +34,7 @@ class DokumentV2Service(val brevClient: BrevClient,
                 else veilederClient.hentEnhetNavn(enhetKontaktinformasjon.enhetNr)
 
         val mottaker = BrevClient.Mottaker(hentPerson.navn, hentPerson.adresse)
-        val dato = LocalDate.now().format(DateTimeFormatter.ISO_LOCAL_DATE)
+        val dato = LocalDate.now().format(DateUtils.norskDateFormatter)
 
         val returadresse = Adresse.fraEnhetPostadresse(enhetKontaktinformasjon.postadresse)
 
