@@ -1,5 +1,6 @@
 package no.nav.fo.veilarb.dokument.domain
 
+import no.nav.fo.veilarb.dokument.client.api.BrevClient
 import java.lang.IllegalStateException
 
 data class Adresse(
@@ -10,19 +11,19 @@ data class Adresse(
         val poststed: String,
 ) {
     companion object {
-        fun fraEnhetPostadresse(enhetPostadresse: EnhetPostadresse): Adresse {
+        fun fraEnhetPostadresse(enhetPostadresse: EnhetPostadresse): BrevClient.Returadresse {
             when (enhetPostadresse) {
                 is EnhetPostboksadresse ->
-                    return Adresse(
-                            adresselinje1 =
+                    return BrevClient.Returadresse(
+                            adresselinje =
                             "Postboks ${enhetPostadresse.postboksnummer ?: ""} ${enhetPostadresse.postboksanlegg ?: ""}",
                             postnummer = enhetPostadresse.postnummer,
                             poststed = enhetPostadresse.poststed,
                     )
 
                 is EnhetStedsadresse ->
-                    return Adresse(
-                            adresselinje1 =
+                    return BrevClient.Returadresse(
+                            adresselinje =
                             "${enhetPostadresse.gatenavn ?: ""} ${enhetPostadresse.husnummer ?: ""}${enhetPostadresse.husbokstav ?: ""}",
                             postnummer = enhetPostadresse.postnummer,
                             poststed = enhetPostadresse.poststed,

@@ -25,7 +25,6 @@ class VeilederClientImplTest {
     @Rule
     fun getWireMockRule() = wireMockRule
 
-
     @Before
     fun setup() {
         val client = RestClient.baseClient()

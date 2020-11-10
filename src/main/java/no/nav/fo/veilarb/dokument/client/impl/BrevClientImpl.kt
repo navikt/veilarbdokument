@@ -12,11 +12,12 @@ import org.springframework.web.server.ResponseStatusException
 
 class BrevClientImpl(val client: OkHttpClient, val pdfGenUrl: String) : BrevClient {
 
-    override fun genererBrev(brevdataPdf: BrevClient.Brevdata): ByteArray {
+    override fun genererBrev(brevdata: BrevClient.Brevdata): ByteArray {
 
         val request = Request.Builder()
                 .url(joinPaths(pdfGenUrl, "api/v1/genpdf/vedtak14a/vedtak14a"))
                 .header(HttpHeaders.AUTHORIZATION, createBearerToken())
+                .post(RestUtils.toJsonRequestBody(brevdata))
                 .build()
 
         try {

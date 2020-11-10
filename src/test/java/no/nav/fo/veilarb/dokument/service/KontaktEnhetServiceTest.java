@@ -233,7 +233,7 @@ public class KontaktEnhetServiceTest {
                 get(urlEqualTo("/v1/enhet/" + enhetId.get() + "/kontaktinformasjon"))
                         .willReturn(aResponse()
                                 .withStatus(200)
-                                .withHeader("Content-Type", "applicaition/json")
+                                .withHeader("Content-Type", "application/json")
                                 .withBody(response)
                         ));
     }
@@ -255,7 +255,7 @@ public class KontaktEnhetServiceTest {
                 get(urlEqualTo("/v1/enhet/" + enhetNr.get() + "/organisering"))
                         .willReturn(aResponse()
                                 .withStatus(200)
-                                .withHeader("Content-Type", "applicaition/json")
+                                .withHeader("Content-Type", "application/json")
                                 .withBody(response)
                         ));
     }

@@ -28,6 +28,8 @@ class DokumentV2Service(val brevClient: BrevClient,
 
         val hentPerson = personClient.hentPerson(dokumentBestilling.brukerFnr)
 
+        val veilederNavn = veilederClient.hentVeiledernavn()
+
         val enhetNavn = veilederClient.hentEnhetNavn(dokumentBestilling.enhetId)
         val kontaktEnhetNavn =
                 if (dokumentBestilling.enhetId == enhetKontaktinformasjon.enhetNr) enhetNavn
@@ -38,14 +40,21 @@ class DokumentV2Service(val brevClient: BrevClient,
 
         val returadresse = Adresse.fraEnhetPostadresse(enhetKontaktinformasjon.postadresse)
 
+        val newLineAscii = "\u21b5"
+        val begrunnelseAvsnitt =
+                dokumentBestilling.begrunnelse?.split(newLineAscii)?.filterNot { it.isEmpty() } ?: emptyList()
+
         return BrevClient.Brevdata(
                 malType = dokumentBestilling.malType,
+                veilederNavn = veilederNavn,
                 navKontor = enhetNavn,
                 kontaktEnhetNavn = kontaktEnhetNavn,
                 dato = dato,
                 malform = hentPerson.malform,
                 mottaker = mottaker,
-                returadresse = returadresse
+                returadresse = returadresse,
+                begrunnelse = begrunnelseAvsnitt,
+                kilder = dokumentBestilling.opplysninger
         )
     }
 

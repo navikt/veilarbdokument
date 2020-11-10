@@ -38,7 +38,7 @@ public class TestUtils {
                 WireMock.get(WireMock.urlEqualTo(url))
                         .willReturn(WireMock.aResponse()
                                 .withStatus(200)
-                                .withHeader("Content-Type", "applicaition/json")
+                                .withHeader("Content-Type", "application/json")
                                 .withBody(json)
                         ));
     }
