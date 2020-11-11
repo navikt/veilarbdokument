@@ -8,6 +8,10 @@ import no.nav.fo.veilarb.dokument.domain.EnhetPostboksadresse;
 import no.nav.fo.veilarb.dokument.domain.Målform;
 
 public class Values {
+    public static final boolean TEST_PTO_VEDTAKSSTOTTE_PILOT_TOGGLE = true;
+    public static final boolean TEST_VEILARBDOKUMENT_ENABLED_TOGGLE = false;
+    public static final boolean TEST_VEILARBDOKUMENT_V2_API_ENABLED_TOGGLE = false;
+
     public static final NavIdent TEST_VEILEDER_IDENT = NavIdent.of("X123456");
     public static final String TEST_SRV_USERNAME = "username";
     public static final String TEST_SRV_PASSWORD = "password";
@@ -23,7 +27,6 @@ public class Values {
                     "postboksnummer",
                     "postboksanlegg");
     public static final String TEST_ARENA_OPPFOLGINGSSAK = "890";
-    public static final boolean TEST_UNLEASH_ENABLED = true;
     public static final int TEST_SAK_ID = 789;
     public static final String TEST_DOKUMENTUTKAST_STR = "dokumentutkast";
     public static final String TEST_PERSON_NAVN = "Navn Navnesen";
