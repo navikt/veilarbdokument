@@ -4,10 +4,10 @@ import lombok.Value;
 
 @Value
 public class EnhetPostboksadresse extends EnhetPostadresse {
-    String postnummer;
-    String poststed;
-    String postboksnummer;
-    String postboksanlegg;
+    private final String postnummer;
+    private final String poststed;
+    private final String postboksnummer;
+    private final String postboksanlegg;
 
     public String getPostnummer() {
         return this.postnummer;

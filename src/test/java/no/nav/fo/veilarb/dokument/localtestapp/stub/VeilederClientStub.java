@@ -10,7 +10,7 @@ public class VeilederClientStub implements VeilederClient {
 
     @Override
     public String hentVeiledernavn() {
-        return null;
+        return Values.TEST_VEILEDER_NAVN;
     }
 
     @Override

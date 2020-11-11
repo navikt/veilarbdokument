@@ -5,8 +5,8 @@ import no.nav.common.types.identer.EnhetId;
 
 @Value
 public class EnhetKontaktinformasjon {
-    EnhetId enhetNr;
-    EnhetPostadresse postadresse;
+    private final EnhetId enhetNr;
+    private final EnhetPostadresse postadresse;
 
     public EnhetId getEnhetNr() {
         return this.enhetNr;

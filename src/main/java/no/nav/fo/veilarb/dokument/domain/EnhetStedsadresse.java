@@ -4,12 +4,12 @@ import lombok.Value;
 
 @Value
 public class EnhetStedsadresse extends EnhetPostadresse {
-    String postnummer;
-    String poststed;
-    String gatenavn;
-    String husnummer;
-    String husbokstav;
-    String adresseTilleggsnavn;
+    private final String postnummer;
+    private final String poststed;
+    private final String gatenavn;
+    private final String husnummer;
+    private final String husbokstav;
+    private final String adresseTilleggsnavn;
 
     public String getPostnummer() {
         return this.postnummer;
