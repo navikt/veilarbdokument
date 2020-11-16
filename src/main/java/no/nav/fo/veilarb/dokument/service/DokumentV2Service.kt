@@ -6,6 +6,7 @@ import no.nav.fo.veilarb.dokument.client.api.VeilederClient
 import no.nav.fo.veilarb.dokument.domain.Adresse
 import no.nav.fo.veilarb.dokument.domain.DokumentbestillingDto
 import no.nav.fo.veilarb.dokument.domain.EnhetKontaktinformasjon
+import no.nav.fo.veilarb.dokument.domain.Målform
 import no.nav.fo.veilarb.dokument.util.DateUtils
 import org.springframework.stereotype.Service
 import java.time.LocalDate
@@ -26,7 +27,9 @@ class DokumentV2Service(val brevClient: BrevClient,
     private fun lagBrevdata(dokumentBestilling: DokumentbestillingDto): BrevClient.Brevdata {
         val enhetKontaktinformasjon: EnhetKontaktinformasjon = kontaktEnhetService.utledEnhetKontaktinformasjon(dokumentBestilling.enhetId)
 
-        val hentPerson = personClient.hentPerson(dokumentBestilling.brukerFnr)
+        // TODO: Avklare innhold i brev før dette implementeres. Tomt innhold for testing.
+        val hentPerson = //personClient.hentPerson(dokumentBestilling.brukerFnr)
+                PersonClient.Person("", Adresse(adresselinje1 = "", postnummer = "", poststed = ""), Målform.NB)
 
         val veilederNavn = veilederClient.hentVeiledernavn()
 
