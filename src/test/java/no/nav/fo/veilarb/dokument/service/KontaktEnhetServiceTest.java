@@ -20,7 +20,7 @@ import java.util.Map;
 import java.util.Optional;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.*;
-import static no.nav.fo.veilarb.dokument.utils.TestUtils.readTestResourceFile;
+import static no.nav.fo.veilarb.dokument.util.TestUtils.readTestResourceFile;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;

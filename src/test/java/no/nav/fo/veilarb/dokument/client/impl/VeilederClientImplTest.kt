@@ -6,7 +6,7 @@ import no.nav.common.rest.client.RestClient
 import no.nav.common.types.identer.EnhetId
 import no.nav.common.utils.fn.UnsafeSupplier
 import no.nav.fo.veilarb.dokument.client.api.VeilederClient
-import no.nav.fo.veilarb.dokument.utils.TestUtils.*
+import no.nav.fo.veilarb.dokument.util.TestUtils.*
 import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Rule

@@ -9,7 +9,7 @@ import no.nav.fo.veilarb.dokument.client.api.BrevClient
 import no.nav.fo.veilarb.dokument.domain.Adresse
 import no.nav.fo.veilarb.dokument.domain.MalType
 import no.nav.fo.veilarb.dokument.domain.Målform
-import no.nav.fo.veilarb.dokument.utils.TestUtils
+import no.nav.fo.veilarb.dokument.util.TestUtils
 import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Rule

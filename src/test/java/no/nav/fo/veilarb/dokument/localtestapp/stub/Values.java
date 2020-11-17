@@ -32,13 +32,4 @@ public class Values {
     public static final String TEST_DOKUMENTUTKAST_STR = "dokumentutkast";
     public static final String TEST_PERSON_NAVN = "Navn Navnesen";
     public static final Målform TEST_MÅLFORM = Målform.NB;
-    public static final Adresse TEST_ADRESSE = new Adresse(
-            "adresselinje1",
-            "adresselinje2",
-            "adresselinje3",
-            "postnummer",
-            "poststed"
-
-    );
-
 }

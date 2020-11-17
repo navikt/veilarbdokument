@@ -35,7 +35,7 @@ public class ClientConfig {
 
     @Bean
     public PersonClient personClient() {
-        return new PersonClientImpl();
+        return new PersonClientImpl(RestClient.baseClient(), naisPreprodOrNaisAdeoIngress("veilarbperson", true));
     }
 
     @Bean

@@ -1,4 +1,4 @@
-package no.nav.fo.veilarb.dokument.utils;
+package no.nav.fo.veilarb.dokument.util;
 
 import com.github.tomakehurst.wiremock.client.WireMock;
 import com.nimbusds.jwt.JWT;

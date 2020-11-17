@@ -20,7 +20,7 @@ import java.util.stream.Stream;
 import static com.github.tomakehurst.wiremock.client.WireMock.*;
 import static no.nav.fo.veilarb.dokument.client.impl.SakClientImpl.ARENA_KODE;
 import static no.nav.fo.veilarb.dokument.client.impl.SakClientImpl.OPPFOLGING_KODE;
-import static no.nav.fo.veilarb.dokument.utils.TestUtils.authContext;
+import static no.nav.fo.veilarb.dokument.util.TestUtils.authContext;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class SakClientImplTest {

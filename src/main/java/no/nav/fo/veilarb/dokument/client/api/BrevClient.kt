@@ -1,10 +1,9 @@
 package no.nav.fo.veilarb.dokument.client.api
 
-import no.nav.fo.veilarb.dokument.domain.Adresse
-import no.nav.fo.veilarb.dokument.domain.MalType
-import no.nav.fo.veilarb.dokument.domain.Målform
+import no.nav.common.health.HealthCheck
+import no.nav.fo.veilarb.dokument.domain.*
 
-interface BrevClient {
+interface BrevClient: HealthCheck {
     fun genererBrev(brevdata: Brevdata): ByteArray
 
     data class Brevdata(
@@ -27,6 +26,30 @@ interface BrevClient {
             val adresselinje: String,
             val postnummer: String,
             val poststed: String,
-    )
+    ) {
+        companion object {
+            fun fraEnhetPostadresse(enhetPostadresse: EnhetPostadresse): Returadresse {
+                when (enhetPostadresse) {
+                    is EnhetPostboksadresse ->
+                        return Returadresse(
+                                adresselinje =
+                                "Postboks ${enhetPostadresse.postboksnummer ?: ""} ${enhetPostadresse.postboksanlegg ?: ""}",
+                                postnummer = enhetPostadresse.postnummer,
+                                poststed = enhetPostadresse.poststed,
+                        )
+
+                    is EnhetStedsadresse ->
+                        return Returadresse(
+                                adresselinje =
+                                "${enhetPostadresse.gatenavn ?: ""} ${enhetPostadresse.husnummer ?: ""}${enhetPostadresse.husbokstav ?: ""}",
+                                postnummer = enhetPostadresse.postnummer,
+                                poststed = enhetPostadresse.poststed,
+                        )
+                    else -> throw IllegalStateException("Manglende mapping for enhetPostadresse")
+                }
+            }
+        }
+
+    }
 }
 
