@@ -22,11 +22,11 @@ public class KontaktEnhetService {
         this.enhetClient = enhetClient;
     }
 
-    public EnhetId utledKontaktEnhetId(EnhetId enhetId) {
+    public EnhetKontaktinformasjon utledEnhetKontaktinformasjon(EnhetId enhetId) {
         EnhetKontaktinformasjon enhetKontaktinformasjon = enhetClient.hentKontaktinfo(enhetId);
 
         if (enhetKontaktinformasjon.getPostadresse() != null) {
-            return enhetId;
+            return enhetKontaktinformasjon;
         } else {
             List<EnhetOrganisering> enhetOrganisering = enhetClient.hentEnhetOrganisering(enhetId);
             List<EnhetOrganisering> eiere = enhetOrganisering.stream()
@@ -37,7 +37,7 @@ public class KontaktEnhetService {
                 EnhetKontaktinformasjon eierEnhetKontaktinformasjon =
                         enhetClient.hentKontaktinfo(eier.getOrganiserer().getNr());
                 if (eierEnhetKontaktinformasjon.getPostadresse() != null) {
-                    return eierEnhetKontaktinformasjon.getEnhetNr();
+                    return eierEnhetKontaktinformasjon;
                 } else {
                     throw new RuntimeException(format("Eier-enhet %s for enhet %s mangler adresse",
                             eier.getOrganiserer().getNr(), enhetId));

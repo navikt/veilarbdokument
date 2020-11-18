@@ -5,10 +5,9 @@ import no.nav.common.rest.client.RestClient;
 import no.nav.common.types.identer.EnhetId;
 import no.nav.fo.veilarb.dokument.client.api.EnhetClient;
 import no.nav.fo.veilarb.dokument.client.impl.EnhetClientImpl;
-import no.nav.fo.veilarb.dokument.domain.Enhet;
 import no.nav.fo.veilarb.dokument.domain.EnhetKontaktinformasjon;
-import no.nav.fo.veilarb.dokument.domain.EnhetOrganisering;
-import no.nav.fo.veilarb.dokument.domain.EnhetPostadresse;
+import no.nav.fo.veilarb.dokument.domain.EnhetPostboksadresse;
+import no.nav.fo.veilarb.dokument.domain.EnhetStedsadresse;
 import okhttp3.OkHttpClient;
 import org.junit.Before;
 import org.junit.Rule;
@@ -16,12 +15,15 @@ import org.junit.Test;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
-import java.util.stream.Stream;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.*;
+import static no.nav.fo.veilarb.dokument.util.TestUtils.readTestResourceFile;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 public class KontaktEnhetServiceTest {
 
@@ -46,78 +48,107 @@ public class KontaktEnhetServiceTest {
     }
 
     @Test
-    public void opprinnelig_enhet_som_avsenderenhet_dersom_enhet_har_postadresse() {
+    public void opprinnelig_enhet_som_avsenderenhet_dersom_enhet_har_postboksadresse() {
 
-        gittKontaktinformasjon(new EnhetKontaktinformasjon(ENHET_NR,
-                new EnhetPostadresse("postnummer", "poststed")));
+        gittEnhetMedKontaktinfoPostboksadresse(ENHET_NR);
 
-        EnhetId enhetId = kontaktEnhetService.utledKontaktEnhetId(ENHET_NR);
+        EnhetKontaktinformasjon enhetKontaktinformasjon = kontaktEnhetService.utledEnhetKontaktinformasjon(ENHET_NR);
 
-        assertEquals(ENHET_NR, enhetId);
+        assertEquals(ENHET_NR, enhetKontaktinformasjon.getEnhetNr());
+        assertTrue(enhetKontaktinformasjon.getPostadresse() instanceof EnhetPostboksadresse);
+        EnhetPostboksadresse adresse = (EnhetPostboksadresse) enhetKontaktinformasjon.getPostadresse();
+        assertEquals(adresse.getPostnummer(), "1234");
+        assertEquals(adresse.getPoststed(), "STED");
+        assertEquals(adresse.getPostboksnummer(), "1");
+        assertEquals(adresse.getPostboksanlegg(), "Anlegg");
+    }
+
+    @Test
+    public void opprinnelig_enhet_som_avsenderenhet_dersom_enhet_har_stedssadresse() {
+
+        gittEnhetMedKontaktinfoStedsadresse(ENHET_NR);
+
+        EnhetKontaktinformasjon enhetKontaktinformasjon = kontaktEnhetService.utledEnhetKontaktinformasjon(ENHET_NR);
+
+        assertEquals(ENHET_NR, enhetKontaktinformasjon.getEnhetNr());
+        assertTrue(enhetKontaktinformasjon.getPostadresse() instanceof EnhetStedsadresse);
+        EnhetStedsadresse adresse = (EnhetStedsadresse) enhetKontaktinformasjon.getPostadresse();
+        assertEquals(adresse.getPostnummer(), "1234");
+        assertEquals(adresse.getPoststed(), "STED");
+        assertEquals(adresse.getGatenavn(), "GATE");
+        assertEquals(adresse.getHusnummer(), "1");
+        assertEquals(adresse.getHusbokstav(), "A");
+        assertEquals(adresse.getAdresseTilleggsnavn(), "Tilleggsnavn");
     }
 
     @Test
     public void eierenhet_som_avsenderenhet_dersom_opprinnelig_enhet_ikke_har_postadresse() {
-        gittKontaktinformasjon(new EnhetKontaktinformasjon(ENHET_NR, null));
-        gittKontaktinformasjon(new EnhetKontaktinformasjon(EIER_ENHET_NR,
-                new EnhetPostadresse("postnummer", "poststed")));
-        gittEnhetOrganisering(ENHET_NR,
-                new EnhetOrganisering("ANNEN_1", null, null, new Enhet(EnhetId.of("ANNEN_1"), "navn")),
-                new EnhetOrganisering("EIER", null, null, new Enhet(EIER_ENHET_NR, "navn")),
-                new EnhetOrganisering("ANNEN_2", null, null, new Enhet(EnhetId.of("ANNEN_2"), "navn"))
-        );
+        gittEnhetUtenKontaktinfo(ENHET_NR);
+        gittEnhetMedKontaktinfoPostboksadresse(EIER_ENHET_NR);
 
-        EnhetId enhetId = kontaktEnhetService.utledKontaktEnhetId(ENHET_NR);
+        HashMap<String, String> replace = new HashMap<>();
+        replace.put("ORG_TYPE_1", "EIER");
+        replace.put("ENHET_NR_1", EIER_ENHET_NR.get());
 
-        assertEquals(EIER_ENHET_NR, enhetId);
+        gittEnhetOrganiseringMed3Enheter(ENHET_NR, replace);
+
+        EnhetKontaktinformasjon enhetKontaktinformasjon = kontaktEnhetService.utledEnhetKontaktinformasjon(ENHET_NR);
+
+        assertEquals(EIER_ENHET_NR, enhetKontaktinformasjon.getEnhetNr());
     }
 
     @Test
     public void ingen_eier() {
-        gittKontaktinformasjon(new EnhetKontaktinformasjon(ENHET_NR, null));
-        gittEnhetOrganisering(ENHET_NR);
+        gittEnhetUtenKontaktinfo(ENHET_NR);
+        gittEnhetOrganiseringMed3Enheter(ENHET_NR, new HashMap<>());
 
         assertThatThrownBy(() ->
-                kontaktEnhetService.utledKontaktEnhetId(ENHET_NR)
+                kontaktEnhetService.utledEnhetKontaktinformasjon(ENHET_NR)
         ).isExactlyInstanceOf(RuntimeException.class);
 
     }
 
     @Test
     public void flere_eiere() {
-        gittKontaktinformasjon(new EnhetKontaktinformasjon(ENHET_NR, null));
-        gittEnhetOrganisering(ENHET_NR,
-                new EnhetOrganisering("EIER", null, null, new Enhet(EnhetId.of("EIER_1"), "navn")),
-                new EnhetOrganisering("EIER", null, null, new Enhet(EnhetId.of("EIER_2"), "navn")));
+        gittEnhetUtenKontaktinfo(ENHET_NR);
+        HashMap<String, String> replace = new HashMap<>();
+        replace.put("ORG_TYPE_1", "EIER");
+        replace.put("ORG_TYPE_2", "EIER");
+
+        gittEnhetOrganiseringMed3Enheter(ENHET_NR, replace);
 
         assertThatThrownBy(() ->
-                kontaktEnhetService.utledKontaktEnhetId(ENHET_NR)
+                kontaktEnhetService.utledEnhetKontaktinformasjon(ENHET_NR)
         ).isExactlyInstanceOf(RuntimeException.class);
     }
 
     @Test
     public void eier_mangler_adresse() {
-        gittKontaktinformasjon(new EnhetKontaktinformasjon(ENHET_NR, null));
-        gittKontaktinformasjon(new EnhetKontaktinformasjon(EIER_ENHET_NR, null));
-        gittEnhetOrganisering(ENHET_NR,
-                new EnhetOrganisering("EIER", null, null, new Enhet(EIER_ENHET_NR, "navn")));
+        gittEnhetUtenKontaktinfo(ENHET_NR);
+        gittEnhetUtenKontaktinfo(EIER_ENHET_NR);
+
+        HashMap<String, String> replace = new HashMap<>();
+        replace.put("ORG_TYPE_1", "EIER");
+        replace.put("ENHET_NR_1", EIER_ENHET_NR.get());
+
+        gittEnhetOrganiseringMed3Enheter(ENHET_NR, replace);
 
         assertThatThrownBy(() ->
-                kontaktEnhetService.utledKontaktEnhetId(ENHET_NR)
+                kontaktEnhetService.utledEnhetKontaktinformasjon(ENHET_NR)
         ).isExactlyInstanceOf(RuntimeException.class);
     }
 
     @Test
     public void eier_gyldig_fra_gyldig_til() {
         setupEierGyldighetTest(GYLDIG_FRA, GYLDIG_TIL);
-        assertEquals(EIER_ENHET_NR, kontaktEnhetService.utledKontaktEnhetId(ENHET_NR));
+        assertEquals(EIER_ENHET_NR, kontaktEnhetService.utledEnhetKontaktinformasjon(ENHET_NR).getEnhetNr());
     }
 
     @Test
     public void eier_ugyldig_fra_gyldig_til() {
         setupEierGyldighetTest(UGYLDIG_FRA, GYLDIG_TIL);
         assertThatThrownBy(() ->
-                kontaktEnhetService.utledKontaktEnhetId(ENHET_NR)
+                kontaktEnhetService.utledEnhetKontaktinformasjon(ENHET_NR)
         ).isExactlyInstanceOf(RuntimeException.class);
     }
 
@@ -125,7 +156,7 @@ public class KontaktEnhetServiceTest {
     public void eier_gyldig_fra_ugyldig_til() {
         setupEierGyldighetTest(GYLDIG_FRA, UGYLDIG_TIL);
         assertThatThrownBy(() ->
-                kontaktEnhetService.utledKontaktEnhetId(ENHET_NR)
+                kontaktEnhetService.utledEnhetKontaktinformasjon(ENHET_NR)
         ).isExactlyInstanceOf(RuntimeException.class);
     }
 
@@ -133,85 +164,113 @@ public class KontaktEnhetServiceTest {
     public void eier_ugyldig_fra_ugyldig_til() {
         setupEierGyldighetTest(UGYLDIG_FRA, UGYLDIG_TIL);
         assertThatThrownBy(() ->
-                kontaktEnhetService.utledKontaktEnhetId(ENHET_NR)
+                kontaktEnhetService.utledEnhetKontaktinformasjon(ENHET_NR)
         ).isExactlyInstanceOf(RuntimeException.class);
     }
 
     @Test
     public void eier_gyldig_fra_null_til() {
         setupEierGyldighetTest(GYLDIG_FRA, null);
-        assertEquals(EIER_ENHET_NR, kontaktEnhetService.utledKontaktEnhetId(ENHET_NR));
+        assertEquals(EIER_ENHET_NR, kontaktEnhetService.utledEnhetKontaktinformasjon(ENHET_NR).getEnhetNr());
     }
 
     @Test
     public void eier_ugyldig_fra_null_til() {
         setupEierGyldighetTest(UGYLDIG_FRA, null);
         assertThatThrownBy(() ->
-                kontaktEnhetService.utledKontaktEnhetId(ENHET_NR)
+                kontaktEnhetService.utledEnhetKontaktinformasjon(ENHET_NR)
         ).isExactlyInstanceOf(RuntimeException.class);
     }
 
     @Test
     public void eier_null_fra_gyldig_til() {
         setupEierGyldighetTest(null, GYLDIG_TIL);
-        assertEquals(EIER_ENHET_NR, kontaktEnhetService.utledKontaktEnhetId(ENHET_NR));
+        assertEquals(EIER_ENHET_NR, kontaktEnhetService.utledEnhetKontaktinformasjon(ENHET_NR).getEnhetNr());
     }
 
     @Test
     public void eier_null_fra_ugyldig_til() {
         setupEierGyldighetTest(null, UGYLDIG_TIL);
         assertThatThrownBy(() ->
-                kontaktEnhetService.utledKontaktEnhetId(ENHET_NR)
+                kontaktEnhetService.utledEnhetKontaktinformasjon(ENHET_NR)
         ).isExactlyInstanceOf(RuntimeException.class);
     }
 
     @Test
     public void eier_lik_fra_lik_til() {
         setupEierGyldighetTest(LocalDate.now(), LocalDate.now());
-        assertEquals(EIER_ENHET_NR, kontaktEnhetService.utledKontaktEnhetId(ENHET_NR));
+        assertEquals(EIER_ENHET_NR, kontaktEnhetService.utledEnhetKontaktinformasjon(ENHET_NR).getEnhetNr());
     }
 
     @Test
     public void eier_null_fra_null_til() {
         setupEierGyldighetTest(null, null);
-        assertEquals(EIER_ENHET_NR, kontaktEnhetService.utledKontaktEnhetId(ENHET_NR));
+        assertEquals(EIER_ENHET_NR, kontaktEnhetService.utledEnhetKontaktinformasjon(ENHET_NR).getEnhetNr());
     }
 
-    private void gittKontaktinformasjon(EnhetKontaktinformasjon kontaktinformasjon) {
+    private void gittEnhetUtenKontaktinfo(EnhetId enhetId) {
+        String json = readTestResourceFile("norg2/kontaktinformasjon_uten_adresse.json");
+        String response = json.replace("ENHET_NR", enhetId.get());
 
-        EnhetId enhetNr = kontaktinformasjon.getEnhetNr();
+        gittKontaktinformasjonResponse(enhetId, response);
+    }
+    private void gittEnhetMedKontaktinfoStedsadresse(EnhetId enhetId) {
+        String json = readTestResourceFile("norg2/kontaktinformasjon_med_stedsadresse.json");
+        String response = json.replace("ENHET_NR", enhetId.get());
 
-        String postadresse = Optional.ofNullable(kontaktinformasjon.getPostadresse())
-                .map(x -> String.format("{\"postnummer\": %s, \"poststed\": %s }",
-                        wrapQuotes(x.getPostnummer()), wrapQuotes(x.getPoststed()))).orElse(null);
+        gittKontaktinformasjonResponse(enhetId, response);
+    }
+    private void gittEnhetMedKontaktinfoPostboksadresse(EnhetId enhetId) {
+        String json = readTestResourceFile("norg2/kontaktinformasjon_med_postboksadresse.json");
+        String response = json.replace("ENHET_NR", enhetId.get());
 
-        String response = String.format("{\"enhetNr\": %s, \"postadresse\": %s }", wrapQuotes(enhetNr.get()), postadresse);
+        gittKontaktinformasjonResponse(enhetId, response);
 
+    }
+
+    private void gittKontaktinformasjonResponse(EnhetId enhetId, String response) {
         givenThat(
-                get(urlEqualTo("/v1/enhet/" + kontaktinformasjon.getEnhetNr() + "/kontaktinformasjon"))
+                get(urlEqualTo("/v1/enhet/" + enhetId.get() + "/kontaktinformasjon"))
                         .willReturn(aResponse()
                                 .withStatus(200)
-                                .withHeader("Content-Type", "applicaition/json")
+                                .withHeader("Content-Type", "application/json")
                                 .withBody(response)
                         ));
     }
 
-    private void gittEnhetOrganisering(EnhetId enhetNr, EnhetOrganisering... organisering) {
-        String response = "[" + Stream.of(organisering).map(x -> {
-            String enhet = String.format("{\"nr\": %s, \"navn\": %s}",
-                    wrapQuotes(x.getOrganiserer().getNr().get()), wrapQuotes(x.getOrganiserer().getNavn()));
-            return String.format("{\"orgType\": %s, \"organiserer\": %s, \"fra\": %s, \"til\": %s}",
-                    wrapQuotes(x.getOrgType()), enhet,
-                    wrapQuotes(formatDate(x.getFra())), wrapQuotes(formatDate(x.getTil())));
-        }).reduce((x, y) -> x + ", " + y).orElse("") + "]";
+    private void gittEnhetOrganiseringMed3Enheter(EnhetId enhetNr, Map<String, String> replace) {
+
+        String json = readTestResourceFile("norg2/organisering.json");
+
+        replace.putIfAbsent("FRA_1", "null");
+        replace.putIfAbsent("TIL_1", "null");
+        replace.putIfAbsent("FRA_2", "null");
+        replace.putIfAbsent("TIL_2", "null");
+        replace.putIfAbsent("FRA_3", "null");
+        replace.putIfAbsent("TIL_3", "null");
+
+        String response = replace.entrySet().stream().reduce(json, (a,b) -> a.replace(b.getKey(), b.getValue()), (a,b) -> b);
 
         givenThat(
-                get(urlEqualTo("/v1/enhet/" + enhetNr + "/organisering"))
+                get(urlEqualTo("/v1/enhet/" + enhetNr.get() + "/organisering"))
                         .willReturn(aResponse()
                                 .withStatus(200)
-                                .withHeader("Content-Type", "applicaition/json")
+                                .withHeader("Content-Type", "application/json")
                                 .withBody(response)
                         ));
+    }
+
+    private void setupEierGyldighetTest(LocalDate gyldigFra, LocalDate gyldigTil) {
+        gittEnhetUtenKontaktinfo(ENHET_NR);
+        gittEnhetMedKontaktinfoPostboksadresse(EIER_ENHET_NR);
+
+        HashMap<String, String> replace = new HashMap<>();
+        replace.put("ORG_TYPE_2", "EIER");
+        replace.put("ENHET_NR_2", EIER_ENHET_NR.get());
+        replace.put("FRA_2", wrapQuotes(formatDate(gyldigFra)));
+        replace.put("TIL_2", wrapQuotes(formatDate(gyldigTil)));
+
+        gittEnhetOrganiseringMed3Enheter(ENHET_NR, replace);
     }
 
     private String wrapQuotes(String s) {
@@ -222,12 +281,4 @@ public class KontaktEnhetServiceTest {
         return Optional.ofNullable(date).map(x -> x.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"))).orElse(null);
     }
 
-    private void setupEierGyldighetTest(LocalDate gyldigFra, LocalDate gyldigTil) {
-        gittKontaktinformasjon(new EnhetKontaktinformasjon(ENHET_NR, null));
-        gittKontaktinformasjon(new EnhetKontaktinformasjon(EIER_ENHET_NR,
-                new EnhetPostadresse("postnummer", "poststed")));
-        gittEnhetOrganisering(ENHET_NR,
-                new EnhetOrganisering("EIER", gyldigFra, gyldigTil,
-                        new Enhet(EIER_ENHET_NR, "navn")));
-    }
 }

@@ -3,8 +3,10 @@ package no.nav.fo.veilarb.dokument.config;
 import no.nav.common.auth.context.UserRole;
 import no.nav.common.auth.oidc.filter.OidcAuthenticationFilter;
 import no.nav.common.auth.oidc.filter.OidcAuthenticatorConfig;
+import no.nav.common.featuretoggle.UnleashService;
 import no.nav.common.log.LogFilter;
 import no.nav.common.rest.filter.SetStandardHttpHeadersFilter;
+import no.nav.fo.veilarb.dokument.filter.ToggleFilter;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -58,6 +60,15 @@ public class FilterConfig {
         registration.setFilter(new SetStandardHttpHeadersFilter());
         registration.setOrder(3);
         registration.addUrlPatterns("/*");
+        return registration;
+    }
+
+    @Bean
+    public FilterRegistrationBean toggleFilterRegistrationBean(UnleashService unleashService) {
+        FilterRegistrationBean<ToggleFilter> registration = new FilterRegistrationBean<>();
+        registration.setFilter(new ToggleFilter(unleashService));
+        registration.setOrder(4);
+        registration.addUrlPatterns("/api/*");
         return registration;
     }
 }

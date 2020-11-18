@@ -2,19 +2,12 @@ package no.nav.fo.veilarb.dokument.config;
 
 import no.nav.common.rest.client.RestClient;
 import no.nav.common.utils.EnvironmentUtils;
-import no.nav.fo.veilarb.dokument.client.api.ArenaClient;
-import no.nav.fo.veilarb.dokument.client.api.EnhetClient;
-import no.nav.fo.veilarb.dokument.client.api.SakClient;
-import no.nav.fo.veilarb.dokument.client.api.VeilederClient;
-import no.nav.fo.veilarb.dokument.client.impl.ArenaClientImpl;
-import no.nav.fo.veilarb.dokument.client.impl.EnhetClientImpl;
-import no.nav.fo.veilarb.dokument.client.impl.SakClientImpl;
-import no.nav.fo.veilarb.dokument.client.impl.VeilederClientImpl;
+import no.nav.fo.veilarb.dokument.client.api.*;
+import no.nav.fo.veilarb.dokument.client.impl.*;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import static no.nav.common.utils.UrlUtils.createNaisAdeoIngressUrl;
-import static no.nav.common.utils.UrlUtils.createNaisPreprodIngressUrl;
+import static no.nav.common.utils.UrlUtils.*;
 
 @Configuration
 public class ClientConfig {
@@ -32,6 +25,16 @@ public class ClientConfig {
     @Bean
     public SakClient sakClient() {
         return new SakClientImpl(RestClient.baseClient(), naisPreprodOrNaisAdeoIngress("sak", false));
+    }
+
+    @Bean
+    public BrevClient brevClient() {
+        return new BrevClientImpl(RestClient.baseClient(), createServiceUrl("pto-pdfgen", false));
+    }
+
+    @Bean
+    public PersonClient personClient() {
+        return new PersonClientImpl(RestClient.baseClient(), naisPreprodOrNaisAdeoIngress("veilarbperson", true));
     }
 
     @Bean

@@ -1,13 +1,8 @@
 package no.nav.fo.veilarb.dokument.client.impl;
 
 import com.github.tomakehurst.wiremock.junit.WireMockRule;
-import com.nimbusds.jwt.JWT;
-import com.nimbusds.jwt.JWTClaimsSet;
-import com.nimbusds.jwt.PlainJWT;
 import lombok.SneakyThrows;
-import no.nav.common.auth.context.AuthContext;
 import no.nav.common.auth.context.AuthContextHolder;
-import no.nav.common.auth.context.UserRole;
 import no.nav.common.json.JsonUtils;
 import no.nav.common.rest.client.RestClient;
 import no.nav.common.types.identer.AktorId;
@@ -25,6 +20,7 @@ import java.util.stream.Stream;
 import static com.github.tomakehurst.wiremock.client.WireMock.*;
 import static no.nav.fo.veilarb.dokument.client.impl.SakClientImpl.ARENA_KODE;
 import static no.nav.fo.veilarb.dokument.client.impl.SakClientImpl.OPPFOLGING_KODE;
+import static no.nav.fo.veilarb.dokument.util.TestUtils.authContext;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class SakClientImplTest {
@@ -69,18 +65,8 @@ public class SakClientImplTest {
                 get(urlPathEqualTo("/api/v1/saker"))
                         .willReturn(aResponse()
                                 .withStatus(200)
-                                .withHeader("Content-Type", "applicaition/json")
+                                .withHeader("Content-Type", "application/json")
                                 .withBody(json)
                         ));
-    }
-
-    private AuthContext authContext(String subject) {
-        JWTClaimsSet claimsSet = new JWTClaimsSet.Builder()
-                .subject(subject)
-                .build();
-
-        JWT jwt = new PlainJWT(claimsSet);
-
-        return new AuthContext(UserRole.INTERN, jwt);
     }
 }

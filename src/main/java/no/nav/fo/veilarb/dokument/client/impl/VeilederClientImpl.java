@@ -1,9 +1,11 @@
 package no.nav.fo.veilarb.dokument.client.impl;
 
+import lombok.Value;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.common.health.HealthCheckResult;
 import no.nav.common.health.HealthCheckUtils;
 import no.nav.common.rest.client.RestUtils;
+import no.nav.common.types.identer.EnhetId;
 import no.nav.fo.veilarb.dokument.client.api.VeilederClient;
 import no.nav.fo.veilarb.dokument.domain.VeilederDto;
 import okhttp3.OkHttpClient;
@@ -43,7 +45,28 @@ public class VeilederClientImpl implements VeilederClient {
     }
 
     @Override
+    public String hentEnhetNavn(EnhetId enhetId) {
+        Request request = new Request.Builder()
+                .url(joinPaths(veilarbveilederUrl, "api", "enhet", enhetId.get(), "navn"))
+                .header(HttpHeaders.AUTHORIZATION, createBearerToken())
+                .build();
+
+        try (Response response = client.newCall(request).execute()) {
+            RestUtils.throwIfNotSuccessful(response);
+            return RestUtils.parseJsonResponseOrThrow(response, VeilarbveilederEnhetDto.class).getNavn();
+        } catch (Exception e) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Feil ved kall mot" + request.url().toString(), e);
+        }
+    }
+
+    @Override
     public HealthCheckResult checkHealth() {
         return HealthCheckUtils.pingUrl(joinPaths(veilarbveilederUrl, "internal", "isAlive"), client);
     }
+}
+
+@Value
+class VeilarbveilederEnhetDto {
+    EnhetId enhetId;
+    String navn;
 }
