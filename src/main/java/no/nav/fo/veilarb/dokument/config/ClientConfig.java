@@ -7,8 +7,7 @@ import no.nav.fo.veilarb.dokument.client.impl.*;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import static no.nav.common.utils.UrlUtils.createNaisAdeoIngressUrl;
-import static no.nav.common.utils.UrlUtils.createNaisPreprodIngressUrl;
+import static no.nav.common.utils.UrlUtils.*;
 
 @Configuration
 public class ClientConfig {
@@ -30,7 +29,7 @@ public class ClientConfig {
 
     @Bean
     public BrevClient brevClient() {
-        return new BrevClientImpl(RestClient.baseClient(), naisPreprodOrNaisAdeoIngress("pto-pdfgen", false));
+        return new BrevClientImpl(RestClient.baseClient(), createServiceUrl("pto-pdfgen", false));
     }
 
     @Bean

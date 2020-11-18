@@ -2,14 +2,11 @@ package no.nav.fo.veilarb.dokument.client.impl
 
 import com.github.tomakehurst.wiremock.client.WireMock
 import com.github.tomakehurst.wiremock.junit.WireMockRule
-import no.nav.common.auth.context.AuthContextHolder
 import no.nav.common.rest.client.RestClient
-import no.nav.common.utils.fn.UnsafeSupplier
 import no.nav.fo.veilarb.dokument.client.api.BrevClient
 import no.nav.fo.veilarb.dokument.domain.Adresse
 import no.nav.fo.veilarb.dokument.domain.MalType
 import no.nav.fo.veilarb.dokument.domain.Målform
-import no.nav.fo.veilarb.dokument.util.TestUtils
 import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Rule
@@ -97,9 +94,7 @@ class BrevClientImplTest {
                         ))
 
 
-        val response = AuthContextHolder.withContext(TestUtils.authContext("test"), UnsafeSupplier {
-            brevClient.genererBrev(brevdata)
-        })
+        val response = brevClient.genererBrev(brevdata)
 
         assertEquals(documentResponse, response.decodeToString())
     }
