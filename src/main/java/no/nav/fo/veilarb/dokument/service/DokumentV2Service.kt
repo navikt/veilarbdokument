@@ -4,6 +4,7 @@ import no.nav.common.types.identer.EnhetId
 import no.nav.common.types.identer.Fnr
 import no.nav.fo.veilarb.dokument.client.api.BrevClient
 import no.nav.fo.veilarb.dokument.client.api.BrevClient.Returadresse.Companion.fraEnhetPostadresse
+import no.nav.fo.veilarb.dokument.client.api.EnhetClient
 import no.nav.fo.veilarb.dokument.client.api.PersonClient
 import no.nav.fo.veilarb.dokument.client.api.VeilederClient
 import no.nav.fo.veilarb.dokument.domain.Adresse
@@ -19,7 +20,7 @@ import java.time.LocalDate
 class DokumentV2Service(val brevClient: BrevClient,
                         val personClient: PersonClient,
                         val veilederClient: VeilederClient,
-                        val kontaktEnhetService: KontaktEnhetService) {
+                        val enhetInfoService: EnhetInfoService) {
 
     fun lagDokumentutkast(dokumentBestilling: DokumentbestillingDto): ByteArray {
 
@@ -30,11 +31,12 @@ class DokumentV2Service(val brevClient: BrevClient,
     }
 
     private fun hentBrevdata(fnr: Fnr, enhetId: EnhetId): BrevdataOppslag {
-        val enhetKontaktinformasjon: EnhetKontaktinformasjon = kontaktEnhetService.utledEnhetKontaktinformasjon(enhetId)
+        val enhetKontaktinformasjon: EnhetKontaktinformasjon = enhetInfoService.utledEnhetKontaktinformasjon(enhetId)
         val person: PersonClient.Person = personClient.hentPerson(fnr)
         val veilederNavn: String = veilederClient.hentVeiledernavn()
-        val enhetNavn: String = veilederClient.hentEnhetNavn(enhetId)
-        val kontaktEnhetNavn: String = veilederClient.hentEnhetNavn(enhetKontaktinformasjon.enhetNr)
+
+        val enhetNavn: String = enhetInfoService.hentEnhet(enhetId).navn
+        val kontaktEnhetNavn: String = enhetInfoService.hentEnhet(enhetKontaktinformasjon.enhetNr).navn
 
         return BrevdataOppslag(
                 enhetKontaktinformasjon = enhetKontaktinformasjon,

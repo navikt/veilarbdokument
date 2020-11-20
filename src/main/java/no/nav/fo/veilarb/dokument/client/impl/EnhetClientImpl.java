@@ -1,5 +1,9 @@
 package no.nav.fo.veilarb.dokument.client.impl;
 
+import no.nav.common.client.norg2.CachedNorg2Client;
+import no.nav.common.client.norg2.Enhet;
+import no.nav.common.client.norg2.Norg2Client;
+import no.nav.common.client.norg2.NorgHttp2Client;
 import no.nav.common.rest.client.RestUtils;
 import no.nav.common.types.identer.EnhetId;
 import no.nav.fo.veilarb.dokument.client.api.EnhetClient;
@@ -22,16 +26,23 @@ public class EnhetClientImpl implements EnhetClient {
 
     private final OkHttpClient client;
     private final String host;
+    private final Norg2Client norg2Client;
 
-    public EnhetClientImpl(OkHttpClient client, String norgUrl) {
+    public EnhetClientImpl(OkHttpClient client, String norg2Url) {
         this.client = client;
-        host = norgUrl;
+        host = norg2Url;
+        norg2Client = new CachedNorg2Client(new NorgHttp2Client(norg2Url, client));
+    }
+
+    @Override
+    public List<Enhet> alleAktiveEnheter() {
+        return norg2Client.alleAktiveEnheter();
     }
 
     @Cacheable(NORG2_ENHET_KONTAKTINFO_CACHE_NAME)
     public EnhetKontaktinformasjon hentKontaktinfo(EnhetId enhetId) {
         Request request = new Request.Builder()
-                .url(joinPaths(host, String.format("v1/enhet/%s/kontaktinformasjon", enhetId)))
+                .url(joinPaths(host, String.format("/api/v1/enhet/%s/kontaktinformasjon", enhetId)))
                 .build();
 
         try (Response response = client.newCall(request).execute()) {
@@ -46,7 +57,7 @@ public class EnhetClientImpl implements EnhetClient {
     public List<EnhetOrganisering> hentEnhetOrganisering(EnhetId enhetId) {
 
         Request request = new Request.Builder()
-                .url(joinPaths(host, String.format("v1/enhet/%s/organisering", enhetId)))
+                .url(joinPaths(host, String.format("/api/v1/enhet/%s/organisering", enhetId)))
                 .build();
 
         try (Response response = client.newCall(request).execute()) {

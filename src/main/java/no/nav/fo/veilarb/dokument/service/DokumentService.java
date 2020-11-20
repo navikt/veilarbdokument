@@ -22,14 +22,14 @@ public class DokumentService {
     private final AuthService authService;
     private final VeilederClient veilederClient;
     private final OppfolgingssakService oppfolgingssakService;
-    private final KontaktEnhetService kontaktEnhetService;
+    private final EnhetInfoService kontaktEnhetService;
     private final MetrikkService metrikkService;
 
     public DokumentService(DokumentproduksjonV3 dokumentproduksjon,
                            AuthService authService,
                            VeilederClient veilederClient,
                            OppfolgingssakService oppfolgingssakService,
-                           KontaktEnhetService kontaktEnhetService,
+                           EnhetInfoService kontaktEnhetService,
                            MetrikkService metrikkService) {
         this.dokumentproduksjon = dokumentproduksjon;
         this.authService = authService;
