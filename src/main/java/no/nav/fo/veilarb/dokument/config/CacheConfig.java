@@ -15,6 +15,7 @@ public class CacheConfig {
 
     public static final String NORG2_ENHET_KONTAKTINFO_CACHE_NAME = "NORG2_ENHET_KONTAKTINFO_CACHE";
     public static final String NORG2_ENHET_ORGANISERING_CACHE_NAME = "NORG2_ENHET_ORGANISERING_CACHE";
+    public static final String ENHET_NAVN_CACHE_NAME = "ENHET_NAVN_CACHE";
 
 
     @Bean
@@ -30,6 +31,14 @@ public class CacheConfig {
         return new CaffeineCache(NORG2_ENHET_ORGANISERING_CACHE_NAME, Caffeine.newBuilder()
                 .expireAfterWrite(1, TimeUnit.HOURS)
                 .maximumSize(1000)
+                .build());
+    }
+
+    @Bean
+    public Cache enhetNavnCache() {
+        return new CaffeineCache(ENHET_NAVN_CACHE_NAME, Caffeine.newBuilder()
+                .expireAfterWrite(1, TimeUnit.DAYS)
+                .maximumSize(2000)
                 .build());
     }
 }
