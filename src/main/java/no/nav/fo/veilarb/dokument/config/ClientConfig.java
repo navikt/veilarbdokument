@@ -8,6 +8,8 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import static no.nav.common.utils.UrlUtils.*;
+import static no.nav.common.utils.UrlUtils.createNaisAdeoIngressUrl;
+import static no.nav.common.utils.UrlUtils.createNaisPreprodIngressUrl;
 
 @Configuration
 public class ClientConfig {
@@ -28,8 +30,8 @@ public class ClientConfig {
     }
 
     @Bean
-    public BrevClient brevClient() {
-        return new BrevClientImpl(RestClient.baseClient(), createServiceUrl("pto-pdfgen", false));
+    public VeilederClient veilederClient() {
+        return new VeilederClientImpl(RestClient.baseClient(), naisPreprodOrNaisAdeoIngress("veilarbveileder", true));
     }
 
     @Bean
@@ -38,8 +40,8 @@ public class ClientConfig {
     }
 
     @Bean
-    public VeilederClient veilederClient() {
-        return new VeilederClientImpl(RestClient.baseClient(), naisPreprodOrNaisAdeoIngress("veilarbveileder", true));
+    public BrevClient brevClient() {
+        return new BrevClientImpl(RestClient.baseClient(), createServiceUrl("pto-pdfgen", false));
     }
 
     private static String naisPreprodOrNaisAdeoIngress(String appName, boolean withAppContextPath) {
