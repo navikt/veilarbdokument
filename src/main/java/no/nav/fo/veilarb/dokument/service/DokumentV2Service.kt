@@ -4,10 +4,8 @@ import no.nav.common.types.identer.EnhetId
 import no.nav.common.types.identer.Fnr
 import no.nav.fo.veilarb.dokument.client.api.BrevClient
 import no.nav.fo.veilarb.dokument.client.api.BrevClient.Returadresse.Companion.fraEnhetPostadresse
-import no.nav.fo.veilarb.dokument.client.api.EnhetClient
 import no.nav.fo.veilarb.dokument.client.api.PersonClient
 import no.nav.fo.veilarb.dokument.client.api.VeilederClient
-import no.nav.fo.veilarb.dokument.domain.Adresse
 import no.nav.fo.veilarb.dokument.domain.BrevdataOppslag
 import no.nav.fo.veilarb.dokument.domain.DokumentbestillingDto
 import no.nav.fo.veilarb.dokument.domain.EnhetKontaktinformasjon
@@ -51,9 +49,7 @@ class DokumentV2Service(val brevClient: BrevClient,
 
         fun mapBrevdata(dokumentBestilling: DokumentbestillingDto, brevdataOppslag: BrevdataOppslag): BrevClient.Brevdata {
 
-            // TODO: Avklare innhold i brev før dette implementeres. Tomt innhold for testing.
-            val todoAdresse = Adresse(adresselinje1 = "", postnummer = "", poststed = "")
-            val mottaker = BrevClient.Mottaker(brevdataOppslag.person.navn, todoAdresse)
+            val mottaker = BrevClient.Mottaker(brevdataOppslag.person.navn)
             val dato = LocalDate.now().format(DateUtils.norskDateFormatter)
             val returadresse = fraEnhetPostadresse(brevdataOppslag.enhetKontaktinformasjon.postadresse)
 

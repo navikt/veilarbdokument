@@ -19,8 +19,7 @@ interface BrevClient: HealthCheck {
             val returadresse: Returadresse,
     )
 
-    data class Mottaker(val navn: String,
-                        val adresse: Adresse)
+    data class Mottaker(val navn: String)
 
     data class Returadresse(
             val adresselinje: String,
