@@ -4,6 +4,7 @@ import no.nav.common.client.norg2.CachedNorg2Client;
 import no.nav.common.client.norg2.Enhet;
 import no.nav.common.client.norg2.Norg2Client;
 import no.nav.common.client.norg2.NorgHttp2Client;
+import no.nav.common.health.HealthCheckResult;
 import no.nav.common.rest.client.RestUtils;
 import no.nav.common.types.identer.EnhetId;
 import no.nav.fo.veilarb.dokument.client.api.EnhetClient;
@@ -66,5 +67,10 @@ public class EnhetClientImpl implements EnhetClient {
         } catch (Exception e) {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Feil ved kall mot " + request.url().toString(), e);
         }
+    }
+
+    @Override
+    public HealthCheckResult checkHealth() {
+        return norg2Client.checkHealth();
     }
 }

@@ -20,6 +20,7 @@ public class HelsesjekkConfig {
     @Bean
     public SelfTestChecks selfTestChecks(VeilederClient veilederClient,
                                          PersonClient personClient,
+                                         EnhetClient enhetClient,
 //                                         BrevClient brevClient,
                                          ArenaClient arenaClient,
                                          SakClient sakClient,
@@ -30,7 +31,8 @@ public class HelsesjekkConfig {
         List<SelfTestCheck> selfTestChecks = Arrays.asList(
                 new SelfTestCheck("DokumentproduksjonV3", true, dokumentproduksjonV3Helsesjekk),
                 new SelfTestCheck("veilarbveileder", true, veilederClient),
-                new SelfTestCheck("veilarbperson", false, personClient),
+                new SelfTestCheck("veilarbperson", true, personClient),
+                new SelfTestCheck("Norg2", true, enhetClient),
 //                new SelfTestCheck("pto-pdfgen", false, brevClient), // TODO: kan tas med pto-pdfgen er prodsatt
                 new SelfTestCheck("veilarbarena", true, arenaClient),
                 new SelfTestCheck("sak", true, sakClient),
