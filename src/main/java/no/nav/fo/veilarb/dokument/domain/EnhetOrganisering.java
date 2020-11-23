@@ -13,5 +13,5 @@ public class EnhetOrganisering {
     LocalDate fra;
     @JsonDeserialize(using = LocalDateDeserializer.class)
     LocalDate til;
-    Enhet organiserer;
+    EnhetOrganiserer organiserer;
 }

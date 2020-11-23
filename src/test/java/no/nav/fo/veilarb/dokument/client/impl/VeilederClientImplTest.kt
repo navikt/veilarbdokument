@@ -44,20 +44,4 @@ class VeilederClientImplTest {
 
         assertEquals(veilederNavn, veilederNavnResponse)
     }
-
-    @Test
-    fun henter_navn_pa_enhet() {
-        val json = readTestResourceFile("veilarbveileder/enhet_response.json")
-                .replace("ENHET_NAVN", enhetNavn)
-                .replace("ENHET_ID", enhetId.get())
-
-        givenWiremockOkJsonResponse("/api/enhet/${enhetId.get()}/navn", json)
-
-        val enhetNavnResponse =
-                withContext(authContext("test"), UnsafeSupplier {
-                    veilederClient.hentEnhetNavn(enhetId)
-                })
-
-        assertEquals(enhetNavn, enhetNavnResponse)
-    }
 }

@@ -4,7 +4,7 @@ import lombok.Value;
 import no.nav.common.types.identer.EnhetId;
 
 @Value
-public class Enhet {
+public class EnhetOrganiserer {
     EnhetId nr;
     String navn;
 }

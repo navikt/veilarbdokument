@@ -1,6 +1,7 @@
 package no.nav.fo.veilarb.dokument.service;
 
 import com.github.tomakehurst.wiremock.junit.WireMockRule;
+import no.nav.common.client.norg2.Enhet;
 import no.nav.common.rest.client.RestClient;
 import no.nav.common.types.identer.EnhetId;
 import no.nav.fo.veilarb.dokument.client.api.EnhetClient;
@@ -19,16 +20,15 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
-import static com.github.tomakehurst.wiremock.client.WireMock.*;
+import static no.nav.fo.veilarb.dokument.util.TestUtils.givenWiremockOkJsonResponse;
 import static no.nav.fo.veilarb.dokument.util.TestUtils.readTestResourceFile;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-public class KontaktEnhetServiceTest {
+public class EnhetInfoServiceTest {
 
-    private EnhetClient enhetClient;
-    private KontaktEnhetService kontaktEnhetService;
+    private EnhetInfoService enhetInfoService;
 
     private final EnhetId ENHET_NR = EnhetId.of("1234");
     private final EnhetId EIER_ENHET_NR = EnhetId.of("4321");
@@ -43,8 +43,20 @@ public class KontaktEnhetServiceTest {
     @Before
     public void setup() {
         OkHttpClient client = RestClient.baseClient();
-        enhetClient = new EnhetClientImpl(client, "http://localhost:" + wireMockRule.port());
-        kontaktEnhetService = new KontaktEnhetService(enhetClient);
+        EnhetClient enhetClient = new EnhetClientImpl(client, "http://localhost:" + wireMockRule.port());
+        enhetInfoService = new EnhetInfoService(enhetClient);
+    }
+
+    @Test
+    public void finner_riktig_enhet() {
+        String json = readTestResourceFile("norg2/enheter.json");
+
+        givenWiremockOkJsonResponse("/api/v1/enhet?enhetStatusListe=AKTIV", json);
+
+        Enhet enhet = enhetInfoService.hentEnhet(ENHET_NR);
+
+        assertEquals(ENHET_NR.get(), enhet.getEnhetNr());
+        assertEquals("NAV Enhet 2", enhet.getNavn());
     }
 
     @Test
@@ -52,7 +64,7 @@ public class KontaktEnhetServiceTest {
 
         gittEnhetMedKontaktinfoPostboksadresse(ENHET_NR);
 
-        EnhetKontaktinformasjon enhetKontaktinformasjon = kontaktEnhetService.utledEnhetKontaktinformasjon(ENHET_NR);
+        EnhetKontaktinformasjon enhetKontaktinformasjon = enhetInfoService.utledEnhetKontaktinformasjon(ENHET_NR);
 
         assertEquals(ENHET_NR, enhetKontaktinformasjon.getEnhetNr());
         assertTrue(enhetKontaktinformasjon.getPostadresse() instanceof EnhetPostboksadresse);
@@ -68,7 +80,7 @@ public class KontaktEnhetServiceTest {
 
         gittEnhetMedKontaktinfoStedsadresse(ENHET_NR);
 
-        EnhetKontaktinformasjon enhetKontaktinformasjon = kontaktEnhetService.utledEnhetKontaktinformasjon(ENHET_NR);
+        EnhetKontaktinformasjon enhetKontaktinformasjon = enhetInfoService.utledEnhetKontaktinformasjon(ENHET_NR);
 
         assertEquals(ENHET_NR, enhetKontaktinformasjon.getEnhetNr());
         assertTrue(enhetKontaktinformasjon.getPostadresse() instanceof EnhetStedsadresse);
@@ -92,7 +104,7 @@ public class KontaktEnhetServiceTest {
 
         gittEnhetOrganiseringMed3Enheter(ENHET_NR, replace);
 
-        EnhetKontaktinformasjon enhetKontaktinformasjon = kontaktEnhetService.utledEnhetKontaktinformasjon(ENHET_NR);
+        EnhetKontaktinformasjon enhetKontaktinformasjon = enhetInfoService.utledEnhetKontaktinformasjon(ENHET_NR);
 
         assertEquals(EIER_ENHET_NR, enhetKontaktinformasjon.getEnhetNr());
     }
@@ -103,7 +115,7 @@ public class KontaktEnhetServiceTest {
         gittEnhetOrganiseringMed3Enheter(ENHET_NR, new HashMap<>());
 
         assertThatThrownBy(() ->
-                kontaktEnhetService.utledEnhetKontaktinformasjon(ENHET_NR)
+                enhetInfoService.utledEnhetKontaktinformasjon(ENHET_NR)
         ).isExactlyInstanceOf(RuntimeException.class);
 
     }
@@ -118,7 +130,7 @@ public class KontaktEnhetServiceTest {
         gittEnhetOrganiseringMed3Enheter(ENHET_NR, replace);
 
         assertThatThrownBy(() ->
-                kontaktEnhetService.utledEnhetKontaktinformasjon(ENHET_NR)
+                enhetInfoService.utledEnhetKontaktinformasjon(ENHET_NR)
         ).isExactlyInstanceOf(RuntimeException.class);
     }
 
@@ -134,21 +146,21 @@ public class KontaktEnhetServiceTest {
         gittEnhetOrganiseringMed3Enheter(ENHET_NR, replace);
 
         assertThatThrownBy(() ->
-                kontaktEnhetService.utledEnhetKontaktinformasjon(ENHET_NR)
+                enhetInfoService.utledEnhetKontaktinformasjon(ENHET_NR)
         ).isExactlyInstanceOf(RuntimeException.class);
     }
 
     @Test
     public void eier_gyldig_fra_gyldig_til() {
         setupEierGyldighetTest(GYLDIG_FRA, GYLDIG_TIL);
-        assertEquals(EIER_ENHET_NR, kontaktEnhetService.utledEnhetKontaktinformasjon(ENHET_NR).getEnhetNr());
+        assertEquals(EIER_ENHET_NR, enhetInfoService.utledEnhetKontaktinformasjon(ENHET_NR).getEnhetNr());
     }
 
     @Test
     public void eier_ugyldig_fra_gyldig_til() {
         setupEierGyldighetTest(UGYLDIG_FRA, GYLDIG_TIL);
         assertThatThrownBy(() ->
-                kontaktEnhetService.utledEnhetKontaktinformasjon(ENHET_NR)
+                enhetInfoService.utledEnhetKontaktinformasjon(ENHET_NR)
         ).isExactlyInstanceOf(RuntimeException.class);
     }
 
@@ -156,7 +168,7 @@ public class KontaktEnhetServiceTest {
     public void eier_gyldig_fra_ugyldig_til() {
         setupEierGyldighetTest(GYLDIG_FRA, UGYLDIG_TIL);
         assertThatThrownBy(() ->
-                kontaktEnhetService.utledEnhetKontaktinformasjon(ENHET_NR)
+                enhetInfoService.utledEnhetKontaktinformasjon(ENHET_NR)
         ).isExactlyInstanceOf(RuntimeException.class);
     }
 
@@ -164,48 +176,48 @@ public class KontaktEnhetServiceTest {
     public void eier_ugyldig_fra_ugyldig_til() {
         setupEierGyldighetTest(UGYLDIG_FRA, UGYLDIG_TIL);
         assertThatThrownBy(() ->
-                kontaktEnhetService.utledEnhetKontaktinformasjon(ENHET_NR)
+                enhetInfoService.utledEnhetKontaktinformasjon(ENHET_NR)
         ).isExactlyInstanceOf(RuntimeException.class);
     }
 
     @Test
     public void eier_gyldig_fra_null_til() {
         setupEierGyldighetTest(GYLDIG_FRA, null);
-        assertEquals(EIER_ENHET_NR, kontaktEnhetService.utledEnhetKontaktinformasjon(ENHET_NR).getEnhetNr());
+        assertEquals(EIER_ENHET_NR, enhetInfoService.utledEnhetKontaktinformasjon(ENHET_NR).getEnhetNr());
     }
 
     @Test
     public void eier_ugyldig_fra_null_til() {
         setupEierGyldighetTest(UGYLDIG_FRA, null);
         assertThatThrownBy(() ->
-                kontaktEnhetService.utledEnhetKontaktinformasjon(ENHET_NR)
+                enhetInfoService.utledEnhetKontaktinformasjon(ENHET_NR)
         ).isExactlyInstanceOf(RuntimeException.class);
     }
 
     @Test
     public void eier_null_fra_gyldig_til() {
         setupEierGyldighetTest(null, GYLDIG_TIL);
-        assertEquals(EIER_ENHET_NR, kontaktEnhetService.utledEnhetKontaktinformasjon(ENHET_NR).getEnhetNr());
+        assertEquals(EIER_ENHET_NR, enhetInfoService.utledEnhetKontaktinformasjon(ENHET_NR).getEnhetNr());
     }
 
     @Test
     public void eier_null_fra_ugyldig_til() {
         setupEierGyldighetTest(null, UGYLDIG_TIL);
         assertThatThrownBy(() ->
-                kontaktEnhetService.utledEnhetKontaktinformasjon(ENHET_NR)
+                enhetInfoService.utledEnhetKontaktinformasjon(ENHET_NR)
         ).isExactlyInstanceOf(RuntimeException.class);
     }
 
     @Test
     public void eier_lik_fra_lik_til() {
         setupEierGyldighetTest(LocalDate.now(), LocalDate.now());
-        assertEquals(EIER_ENHET_NR, kontaktEnhetService.utledEnhetKontaktinformasjon(ENHET_NR).getEnhetNr());
+        assertEquals(EIER_ENHET_NR, enhetInfoService.utledEnhetKontaktinformasjon(ENHET_NR).getEnhetNr());
     }
 
     @Test
     public void eier_null_fra_null_til() {
         setupEierGyldighetTest(null, null);
-        assertEquals(EIER_ENHET_NR, kontaktEnhetService.utledEnhetKontaktinformasjon(ENHET_NR).getEnhetNr());
+        assertEquals(EIER_ENHET_NR, enhetInfoService.utledEnhetKontaktinformasjon(ENHET_NR).getEnhetNr());
     }
 
     private void gittEnhetUtenKontaktinfo(EnhetId enhetId) {
@@ -229,13 +241,7 @@ public class KontaktEnhetServiceTest {
     }
 
     private void gittKontaktinformasjonResponse(EnhetId enhetId, String response) {
-        givenThat(
-                get(urlEqualTo("/v1/enhet/" + enhetId.get() + "/kontaktinformasjon"))
-                        .willReturn(aResponse()
-                                .withStatus(200)
-                                .withHeader("Content-Type", "application/json")
-                                .withBody(response)
-                        ));
+        givenWiremockOkJsonResponse("/api/v1/enhet/" + enhetId.get() + "/kontaktinformasjon", response);
     }
 
     private void gittEnhetOrganiseringMed3Enheter(EnhetId enhetNr, Map<String, String> replace) {
@@ -251,13 +257,7 @@ public class KontaktEnhetServiceTest {
 
         String response = replace.entrySet().stream().reduce(json, (a,b) -> a.replace(b.getKey(), b.getValue()), (a,b) -> b);
 
-        givenThat(
-                get(urlEqualTo("/v1/enhet/" + enhetNr.get() + "/organisering"))
-                        .willReturn(aResponse()
-                                .withStatus(200)
-                                .withHeader("Content-Type", "application/json")
-                                .withBody(response)
-                        ));
+        givenWiremockOkJsonResponse("/api/v1/enhet/" + enhetNr.get() + "/organisering", response);
     }
 
     private void setupEierGyldighetTest(LocalDate gyldigFra, LocalDate gyldigTil) {

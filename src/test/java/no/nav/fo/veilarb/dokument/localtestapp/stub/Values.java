@@ -3,7 +3,6 @@ package no.nav.fo.veilarb.dokument.localtestapp.stub;
 import no.nav.common.types.identer.AktorId;
 import no.nav.common.types.identer.EnhetId;
 import no.nav.common.types.identer.NavIdent;
-import no.nav.fo.veilarb.dokument.domain.Adresse;
 import no.nav.fo.veilarb.dokument.domain.EnhetPostboksadresse;
 import no.nav.fo.veilarb.dokument.domain.Målform;
 

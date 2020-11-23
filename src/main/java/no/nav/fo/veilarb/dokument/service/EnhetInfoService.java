@@ -1,5 +1,6 @@
 package no.nav.fo.veilarb.dokument.service;
 
+import no.nav.common.client.norg2.Enhet;
 import no.nav.common.types.identer.EnhetId;
 import no.nav.fo.veilarb.dokument.client.api.EnhetClient;
 import no.nav.fo.veilarb.dokument.domain.EnhetKontaktinformasjon;
@@ -14,12 +15,20 @@ import java.util.stream.Collectors;
 import static java.lang.String.format;
 
 @Service
-public class KontaktEnhetService {
+public class EnhetInfoService {
 
     private final EnhetClient enhetClient;
 
-    public KontaktEnhetService(EnhetClient enhetClient) {
+    public EnhetInfoService(EnhetClient enhetClient) {
         this.enhetClient = enhetClient;
+    }
+
+    public Enhet hentEnhet(EnhetId enhetId) {
+        List<Enhet> enheter = enhetClient.hentAktiveEnheter();
+
+        return enheter.stream()
+                .filter(enhet -> enhetId.get().equals(enhet.getEnhetNr()))
+                .findFirst().orElseThrow(() -> new IllegalStateException("Fant ikke navn for enhet " + enhetId));
     }
 
     public EnhetKontaktinformasjon utledEnhetKontaktinformasjon(EnhetId enhetId) {

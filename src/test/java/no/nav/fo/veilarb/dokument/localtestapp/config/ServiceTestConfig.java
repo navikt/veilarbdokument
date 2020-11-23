@@ -9,7 +9,7 @@ import org.springframework.context.annotation.Import;
         AuthService.class,
         DokumentService.class,
         DokumentV2Service.class,
-        KontaktEnhetService.class,
+        EnhetInfoService.class,
         MetrikkService.class,
         OppfolgingssakService.class
 })
