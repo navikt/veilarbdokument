@@ -22,20 +22,20 @@ public class DokumentService {
     private final AuthService authService;
     private final VeilederClient veilederClient;
     private final OppfolgingssakService oppfolgingssakService;
-    private final EnhetInfoService kontaktEnhetService;
+    private final EnhetInfoService enhetInfoService;
     private final MetrikkService metrikkService;
 
     public DokumentService(DokumentproduksjonV3 dokumentproduksjon,
                            AuthService authService,
                            VeilederClient veilederClient,
                            OppfolgingssakService oppfolgingssakService,
-                           EnhetInfoService kontaktEnhetService,
+                           EnhetInfoService enhetInfoService,
                            MetrikkService metrikkService) {
         this.dokumentproduksjon = dokumentproduksjon;
         this.authService = authService;
         this.veilederClient = veilederClient;
         this.oppfolgingssakService = oppfolgingssakService;
-        this.kontaktEnhetService = kontaktEnhetService;
+        this.enhetInfoService = enhetInfoService;
         this.metrikkService = metrikkService;
     }
 
@@ -61,7 +61,7 @@ public class DokumentService {
         NavIdent veilederIdent = authService.getInnloggetVeilederIdent();
         String veilederNavn = veilederClient.hentVeiledernavn();
 
-        EnhetId enhetIdKontakt = kontaktEnhetService.utledEnhetKontaktinformasjon(dokumentbestilling.getEnhetId()).getEnhetNr();
+        EnhetId enhetIdKontakt = enhetInfoService.utledEnhetKontaktinformasjon(dokumentbestilling.getEnhetId()).getEnhetNr();
 
         return Brevdata.builder()
                 .brukerFnr(dokumentbestilling.getBrukerFnr())

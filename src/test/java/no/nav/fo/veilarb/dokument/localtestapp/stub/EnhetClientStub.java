@@ -13,7 +13,7 @@ import static no.nav.fo.veilarb.dokument.localtestapp.stub.Values.*;
 
 public class EnhetClientStub implements EnhetClient {
     @Override
-    public List<Enhet> alleAktiveEnheter() {
+    public List<Enhet> hentAktiveEnheter() {
         return asList(new Enhet().setNavn(TEST_ENHET_NAVN).setEnhetNr(TEST_ENHET.get()));
     }
 

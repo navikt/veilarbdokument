@@ -35,7 +35,7 @@ public class EnhetClientImpl implements EnhetClient {
     }
 
     @Override
-    public List<Enhet> alleAktiveEnheter() {
+    public List<Enhet> hentAktiveEnheter() {
         return norg2Client.alleAktiveEnheter();
     }
 

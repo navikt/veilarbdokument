@@ -9,7 +9,7 @@ import java.util.List;
 
 public interface EnhetClient {
 
-    List<Enhet> alleAktiveEnheter();
+    List<Enhet> hentAktiveEnheter();
 
     EnhetKontaktinformasjon hentKontaktinfo(EnhetId enhetId);
 

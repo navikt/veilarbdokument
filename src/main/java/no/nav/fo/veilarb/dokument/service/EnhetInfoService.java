@@ -24,7 +24,7 @@ public class EnhetInfoService {
     }
 
     public Enhet hentEnhet(EnhetId enhetId) {
-        List<Enhet> enheter = enhetClient.alleAktiveEnheter();
+        List<Enhet> enheter = enhetClient.hentAktiveEnheter();
 
         return enheter.stream()
                 .filter(enhet -> enhetId.get().equals(enhet.getEnhetNr()))
