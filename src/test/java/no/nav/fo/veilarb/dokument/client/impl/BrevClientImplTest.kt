@@ -4,7 +4,6 @@ import com.github.tomakehurst.wiremock.client.WireMock
 import com.github.tomakehurst.wiremock.junit.WireMockRule
 import no.nav.common.rest.client.RestClient
 import no.nav.fo.veilarb.dokument.client.api.BrevClient
-import no.nav.fo.veilarb.dokument.domain.Adresse
 import no.nav.fo.veilarb.dokument.domain.MalType
 import no.nav.fo.veilarb.dokument.domain.Målform
 import org.junit.Assert.assertEquals
@@ -40,12 +39,7 @@ class BrevClientImplTest {
                 begrunnelse = listOf("Avsnitt 1", "Avsnitt 2"),
                 kilder = listOf("Kilde 1", "Kilde 2"),
                 mottaker = BrevClient.Mottaker(
-                        navn = "Mottaker Navn",
-                        Adresse(adresselinje1 = "Mottaker adresselinje 1",
-                                adresselinje2 = "Mottaker adresselinje 2",
-                                adresselinje3 = "Mottaker adresselinje 3",
-                                postnummer = "1234",
-                                poststed = "Mottaker Poststed")
+                        navn = "Mottaker Navn"
                 ),
                 returadresse = BrevClient.Returadresse(adresselinje = "Retur adresselinje",
                         postnummer = "4321",
@@ -66,14 +60,7 @@ class BrevClientImplTest {
                       "begrunnelse": ["Avsnitt 1", "Avsnitt 2"],
                       "kilder": ["Kilde 1", "Kilde 2"],
                       "mottaker": {
-                        "navn": "Mottaker Navn",
-                        "adresse": {
-                          "adresselinje1": "Mottaker adresselinje 1",
-                          "adresselinje2": "Mottaker adresselinje 2",
-                          "adresselinje3": "Mottaker adresselinje 3",
-                          "postnummer": "1234",
-                          "poststed": "Mottaker Poststed"
-                        }
+                        "navn": "Mottaker Navn"
                       },
                       "returadresse": {
                         "adresselinje": "Retur adresselinje",
