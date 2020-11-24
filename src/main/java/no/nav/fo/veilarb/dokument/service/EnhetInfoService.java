@@ -1,5 +1,6 @@
 package no.nav.fo.veilarb.dokument.service;
 
+import no.nav.common.client.norg2.Enhet;
 import no.nav.common.types.identer.EnhetId;
 import no.nav.fo.veilarb.dokument.client.api.EnhetClient;
 import no.nav.fo.veilarb.dokument.domain.EnhetKontaktinformasjon;
@@ -14,19 +15,27 @@ import java.util.stream.Collectors;
 import static java.lang.String.format;
 
 @Service
-public class KontaktEnhetService {
+public class EnhetInfoService {
 
     private final EnhetClient enhetClient;
 
-    public KontaktEnhetService(EnhetClient enhetClient) {
+    public EnhetInfoService(EnhetClient enhetClient) {
         this.enhetClient = enhetClient;
     }
 
-    public EnhetId utledKontaktEnhetId(EnhetId enhetId) {
+    public Enhet hentEnhet(EnhetId enhetId) {
+        List<Enhet> enheter = enhetClient.hentAktiveEnheter();
+
+        return enheter.stream()
+                .filter(enhet -> enhetId.get().equals(enhet.getEnhetNr()))
+                .findFirst().orElseThrow(() -> new IllegalStateException("Fant ikke navn for enhet " + enhetId));
+    }
+
+    public EnhetKontaktinformasjon utledEnhetKontaktinformasjon(EnhetId enhetId) {
         EnhetKontaktinformasjon enhetKontaktinformasjon = enhetClient.hentKontaktinfo(enhetId);
 
         if (enhetKontaktinformasjon.getPostadresse() != null) {
-            return enhetId;
+            return enhetKontaktinformasjon;
         } else {
             List<EnhetOrganisering> enhetOrganisering = enhetClient.hentEnhetOrganisering(enhetId);
             List<EnhetOrganisering> eiere = enhetOrganisering.stream()
@@ -37,7 +46,7 @@ public class KontaktEnhetService {
                 EnhetKontaktinformasjon eierEnhetKontaktinformasjon =
                         enhetClient.hentKontaktinfo(eier.getOrganiserer().getNr());
                 if (eierEnhetKontaktinformasjon.getPostadresse() != null) {
-                    return eierEnhetKontaktinformasjon.getEnhetNr();
+                    return eierEnhetKontaktinformasjon;
                 } else {
                     throw new RuntimeException(format("Eier-enhet %s for enhet %s mangler adresse",
                             eier.getOrganiserer().getNr(), enhetId));

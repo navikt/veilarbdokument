@@ -47,3 +47,4 @@ public class VeilederClientImpl implements VeilederClient {
         return HealthCheckUtils.pingUrl(joinPaths(veilarbveilederUrl, "internal", "isAlive"), client);
     }
 }
+

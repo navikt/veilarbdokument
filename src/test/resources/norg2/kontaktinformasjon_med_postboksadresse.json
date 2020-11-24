@@ -1,0 +1,10 @@
+{
+  "enhetNr": "ENHET_NR",
+  "postadresse": {
+    "type": "postboksadresse",
+    "postnummer": "1234",
+    "poststed": "STED",
+    "postboksnummer": "1",
+    "postboksanlegg": "Anlegg"
+  }
+}

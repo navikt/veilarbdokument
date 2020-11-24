@@ -8,7 +8,8 @@ import org.springframework.context.annotation.Import;
 @Import({
         AuthService.class,
         DokumentService.class,
-        KontaktEnhetService.class,
+        DokumentV2Service.class,
+        EnhetInfoService.class,
         MetrikkService.class,
         OppfolgingssakService.class
 })
