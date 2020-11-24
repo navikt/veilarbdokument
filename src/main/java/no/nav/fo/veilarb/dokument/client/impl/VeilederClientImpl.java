@@ -1,11 +1,9 @@
 package no.nav.fo.veilarb.dokument.client.impl;
 
-import lombok.Value;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.common.health.HealthCheckResult;
 import no.nav.common.health.HealthCheckUtils;
 import no.nav.common.rest.client.RestUtils;
-import no.nav.common.types.identer.EnhetId;
 import no.nav.fo.veilarb.dokument.client.api.VeilederClient;
 import no.nav.fo.veilarb.dokument.domain.VeilederDto;
 import okhttp3.OkHttpClient;
@@ -50,8 +48,3 @@ public class VeilederClientImpl implements VeilederClient {
     }
 }
 
-@Value
-class VeilarbveilederEnhetDto {
-    EnhetId enhetId;
-    String navn;
-}
