@@ -13,6 +13,6 @@ class DokumentV2Controller(val dokumentV2Service: DokumentV2Service) {
 
     @PostMapping("/produserdokument")
     fun dokumentutkast(@RequestBody dto: ProduserDokumentDto): ByteArray {
-            return dokumentV2Service.lagDokumentutkast(dto)
+            return dokumentV2Service.produserDokument(dto)
     }
 }

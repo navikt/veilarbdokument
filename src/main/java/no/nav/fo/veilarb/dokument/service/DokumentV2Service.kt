@@ -21,7 +21,15 @@ class DokumentV2Service(val brevClient: BrevClient,
                         val veilederClient: VeilederClient,
                         val enhetInfoService: EnhetInfoService) {
 
-    fun lagDokumentutkast(dokumentBestillingDto: DokumentbestillingDto): ByteArray {
+    fun produserDokument(dto: ProduserDokumentDto): ByteArray {
+
+        val brevdataOppslag = hentBrevdata(dto.brukerFnr, dto.enhetId)
+        val brevdata = mapBrevdata(dto, brevdataOppslag)
+
+        return brevClient.genererBrev(brevdata)
+    }
+
+    fun produserDokumentutkast(dokumentBestillingDto: DokumentbestillingDto): ByteArray {
         val produserDokumentDto = dokumentBestillingDto.let {
             ProduserDokumentDto(
                 brukerFnr = it.brukerFnr,
@@ -33,15 +41,7 @@ class DokumentV2Service(val brevClient: BrevClient,
             )
         }
 
-        return lagDokumentutkast(produserDokumentDto)
-    }
-
-    fun lagDokumentutkast(dto: ProduserDokumentDto): ByteArray {
-
-        val brevdataOppslag = hentBrevdata(dto.brukerFnr, dto.enhetId)
-        val brevdata = mapBrevdata(dto, brevdataOppslag)
-
-        return brevClient.genererBrev(brevdata)
+        return produserDokument(produserDokumentDto)
     }
 
     private fun hentBrevdata(fnr: Fnr, enhetId: EnhetId): BrevdataOppslag {
