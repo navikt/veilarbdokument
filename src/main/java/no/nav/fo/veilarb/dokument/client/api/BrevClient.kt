@@ -17,6 +17,7 @@ interface BrevClient: HealthCheck {
             val kilder: List<String>,
             val mottaker: Mottaker,
             val returadresse: Returadresse,
+            val utkast: Boolean
     )
 
     data class Mottaker(val navn: String)
