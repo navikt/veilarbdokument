@@ -48,7 +48,7 @@ public class DokumentController {
             @RequestBody DokumentbestillingDto dokumentBestilling) {
 
         if (isDevelopment && unleashService.isEnabled(VEILARBDOKUMENT_V2_API_ENABLED_TOGGLE)) {
-            byte[] dokumentutkastV2 = dokumentV2Service.lagDokumentutkast(dokumentBestilling);
+            byte[] dokumentutkastV2 = dokumentV2Service.produserDokumentutkast(dokumentBestilling);
             return ResponseEntity.ok().body(dokumentutkastV2);
         }
 

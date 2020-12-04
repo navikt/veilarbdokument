@@ -9,6 +9,7 @@ import no.nav.fo.veilarb.dokument.client.api.VeilederClient
 import no.nav.fo.veilarb.dokument.domain.BrevdataOppslag
 import no.nav.fo.veilarb.dokument.domain.DokumentbestillingDto
 import no.nav.fo.veilarb.dokument.domain.EnhetKontaktinformasjon
+import no.nav.fo.veilarb.dokument.domain.ProduserDokumentDto
 import no.nav.fo.veilarb.dokument.util.DateUtils
 import no.nav.fo.veilarb.dokument.util.StringUtils.splitNewline
 import org.springframework.stereotype.Service
@@ -20,12 +21,27 @@ class DokumentV2Service(val brevClient: BrevClient,
                         val veilederClient: VeilederClient,
                         val enhetInfoService: EnhetInfoService) {
 
-    fun lagDokumentutkast(dokumentBestilling: DokumentbestillingDto): ByteArray {
+    fun produserDokument(dto: ProduserDokumentDto): ByteArray {
 
-        val brevdataOppslag = hentBrevdata(dokumentBestilling.brukerFnr, dokumentBestilling.enhetId)
-        val brevdata = mapBrevdata(dokumentBestilling, brevdataOppslag)
+        val brevdataOppslag = hentBrevdata(dto.brukerFnr, dto.enhetId)
+        val brevdata = mapBrevdata(dto, brevdataOppslag)
 
         return brevClient.genererBrev(brevdata)
+    }
+
+    fun produserDokumentutkast(dokumentBestillingDto: DokumentbestillingDto): ByteArray {
+        val produserDokumentDto = dokumentBestillingDto.let {
+            ProduserDokumentDto(
+                brukerFnr = it.brukerFnr,
+                malType = it.malType,
+                enhetId = it.enhetId,
+                begrunnelse = it.begrunnelse,
+                opplysninger = it.opplysninger,
+                utkast = true
+            )
+        }
+
+        return produserDokument(produserDokumentDto)
     }
 
     private fun hentBrevdata(fnr: Fnr, enhetId: EnhetId): BrevdataOppslag {
@@ -47,17 +63,17 @@ class DokumentV2Service(val brevClient: BrevClient,
 
     companion object {
 
-        fun mapBrevdata(dokumentBestilling: DokumentbestillingDto, brevdataOppslag: BrevdataOppslag): BrevClient.Brevdata {
+        fun mapBrevdata(dto: ProduserDokumentDto, brevdataOppslag: BrevdataOppslag): BrevClient.Brevdata {
 
             val mottaker = BrevClient.Mottaker(brevdataOppslag.person.navn)
             val dato = LocalDate.now().format(DateUtils.norskDateFormatter)
             val returadresse = fraEnhetPostadresse(brevdataOppslag.enhetKontaktinformasjon.postadresse)
 
             val begrunnelseAvsnitt =
-                    dokumentBestilling.begrunnelse?.let { splitNewline(it) }?.filterNot { it.isEmpty() } ?: emptyList()
+                    dto.begrunnelse?.let { splitNewline(it) }?.filterNot { it.isEmpty() } ?: emptyList()
 
             return BrevClient.Brevdata(
-                    malType = dokumentBestilling.malType,
+                    malType = dto.malType,
                     veilederNavn = brevdataOppslag.veilederNavn,
                     navKontor = brevdataOppslag.enhetNavn,
                     kontaktEnhetNavn = brevdataOppslag.kontaktEnhetNavn,
@@ -66,7 +82,9 @@ class DokumentV2Service(val brevClient: BrevClient,
                     mottaker = mottaker,
                     returadresse = returadresse,
                     begrunnelse = begrunnelseAvsnitt,
-                    kilder = dokumentBestilling.opplysninger
+                    kilder = dto.opplysninger,
+                    utkast = dto.utkast
+
             )
         }
     }
