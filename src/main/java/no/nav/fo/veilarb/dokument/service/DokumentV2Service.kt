@@ -7,7 +7,6 @@ import no.nav.fo.veilarb.dokument.client.api.BrevClient.Returadresse.Companion.f
 import no.nav.fo.veilarb.dokument.client.api.PersonClient
 import no.nav.fo.veilarb.dokument.client.api.VeilederClient
 import no.nav.fo.veilarb.dokument.domain.BrevdataOppslag
-import no.nav.fo.veilarb.dokument.domain.DokumentbestillingDto
 import no.nav.fo.veilarb.dokument.domain.EnhetKontaktinformasjon
 import no.nav.fo.veilarb.dokument.domain.ProduserDokumentDto
 import no.nav.fo.veilarb.dokument.util.DateUtils
@@ -27,21 +26,6 @@ class DokumentV2Service(val brevClient: BrevClient,
         val brevdata = mapBrevdata(dto, brevdataOppslag)
 
         return brevClient.genererBrev(brevdata)
-    }
-
-    fun produserDokumentutkast(dokumentBestillingDto: DokumentbestillingDto): ByteArray {
-        val produserDokumentDto = dokumentBestillingDto.let {
-            ProduserDokumentDto(
-                brukerFnr = it.brukerFnr,
-                malType = it.malType,
-                enhetId = it.enhetId,
-                begrunnelse = it.begrunnelse,
-                opplysninger = it.opplysninger,
-                utkast = true
-            )
-        }
-
-        return produserDokument(produserDokumentDto)
     }
 
     private fun hentBrevdata(fnr: Fnr, enhetId: EnhetId): BrevdataOppslag {
@@ -84,7 +68,6 @@ class DokumentV2Service(val brevClient: BrevClient,
                     begrunnelse = begrunnelseAvsnitt,
                     kilder = dto.opplysninger,
                     utkast = dto.utkast
-
             )
         }
     }
