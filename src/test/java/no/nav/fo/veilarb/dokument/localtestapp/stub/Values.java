@@ -7,7 +7,6 @@ import no.nav.fo.veilarb.dokument.domain.EnhetPostboksadresse;
 import no.nav.fo.veilarb.dokument.domain.Målform;
 
 public class Values {
-    public static final boolean TEST_PTO_VEDTAKSSTOTTE_PILOT_TOGGLE = true;
     public static final boolean TEST_VEILARBDOKUMENT_ENABLED_TOGGLE = false;
     public static final boolean TEST_VEILARBDOKUMENT_V2_API_ENABLED_TOGGLE = true;
 
