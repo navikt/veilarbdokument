@@ -220,6 +220,15 @@ public class EnhetInfoServiceTest {
         assertEquals(EIER_ENHET_NR, enhetInfoService.utledEnhetKontaktinformasjon(ENHET_NR).getEnhetNr());
     }
 
+    @Test
+    public void har_telefonnummer() {
+        gittEnhetMedKontaktinfoPostboksadresse(ENHET_NR);
+
+        EnhetKontaktinformasjon enhetKontaktinformasjon = enhetInfoService.utledEnhetKontaktinformasjon(ENHET_NR);
+
+        assertEquals(enhetKontaktinformasjon.getTelefonnummer(), "12345678");
+    }
+
     private void gittEnhetUtenKontaktinfo(EnhetId enhetId) {
         String json = readTestResourceFile("norg2/kontaktinformasjon_uten_adresse.json");
         String response = json.replace("ENHET_NR", enhetId.get());

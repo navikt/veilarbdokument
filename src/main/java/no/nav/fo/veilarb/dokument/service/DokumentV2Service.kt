@@ -1,9 +1,10 @@
 package no.nav.fo.veilarb.dokument.service
 
+import no.nav.common.client.norg2.Enhet
 import no.nav.common.types.identer.EnhetId
 import no.nav.common.types.identer.Fnr
 import no.nav.fo.veilarb.dokument.client.api.BrevClient
-import no.nav.fo.veilarb.dokument.client.api.BrevClient.Returadresse.Companion.fraEnhetPostadresse
+import no.nav.fo.veilarb.dokument.client.api.BrevClient.Adresse.Companion.fraEnhetPostadresse
 import no.nav.fo.veilarb.dokument.client.api.PersonClient
 import no.nav.fo.veilarb.dokument.client.api.VeilederClient
 import no.nav.fo.veilarb.dokument.domain.BrevdataOppslag
@@ -15,10 +16,12 @@ import org.springframework.stereotype.Service
 import java.time.LocalDate
 
 @Service
-class DokumentV2Service(val brevClient: BrevClient,
-                        val personClient: PersonClient,
-                        val veilederClient: VeilederClient,
-                        val enhetInfoService: EnhetInfoService) {
+class DokumentV2Service(
+    val brevClient: BrevClient,
+    val personClient: PersonClient,
+    val veilederClient: VeilederClient,
+    val enhetInfoService: EnhetInfoService
+) {
 
     fun produserDokument(dto: ProduserDokumentDto): ByteArray {
 
@@ -33,15 +36,15 @@ class DokumentV2Service(val brevClient: BrevClient,
         val person: PersonClient.Person = personClient.hentPerson(fnr)
         val veilederNavn: String = veilederClient.hentVeiledernavn()
 
-        val enhetNavn: String = enhetInfoService.hentEnhet(enhetId).navn
-        val kontaktEnhetNavn: String = enhetInfoService.hentEnhet(enhetKontaktinformasjon.enhetNr).navn
+        val enhetNavn: Enhet = enhetInfoService.hentEnhet(enhetId)
+        val kontaktEnhetNavn: Enhet = enhetInfoService.hentEnhet(enhetKontaktinformasjon.enhetNr)
 
         return BrevdataOppslag(
-                enhetKontaktinformasjon = enhetKontaktinformasjon,
-                person = person,
-                veilederNavn = veilederNavn,
-                enhetNavn = enhetNavn,
-                kontaktEnhetNavn = kontaktEnhetNavn
+            enhetKontaktinformasjon = enhetKontaktinformasjon,
+            person = person,
+            veilederNavn = veilederNavn,
+            enhet = enhetNavn,
+            kontaktEnhet = kontaktEnhetNavn
         )
     }
 
@@ -49,25 +52,39 @@ class DokumentV2Service(val brevClient: BrevClient,
 
         fun mapBrevdata(dto: ProduserDokumentDto, brevdataOppslag: BrevdataOppslag): BrevClient.Brevdata {
 
-            val mottaker = BrevClient.Mottaker(brevdataOppslag.person.navn)
+            val mottaker = BrevClient.Mottaker(fnr = dto.brukerFnr, navn = brevdataOppslag.person.navn)
             val dato = LocalDate.now().format(DateUtils.norskDateFormatter)
-            val returadresse = fraEnhetPostadresse(brevdataOppslag.enhetKontaktinformasjon.postadresse)
+            val postadresse = fraEnhetPostadresse(brevdataOppslag.enhetKontaktinformasjon.postadresse)
+
+
+            val enhetNavn = brevdataOppslag.enhet.navn ?: throw IllegalStateException(
+                "Manglende navn for enhet ${brevdataOppslag.enhet.enhetNr}"
+            )
+
+            val kontaktEnhetNavn = brevdataOppslag.kontaktEnhet.navn ?: throw IllegalStateException(
+                "Manglende navn for enhet ${brevdataOppslag.kontaktEnhet.enhetNr}"
+            )
+
+            val telefonnummer = brevdataOppslag.enhetKontaktinformasjon.telefonnummer ?: throw IllegalStateException(
+                "Manglende telefonnummer for enhet ${brevdataOppslag.enhetKontaktinformasjon.enhetNr}"
+            )
 
             val begrunnelseAvsnitt =
-                    dto.begrunnelse?.let { splitNewline(it) }?.filterNot { it.isEmpty() } ?: emptyList()
+                dto.begrunnelse?.let { splitNewline(it) }?.filterNot { it.isEmpty() } ?: emptyList()
 
             return BrevClient.Brevdata(
-                    malType = dto.malType,
-                    veilederNavn = brevdataOppslag.veilederNavn,
-                    navKontor = brevdataOppslag.enhetNavn,
-                    kontaktEnhetNavn = brevdataOppslag.kontaktEnhetNavn,
-                    dato = dato,
-                    malform = brevdataOppslag.person.malform,
-                    mottaker = mottaker,
-                    returadresse = returadresse,
-                    begrunnelse = begrunnelseAvsnitt,
-                    kilder = dto.opplysninger,
-                    utkast = dto.utkast
+                malType = dto.malType,
+                veilederNavn = brevdataOppslag.veilederNavn,
+                navKontor = enhetNavn,
+                kontaktEnhetNavn = kontaktEnhetNavn,
+                kontaktTelefonnummer = telefonnummer,
+                dato = dato,
+                malform = brevdataOppslag.person.malform,
+                mottaker = mottaker,
+                postadresse = postadresse,
+                begrunnelse = begrunnelseAvsnitt,
+                kilder = dto.opplysninger,
+                utkast = dto.utkast
             )
         }
     }
