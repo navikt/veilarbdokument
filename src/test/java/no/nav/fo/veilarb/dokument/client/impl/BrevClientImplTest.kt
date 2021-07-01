@@ -3,6 +3,7 @@ package no.nav.fo.veilarb.dokument.client.impl
 import com.github.tomakehurst.wiremock.client.WireMock
 import com.github.tomakehurst.wiremock.junit.WireMockRule
 import no.nav.common.rest.client.RestClient
+import no.nav.common.types.identer.Fnr
 import no.nav.fo.veilarb.dokument.client.api.BrevClient
 import no.nav.fo.veilarb.dokument.domain.MalType
 import no.nav.fo.veilarb.dokument.domain.Målform
@@ -34,14 +35,16 @@ class BrevClientImplTest {
             veilederNavn = "Veileder Navn",
             navKontor = "Nav kontor",
             kontaktEnhetNavn = "Nav kontor kontakt",
+            kontaktTelefonnummer = "00000000",
             dato = "20. januar 2020",
             malform = Målform.NB,
             begrunnelse = listOf("Avsnitt 1", "Avsnitt 2"),
             kilder = listOf("Kilde 1", "Kilde 2"),
             mottaker = BrevClient.Mottaker(
+                fnr = Fnr("12345678901"),
                 navn = "Mottaker Navn"
             ),
-            returadresse = BrevClient.Returadresse(
+            postadresse = BrevClient.Adresse(
                 adresselinje = "Retur adresselinje",
                 postnummer = "4321",
                 poststed = "Retur poststed"
@@ -57,15 +60,17 @@ class BrevClientImplTest {
                       "malType": "SITUASJONSBESTEMT_INNSATS_SKAFFE_ARBEID",
                       "veilederNavn": "Veileder Navn",
                       "navKontor": "Nav kontor",
+                      "kontaktTelefonnummer": "00000000",
                       "kontaktEnhetNavn": "Nav kontor kontakt",
                       "dato": "20. januar 2020",
                       "malform": "NB",
                       "begrunnelse": ["Avsnitt 1", "Avsnitt 2"],
                       "kilder": ["Kilde 1", "Kilde 2"],
                       "mottaker": {
+                        "fnr": "12345678901",
                         "navn": "Mottaker Navn"
                       },
-                      "returadresse": {
+                      "postadresse": {
                         "adresselinje": "Retur adresselinje",
                         "postnummer": "4321",
                         "poststed": "Retur poststed"

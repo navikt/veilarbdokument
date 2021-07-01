@@ -19,6 +19,7 @@ public class Values {
     public static final String TEST_DOKUMENT_ID = "345";
     public static final EnhetId TEST_ENHET = EnhetId.of("456");
     public static final String TEST_ENHET_NAVN = "Enhet Navn";
+    public static final String TEST_TELEFONNUMMER = "00000000";
     public static final EnhetPostboksadresse TEST_ENHET_ADRESSE =
             new EnhetPostboksadresse(
                     "postnummer",

@@ -1,5 +1,6 @@
 {
   "enhetNr": "ENHET_NR",
+  "telefonnummer":"12345678",
   "postadresse": {
     "type": "stedsadresse",
     "postnummer": "1234",
