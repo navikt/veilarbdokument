@@ -7,6 +7,7 @@ import no.nav.common.types.identer.EnhetId;
 public class EnhetKontaktinformasjon {
     private final EnhetId enhetNr;
     private final EnhetPostadresse postadresse;
+    private final String telefonnummer;
 
     public EnhetId getEnhetNr() {
         return this.enhetNr;
@@ -14,5 +15,9 @@ public class EnhetKontaktinformasjon {
 
     public EnhetPostadresse getPostadresse() {
         return this.postadresse;
+    }
+
+    public String getTelefonnummer() {
+        return this.telefonnummer;
     }
 }
