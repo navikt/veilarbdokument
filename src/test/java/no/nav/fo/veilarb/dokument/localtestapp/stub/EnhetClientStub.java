@@ -20,7 +20,7 @@ public class EnhetClientStub implements EnhetClient {
 
     @Override
     public EnhetKontaktinformasjon hentKontaktinfo(EnhetId enhetId) {
-        return new EnhetKontaktinformasjon(TEST_ENHET, TEST_ENHET_ADRESSE);
+        return new EnhetKontaktinformasjon(TEST_ENHET, TEST_ENHET_ADRESSE, TEST_TELEFONNUMMER);
     }
 
     @Override
