@@ -21,7 +21,7 @@
         <java.version>11</java.version>
         <common.version>2.2020.10.15_11.43-b1f02e7bd6ae</common.version>
         <springfox.version>2.9.2</springfox.version>
-        <kotlin.version>1.4.10</kotlin.version>
+        <kotlin.version>1.6.0</kotlin.version>
     </properties>
 
     <build>
