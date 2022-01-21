@@ -9,6 +9,7 @@ import no.nav.fo.veilarb.dokument.client.api.PersonClient
 import no.nav.fo.veilarb.dokument.client.api.VeilederClient
 import no.nav.fo.veilarb.dokument.domain.BrevdataOppslag
 import no.nav.fo.veilarb.dokument.domain.EnhetKontaktinformasjon
+import no.nav.fo.veilarb.dokument.domain.Målform
 import no.nav.fo.veilarb.dokument.domain.ProduserDokumentDto
 import no.nav.fo.veilarb.dokument.util.DateUtils
 import no.nav.fo.veilarb.dokument.util.StringUtils.splitNewline
@@ -72,6 +73,8 @@ class DokumentV2Service(
             val begrunnelseAvsnitt =
                 dto.begrunnelse?.let { splitNewline(it) }?.filterNot { it.isEmpty() } ?: emptyList()
 
+            val malform = brevdataOppslag.person.malform ?: Målform.NB
+
             return BrevClient.Brevdata(
                 malType = dto.malType,
                 veilederNavn = brevdataOppslag.veilederNavn,
@@ -79,7 +82,7 @@ class DokumentV2Service(
                 kontaktEnhetNavn = kontaktEnhetNavn,
                 kontaktTelefonnummer = telefonnummer,
                 dato = dato,
-                malform = brevdataOppslag.person.malform,
+                malform = malform,
                 mottaker = mottaker,
                 postadresse = postadresse,
                 begrunnelse = begrunnelseAvsnitt,
