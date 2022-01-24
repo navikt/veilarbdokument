@@ -39,9 +39,13 @@ class PersonClientImpl(val client: OkHttpClient, val veilarbpersonUrl: String) :
         return HealthCheckUtils.pingUrl(UrlUtils.joinPaths(veilarbpersonUrl, "internal", "isAlive"), client)
     }
 
-    data class PersonRespons(val sammensattNavn: String, val malform: String) {
+    data class PersonRespons(val sammensattNavn: String, val malform: String?) {
         fun tilPerson(): Person {
-            return Person(sammensattNavn, Målform.valueOf(malform))
+
+            return Person(
+                navn = sammensattNavn,
+                malform = Målform.values().find { it.name == malform } ?: Målform.NB
+            )
         }
     }
 }
