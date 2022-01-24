@@ -73,8 +73,6 @@ class DokumentV2Service(
             val begrunnelseAvsnitt =
                 dto.begrunnelse?.let { splitNewline(it) }?.filterNot { it.isEmpty() } ?: emptyList()
 
-            val malform = brevdataOppslag.person.malform ?: Målform.NB
-
             return BrevClient.Brevdata(
                 malType = dto.malType,
                 veilederNavn = brevdataOppslag.veilederNavn,
@@ -82,7 +80,7 @@ class DokumentV2Service(
                 kontaktEnhetNavn = kontaktEnhetNavn,
                 kontaktTelefonnummer = telefonnummer,
                 dato = dato,
-                malform = malform,
+                malform = brevdataOppslag.person.malform,
                 mottaker = mottaker,
                 postadresse = postadresse,
                 begrunnelse = begrunnelseAvsnitt,

@@ -8,5 +8,5 @@ interface PersonClient: HealthCheck {
     fun hentPerson(fnr: Fnr): Person
 
     data class Person(val navn: String,
-                      val malform: Målform?)
+                      val malform: Målform)
 }
