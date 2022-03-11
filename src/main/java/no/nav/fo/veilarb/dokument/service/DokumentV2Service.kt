@@ -9,6 +9,7 @@ import no.nav.fo.veilarb.dokument.client.api.PersonClient
 import no.nav.fo.veilarb.dokument.client.api.VeilederClient
 import no.nav.fo.veilarb.dokument.domain.BrevdataOppslag
 import no.nav.fo.veilarb.dokument.domain.EnhetKontaktinformasjon
+import no.nav.fo.veilarb.dokument.domain.Målform
 import no.nav.fo.veilarb.dokument.domain.ProduserDokumentDto
 import no.nav.fo.veilarb.dokument.util.DateUtils
 import no.nav.fo.veilarb.dokument.util.StringUtils.splitNewline
