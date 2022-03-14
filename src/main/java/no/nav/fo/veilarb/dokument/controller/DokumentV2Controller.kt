@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RestController
 class DokumentV2Controller(val dokumentV2Service: DokumentV2Service) {
 
     @PostMapping("/produserdokument")
-    fun dokumentutkast(@RequestBody dto: ProduserDokumentV2DTO): ByteArray {
+    fun produserDokumentV2(@RequestBody dto: ProduserDokumentV2DTO): ByteArray {
             return dokumentV2Service.produserDokument(dto)
     }
 }
