@@ -7,7 +7,7 @@ import no.nav.fo.veilarb.dokument.client.api.BrevClient
 import no.nav.fo.veilarb.dokument.client.api.BrevClient.Adresse.Companion.fraEnhetPostadresse
 import no.nav.fo.veilarb.dokument.client.api.PersonClient
 import no.nav.fo.veilarb.dokument.client.api.VeilederClient
-import no.nav.fo.veilarb.dokument.domain.BrevdataOppslag
+import no.nav.fo.veilarb.dokument.domain.BrevdataOppslagV2
 import no.nav.fo.veilarb.dokument.domain.EnhetKontaktinformasjon
 import no.nav.fo.veilarb.dokument.domain.ProduserDokumentV2DTO
 import no.nav.fo.veilarb.dokument.util.DateUtils
@@ -31,17 +31,17 @@ class DokumentV2Service(
         return brevClient.genererBrev(brevdata)
     }
 
-    private fun hentBrevdata(fnr: Fnr, enhetId: EnhetId): BrevdataOppslag {
+    private fun hentBrevdata(fnr: Fnr, enhetId: EnhetId): BrevdataOppslagV2 {
         val enhetKontaktinformasjon: EnhetKontaktinformasjon = enhetInfoService.utledEnhetKontaktinformasjon(enhetId)
-        val person: PersonClient.Person = personClient.hentPerson(fnr)
+        val målform = personClient.hentMålform(fnr)
         val veilederNavn: String = veilederClient.hentVeiledernavn()
 
         val enhetNavn: Enhet = enhetInfoService.hentEnhet(enhetId)
         val kontaktEnhetNavn: Enhet = enhetInfoService.hentEnhet(enhetKontaktinformasjon.enhetNr)
 
-        return BrevdataOppslag(
+        return BrevdataOppslagV2(
             enhetKontaktinformasjon = enhetKontaktinformasjon,
-            person = person,
+            målform = målform,
             veilederNavn = veilederNavn,
             enhet = enhetNavn,
             kontaktEnhet = kontaktEnhetNavn
@@ -50,7 +50,7 @@ class DokumentV2Service(
 
     companion object {
 
-        fun mapBrevdata(dto: ProduserDokumentV2DTO, brevdataOppslag: BrevdataOppslag): BrevClient.Brevdata {
+        fun mapBrevdata(dto: ProduserDokumentV2DTO, brevdataOppslag: BrevdataOppslagV2): BrevClient.Brevdata {
 
             val mottaker = BrevClient.Mottaker(
                         navn = dto.navn,
@@ -87,7 +87,7 @@ class DokumentV2Service(
                 kontaktEnhetNavn = kontaktEnhetNavn,
                 kontaktTelefonnummer = telefonnummer,
                 dato = dato,
-                malform = brevdataOppslag.person.malform,
+                malform = brevdataOppslag.målform,
                 mottaker = mottaker,
                 postadresse = postadresse,
                 begrunnelse = begrunnelseAvsnitt,

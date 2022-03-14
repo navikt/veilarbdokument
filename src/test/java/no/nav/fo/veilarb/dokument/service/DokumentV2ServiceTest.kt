@@ -56,7 +56,6 @@ class DokumentV2ServiceTest {
     val kontaktEnhetId = EnhetId("001")
     val enhetKontaktinformasjon = EnhetKontaktinformasjon(kontaktEnhetId, enhetPostadresse, telefonnummer)
     val veilederNavn = "Navn Veileder"
-    val personNavn = "Person Navn"
     val personMålform = Målform.NB
 
     val forventetBrev = "brev".toByteArray()
@@ -99,7 +98,7 @@ class DokumentV2ServiceTest {
         `when`(enhetInfoService.hentEnhet(kontaktEnhetId)).thenReturn(
             Enhet().setEnhetNr(kontaktEnhetId.get()).setNavn(kontaktEnhetNavn)
         )
-        `when`(personClient.hentPerson(dto.brukerFnr)).thenReturn(PersonClient.Person(personNavn, personMålform))
+        `when`(personClient.hentMålform(dto.brukerFnr)).thenReturn(personMålform)
         `when`(brevClient.genererBrev(forventetBrevdata)).thenReturn("brev".toByteArray())
     }
 
