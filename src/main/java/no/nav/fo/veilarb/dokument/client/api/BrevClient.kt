@@ -1,7 +1,6 @@
 package no.nav.fo.veilarb.dokument.client.api
 
 import no.nav.common.health.HealthCheck
-import no.nav.common.types.identer.Fnr
 import no.nav.fo.veilarb.dokument.domain.*
 
 interface BrevClient: HealthCheck {
@@ -23,8 +22,13 @@ interface BrevClient: HealthCheck {
     )
 
     data class Mottaker(
-        val fnr: Fnr,
-        val navn: String
+        val navn: String,
+        val adresselinje1: String,
+        val adresselinje2: String?,
+        val adresselinje3: String?,
+        val postnummer: String?,
+        val poststed: String?,
+        val land: String?
     )
 
     data class Adresse(
