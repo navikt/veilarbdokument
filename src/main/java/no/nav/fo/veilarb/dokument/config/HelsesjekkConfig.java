@@ -21,7 +21,7 @@ public class HelsesjekkConfig {
     public SelfTestChecks selfTestChecks(VeilederClient veilederClient,
                                          PersonClient personClient,
                                          EnhetClient enhetClient,
-//                                         BrevClient brevClient,
+                                         BrevClient brevClient,
                                          ArenaClient arenaClient,
                                          SakClient sakClient,
                                          DokumentproduksjonV3Helsesjekk dokumentproduksjonV3Helsesjekk,
@@ -33,7 +33,7 @@ public class HelsesjekkConfig {
                 new SelfTestCheck("veilarbveileder", true, veilederClient),
                 new SelfTestCheck("veilarbperson", true, personClient),
                 new SelfTestCheck("Norg2", true, enhetClient),
-//                new SelfTestCheck("pto-pdfgen", false, brevClient), // TODO: kan tas med pto-pdfgen er prodsatt
+                new SelfTestCheck("pto-pdfgen", false, brevClient),
                 new SelfTestCheck("veilarbarena", true, arenaClient),
                 new SelfTestCheck("sak", true, sakClient),
                 new SelfTestCheck("Aktorregister", true, aktorregisterClient),

@@ -3,7 +3,6 @@ package no.nav.fo.veilarb.dokument.client.impl
 import com.github.tomakehurst.wiremock.client.WireMock
 import com.github.tomakehurst.wiremock.junit.WireMockRule
 import no.nav.common.rest.client.RestClient
-import no.nav.common.types.identer.Fnr
 import no.nav.fo.veilarb.dokument.client.api.BrevClient
 import no.nav.fo.veilarb.dokument.domain.MalType
 import no.nav.fo.veilarb.dokument.domain.Målform
@@ -41,8 +40,13 @@ class BrevClientImplTest {
             begrunnelse = listOf("Avsnitt 1", "Avsnitt 2"),
             kilder = listOf("Kilde 1", "Kilde 2"),
             mottaker = BrevClient.Mottaker(
-                fnr = Fnr("12345678901"),
-                navn = "Mottaker Navn"
+                navn = "Mottaker Navn",
+                adresselinje1 = "Adresselinje 1",
+                adresselinje2 = "Adresselinje 2",
+                adresselinje3 = "Adresselinje 3",
+                postnummer = "0000",
+                poststed = "Sted",
+                land = "Sverige"
             ),
             postadresse = BrevClient.Adresse(
                 adresselinje = "Retur adresselinje",
@@ -67,8 +71,13 @@ class BrevClientImplTest {
                       "begrunnelse": ["Avsnitt 1", "Avsnitt 2"],
                       "kilder": ["Kilde 1", "Kilde 2"],
                       "mottaker": {
-                        "fnr": "12345678901",
-                        "navn": "Mottaker Navn"
+                        "navn": "Mottaker Navn",
+                        "adresselinje1": "Adresselinje 1",
+                        "adresselinje2": "Adresselinje 2",
+                        "adresselinje3": "Adresselinje 3",
+                        "postnummer": "0000",
+                        "poststed": "Sted",
+                        "land": "Sverige"
                       },
                       "postadresse": {
                         "adresselinje": "Retur adresselinje",

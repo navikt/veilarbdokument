@@ -7,10 +7,9 @@ import no.nav.fo.veilarb.dokument.client.api.BrevClient
 import no.nav.fo.veilarb.dokument.client.api.BrevClient.Adresse.Companion.fraEnhetPostadresse
 import no.nav.fo.veilarb.dokument.client.api.PersonClient
 import no.nav.fo.veilarb.dokument.client.api.VeilederClient
-import no.nav.fo.veilarb.dokument.domain.BrevdataOppslag
+import no.nav.fo.veilarb.dokument.domain.BrevdataOppslagV2
 import no.nav.fo.veilarb.dokument.domain.EnhetKontaktinformasjon
-import no.nav.fo.veilarb.dokument.domain.Målform
-import no.nav.fo.veilarb.dokument.domain.ProduserDokumentDto
+import no.nav.fo.veilarb.dokument.domain.ProduserDokumentV2DTO
 import no.nav.fo.veilarb.dokument.util.DateUtils
 import no.nav.fo.veilarb.dokument.util.StringUtils.splitNewline
 import org.springframework.stereotype.Service
@@ -24,7 +23,7 @@ class DokumentV2Service(
     val enhetInfoService: EnhetInfoService
 ) {
 
-    fun produserDokument(dto: ProduserDokumentDto): ByteArray {
+    fun produserDokument(dto: ProduserDokumentV2DTO): ByteArray {
 
         val brevdataOppslag = hentBrevdata(dto.brukerFnr, dto.enhetId)
         val brevdata = mapBrevdata(dto, brevdataOppslag)
@@ -32,17 +31,17 @@ class DokumentV2Service(
         return brevClient.genererBrev(brevdata)
     }
 
-    private fun hentBrevdata(fnr: Fnr, enhetId: EnhetId): BrevdataOppslag {
+    private fun hentBrevdata(fnr: Fnr, enhetId: EnhetId): BrevdataOppslagV2 {
         val enhetKontaktinformasjon: EnhetKontaktinformasjon = enhetInfoService.utledEnhetKontaktinformasjon(enhetId)
-        val person: PersonClient.Person = personClient.hentPerson(fnr)
+        val målform = personClient.hentMålform(fnr)
         val veilederNavn: String = veilederClient.hentVeiledernavn()
 
         val enhetNavn: Enhet = enhetInfoService.hentEnhet(enhetId)
         val kontaktEnhetNavn: Enhet = enhetInfoService.hentEnhet(enhetKontaktinformasjon.enhetNr)
 
-        return BrevdataOppslag(
+        return BrevdataOppslagV2(
             enhetKontaktinformasjon = enhetKontaktinformasjon,
-            person = person,
+            målform = målform,
             veilederNavn = veilederNavn,
             enhet = enhetNavn,
             kontaktEnhet = kontaktEnhetNavn
@@ -51,9 +50,17 @@ class DokumentV2Service(
 
     companion object {
 
-        fun mapBrevdata(dto: ProduserDokumentDto, brevdataOppslag: BrevdataOppslag): BrevClient.Brevdata {
+        fun mapBrevdata(dto: ProduserDokumentV2DTO, brevdataOppslag: BrevdataOppslagV2): BrevClient.Brevdata {
 
-            val mottaker = BrevClient.Mottaker(fnr = dto.brukerFnr, navn = brevdataOppslag.person.navn)
+            val mottaker = BrevClient.Mottaker(
+                        navn = dto.navn,
+                        adresselinje1 = dto.adresse.adresselinje1,
+                        adresselinje2 = dto.adresse.adresselinje2,
+                        adresselinje3 = dto.adresse.adresselinje3,
+                        postnummer = dto.adresse.postnummer,
+                        poststed = dto.adresse.poststed,
+                        land = dto.adresse.land
+            )
             val dato = LocalDate.now().format(DateUtils.norskDateFormatter)
             val postadresse = fraEnhetPostadresse(brevdataOppslag.enhetKontaktinformasjon.postadresse)
 
@@ -80,7 +87,7 @@ class DokumentV2Service(
                 kontaktEnhetNavn = kontaktEnhetNavn,
                 kontaktTelefonnummer = telefonnummer,
                 dato = dato,
-                malform = brevdataOppslag.person.malform,
+                malform = brevdataOppslag.målform,
                 mottaker = mottaker,
                 postadresse = postadresse,
                 begrunnelse = begrunnelseAvsnitt,

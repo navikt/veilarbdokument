@@ -5,8 +5,5 @@ import no.nav.common.types.identer.Fnr
 import no.nav.fo.veilarb.dokument.domain.Målform
 
 interface PersonClient: HealthCheck {
-    fun hentPerson(fnr: Fnr): Person
-
-    data class Person(val navn: String,
-                      val malform: Målform)
+    fun hentMålform(fnr: Fnr): Målform
 }

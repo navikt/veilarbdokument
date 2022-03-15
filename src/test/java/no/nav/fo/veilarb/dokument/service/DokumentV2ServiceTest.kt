@@ -32,13 +32,22 @@ class DokumentV2ServiceTest {
             enhetInfoService
         )
 
-    val dto = ProduserDokumentDto(
+    val dto = ProduserDokumentV2DTO(
         brukerFnr = Fnr("123"),
+        navn = "Navn Navnesen",
         malType = MalType.STANDARD_INNSATS_BEHOLDE_ARBEID,
         enhetId = EnhetId("000"),
         begrunnelse = "begrunnelse",
         opplysninger = listOf("Kilde1", "kilde2"),
-        utkast = false
+        utkast = false,
+        adresse = ProduserDokumentV2DTO.AdresseDTO(
+            adresselinje1 = "Adresselinje 1",
+            adresselinje2 = "Adresselinje 2",
+            adresselinje3 = "Adresselinje 3",
+            postnummer = "0000",
+            poststed = "Sted",
+            land = "Sverige"
+        )
     )
     val enhetPostadresse = EnhetPostboksadresse("", "", "", "")
     val telefonnummer = "00000000"
@@ -47,7 +56,6 @@ class DokumentV2ServiceTest {
     val kontaktEnhetId = EnhetId("001")
     val enhetKontaktinformasjon = EnhetKontaktinformasjon(kontaktEnhetId, enhetPostadresse, telefonnummer)
     val veilederNavn = "Navn Veileder"
-    val personNavn = "Person Navn"
     val personMålform = Målform.NB
 
     val forventetBrev = "brev".toByteArray()
@@ -66,7 +74,15 @@ class DokumentV2ServiceTest {
         malform = personMålform,
         begrunnelse = listOf(dto.begrunnelse!!),
         kilder = dto.opplysninger,
-        mottaker = BrevClient.Mottaker(dto.brukerFnr, personNavn),
+        mottaker = BrevClient.Mottaker(
+            navn = dto.navn,
+            adresselinje1 = dto.adresse.adresselinje1,
+            adresselinje2 = dto.adresse.adresselinje2,
+            adresselinje3 = dto.adresse.adresselinje3,
+            postnummer = dto.adresse.postnummer,
+            poststed = dto.adresse.poststed,
+            land = dto.adresse.land
+        ),
         postadresse = forventetAdresse,
         utkast = dto.utkast
     )
@@ -82,7 +98,7 @@ class DokumentV2ServiceTest {
         `when`(enhetInfoService.hentEnhet(kontaktEnhetId)).thenReturn(
             Enhet().setEnhetNr(kontaktEnhetId.get()).setNavn(kontaktEnhetNavn)
         )
-        `when`(personClient.hentPerson(dto.brukerFnr)).thenReturn(PersonClient.Person(personNavn, personMålform))
+        `when`(personClient.hentMålform(dto.brukerFnr)).thenReturn(personMålform)
         `when`(brevClient.genererBrev(forventetBrevdata)).thenReturn("brev".toByteArray())
     }
 

@@ -34,16 +34,15 @@ class PersonClientImplTest {
         val fnr = Fnr("123")
         val jsonResponse =
                 """{
-                        "sammensattNavn": "Sammen Satt Navn",
-                        "malform": "NB"
+                        "malform": "NN"
                    }"""
 
-        givenWiremockOkJsonResponse("/api/person/$fnr", jsonResponse)
+        givenWiremockOkJsonResponse("/api/v2/person/malform?fnr=$fnr", jsonResponse)
 
-        val person = AuthContextHolder.withContext(TestUtils.authContext("test"), UnsafeSupplier {
-            personClient.hentPerson(fnr)
+        val respons = AuthContextHolder.withContext(TestUtils.authContext("test"), UnsafeSupplier {
+            personClient.hentMålform(fnr)
         })
 
-        assertEquals(person, PersonClient.Person("Sammen Satt Navn", Målform.NB))
+        assertEquals(Målform.NN, respons)
     }
 }
