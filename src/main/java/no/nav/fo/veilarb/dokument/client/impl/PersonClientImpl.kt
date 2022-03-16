@@ -40,7 +40,7 @@ class PersonClientImpl(val client: OkHttpClient, val veilarbpersonUrl: String) :
 
     data class MalformRespons(val malform: String?) {
         fun tilMålform(): Målform {
-            return Målform.values().find { it.name == malform } ?: Målform.NB
+            return Målform.values().find { it.name == malform?.toUpperCase() } ?: Målform.NB
         }
     }
 }
