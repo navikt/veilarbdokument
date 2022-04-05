@@ -1,6 +1,7 @@
 package no.nav.fo.veilarb.dokument.client.impl;
 
 import lombok.extern.slf4j.Slf4j;
+import no.nav.common.auth.context.AuthContextHolder;
 import no.nav.common.health.HealthCheckResult;
 import no.nav.common.health.HealthCheckUtils;
 import no.nav.common.rest.client.RestUtils;
@@ -21,17 +22,19 @@ public class VeilederClientImpl implements VeilederClient {
 
     private final OkHttpClient client;
     private final String veilarbveilederUrl;
+    private final AuthContextHolder authContextHolder;
 
-    public VeilederClientImpl(OkHttpClient client, String veilarbveilederUrl) {
+    public VeilederClientImpl(OkHttpClient client, String veilarbveilederUrl, AuthContextHolder authContextHolder) {
         this.client = client;
         this.veilarbveilederUrl = veilarbveilederUrl;
+        this.authContextHolder = authContextHolder;
     }
 
     public String hentVeiledernavn() {
 
         Request request = new Request.Builder()
                 .url(joinPaths(veilarbveilederUrl, "api", "veileder", "me"))
-                .header(HttpHeaders.AUTHORIZATION, createBearerToken())
+                .header(HttpHeaders.AUTHORIZATION, createBearerToken(authContextHolder))
                 .build();
 
         try (Response response = client.newCall(request).execute()) {

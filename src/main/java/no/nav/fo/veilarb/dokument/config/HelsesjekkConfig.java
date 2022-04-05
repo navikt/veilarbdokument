@@ -1,8 +1,8 @@
 package no.nav.fo.veilarb.dokument.config;
 
 import no.nav.common.abac.Pep;
-import no.nav.common.client.aktorregister.AktorregisterClient;
-import no.nav.common.featuretoggle.UnleashService;
+import no.nav.common.client.aktoroppslag.AktorOppslagClient;
+import no.nav.common.featuretoggle.UnleashClient;
 import no.nav.common.health.selftest.SelfTestCheck;
 import no.nav.common.health.selftest.SelfTestChecks;
 import no.nav.common.health.selftest.SelfTestMeterBinder;
@@ -25,8 +25,8 @@ public class HelsesjekkConfig {
                                          ArenaClient arenaClient,
                                          SakClient sakClient,
                                          DokumentproduksjonV3Helsesjekk dokumentproduksjonV3Helsesjekk,
-                                         AktorregisterClient aktorregisterClient,
-                                         UnleashService unleashService,
+                                         AktorOppslagClient aktorOppslagClient,
+                                         UnleashClient unleashClient,
                                          Pep pep) {
         List<SelfTestCheck> selfTestChecks = Arrays.asList(
                 new SelfTestCheck("DokumentproduksjonV3", true, dokumentproduksjonV3Helsesjekk),
@@ -36,9 +36,9 @@ public class HelsesjekkConfig {
                 new SelfTestCheck("pto-pdfgen", false, brevClient),
                 new SelfTestCheck("veilarbarena", true, arenaClient),
                 new SelfTestCheck("sak", true, sakClient),
-                new SelfTestCheck("Aktorregister", true, aktorregisterClient),
+                new SelfTestCheck("PDL", true, aktorOppslagClient),
                 new SelfTestCheck("ABAC", true, pep.getAbacClient()),
-                new SelfTestCheck("Unleash", false, unleashService)
+                new SelfTestCheck("Unleash", false, unleashClient)
         );
 
         return new SelfTestChecks(selfTestChecks);

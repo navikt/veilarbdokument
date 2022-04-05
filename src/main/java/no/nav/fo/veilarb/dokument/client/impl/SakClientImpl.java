@@ -1,5 +1,6 @@
 package no.nav.fo.veilarb.dokument.client.impl;
 
+import no.nav.common.auth.context.AuthContextHolder;
 import no.nav.common.health.HealthCheckResult;
 import no.nav.common.health.HealthCheckUtils;
 import no.nav.common.rest.client.RestClient;
@@ -28,13 +29,15 @@ public class SakClientImpl implements SakClient {
 
     private final OkHttpClient client;
     private final String host;
+    private final AuthContextHolder authContextHolder;
 
     public static String ARENA_KODE = "AO01";
     public static String OPPFOLGING_KODE = "OPP";
 
-    public SakClientImpl(OkHttpClient client, String sakUrl) {
+    public SakClientImpl(OkHttpClient client, String sakUrl, AuthContextHolder authContextHolder) {
         this.client = client;
         this.host = sakUrl;
+        this.authContextHolder = authContextHolder;
     }
 
     public List<Sak> hentOppfolgingssaker(AktorId aktorId) {
@@ -46,7 +49,7 @@ public class SakClientImpl implements SakClient {
 
         Request request = new Request.Builder()
                 .url(url)
-                .header(HttpHeaders.AUTHORIZATION, createBearerToken())
+                .header(HttpHeaders.AUTHORIZATION, createBearerToken(authContextHolder))
                 .build();
 
         try (Response response = client.newCall(request).execute()) {
@@ -63,7 +66,7 @@ public class SakClientImpl implements SakClient {
 
         Request request = new Request.Builder()
                 .url(joinPaths(host, "/api/v1/saker"))
-                .header(HttpHeaders.AUTHORIZATION, createBearerToken())
+                .header(HttpHeaders.AUTHORIZATION, createBearerToken(authContextHolder))
                 .post(RestUtils.toJsonRequestBody(entity))
                 .build();
 
