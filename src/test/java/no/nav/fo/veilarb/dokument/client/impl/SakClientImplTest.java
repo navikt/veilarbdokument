@@ -3,12 +3,12 @@ package no.nav.fo.veilarb.dokument.client.impl;
 import com.github.tomakehurst.wiremock.junit.WireMockRule;
 import lombok.SneakyThrows;
 import no.nav.common.auth.context.AuthContextHolder;
+import no.nav.common.auth.context.AuthContextHolderThreadLocal;
 import no.nav.common.json.JsonUtils;
 import no.nav.common.rest.client.RestClient;
 import no.nav.common.types.identer.AktorId;
 import no.nav.fo.veilarb.dokument.client.api.SakClient;
 import no.nav.fo.veilarb.dokument.domain.Sak;
-import okhttp3.OkHttpClient;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -26,14 +26,17 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class SakClientImplTest {
 
     private SakClient sakClient;
+    private AuthContextHolder authContextHolder;
 
     @Rule
     public WireMockRule wireMockRule = new WireMockRule();
 
     @Before
     public void setup() {
-        OkHttpClient client = RestClient.baseClient();
-        sakClient = new SakClientImpl(client, "http://localhost:" + wireMockRule.port());
+        authContextHolder = AuthContextHolderThreadLocal.instance();
+        sakClient = new SakClientImpl(
+                RestClient.baseClient(), "http://localhost:" + wireMockRule.port(), authContextHolder
+        );
     }
 
     @Test
@@ -52,7 +55,7 @@ public class SakClientImplTest {
 
         mockSakerResponse(saker);
 
-        Stream<Integer> oppfolgingssaker = AuthContextHolder.withContext(authContext("test"), () ->
+        Stream<Integer> oppfolgingssaker = authContextHolder.withContext(authContext("test"), () ->
                 sakClient.hentOppfolgingssaker(AktorId.of("aktorId")).stream().map(Sak::id));
 
         assertThat(oppfolgingssaker).containsExactly(2, 9);

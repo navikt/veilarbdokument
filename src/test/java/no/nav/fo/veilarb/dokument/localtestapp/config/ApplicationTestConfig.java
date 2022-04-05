@@ -2,32 +2,28 @@ package no.nav.fo.veilarb.dokument.localtestapp.config;
 
 import io.micrometer.core.instrument.MeterRegistry;
 import io.micrometer.core.instrument.simple.SimpleMeterRegistry;
-import no.nav.common.abac.AbacClient;
 import no.nav.common.abac.Pep;
-import no.nav.common.abac.VeilarbPep;
-import no.nav.common.abac.audit.AuditLogger;
-import no.nav.common.client.aktorregister.AktorregisterClient;
+import no.nav.common.client.aktoroppslag.AktorOppslagClient;
 import no.nav.common.cxf.CXFClient;
-import no.nav.common.featuretoggle.UnleashService;
+import no.nav.common.featuretoggle.UnleashClient;
+import no.nav.common.health.HealthCheckResult;
 import no.nav.common.utils.Credentials;
 import no.nav.fo.veilarb.dokument.config.EnvironmentProperties;
 import no.nav.fo.veilarb.dokument.config.HelsesjekkConfig;
-import no.nav.fo.veilarb.dokument.config.SwaggerConfig;
 import no.nav.fo.veilarb.dokument.helsesjekk.DokumentproduksjonV3Helsesjekk;
-import no.nav.fo.veilarb.dokument.localtestapp.stub.AbacClientStub;
-import no.nav.fo.veilarb.dokument.localtestapp.stub.AktorregisterClientStub;
-import no.nav.fo.veilarb.dokument.localtestapp.stub.UnleashServiceMock;
+import no.nav.fo.veilarb.dokument.localtestapp.stub.AktorOppslagClientStub;
 import no.nav.tjeneste.virksomhet.dokumentproduksjon.v3.DokumentproduksjonV3;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 
-import static no.nav.fo.veilarb.dokument.localtestapp.stub.Values.TEST_SRV_PASSWORD;
-import static no.nav.fo.veilarb.dokument.localtestapp.stub.Values.TEST_SRV_USERNAME;
+import static no.nav.fo.veilarb.dokument.localtestapp.stub.Values.*;
+import static no.nav.fo.veilarb.dokument.util.Toggles.VEILARBDOKUMENT_ENABLED_TOGGLE;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 @Configuration
 @Import({
-        SwaggerConfig.class,
         ClientTestConfig.class,
         ServiceTestConfig.class,
         ControllerTestConfig.class,
@@ -42,18 +38,13 @@ public class ApplicationTestConfig {
     }
 
     @Bean
-    public AktorregisterClient aktorregisterClient() {
-        return new AktorregisterClientStub();
+    public AktorOppslagClient aktorOppslagClient() {
+        return new AktorOppslagClientStub();
     }
 
     @Bean
-    public AbacClient abacClient() {
-        return new AbacClientStub();
-    }
-
-    @Bean
-    public Pep veilarbPep(AbacClient abacClient) {
-        return new VeilarbPep(TEST_SRV_USERNAME, abacClient, new AuditLogger(), null, null);
+    public Pep veilarbPep() {
+        return mock(Pep.class);
     }
 
     @Bean
@@ -75,7 +66,10 @@ public class ApplicationTestConfig {
     }
 
     @Bean
-    public UnleashService unleashService() {
-        return UnleashServiceMock.getMock();
+    public UnleashClient unleashClient() {
+        UnleashClient unleashClient = mock(UnleashClient.class);
+        when(unleashClient.isEnabled(VEILARBDOKUMENT_ENABLED_TOGGLE)).thenReturn(TEST_VEILARBDOKUMENT_ENABLED_TOGGLE);
+        when(unleashClient.checkHealth()).thenReturn(HealthCheckResult.healthy());
+        return unleashClient;
     }
 }

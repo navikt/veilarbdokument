@@ -1,5 +1,6 @@
 package no.nav.fo.veilarb.dokument.client.impl
 
+import no.nav.common.auth.context.AuthContextHolder
 import no.nav.common.health.HealthCheckResult
 import no.nav.common.health.HealthCheckUtils
 import no.nav.common.rest.client.RestUtils
@@ -15,12 +16,16 @@ import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpStatus
 import org.springframework.web.server.ResponseStatusException
 
-class PersonClientImpl(val client: OkHttpClient, val veilarbpersonUrl: String) : PersonClient {
+class PersonClientImpl(
+    val client: OkHttpClient,
+    val veilarbpersonUrl: String,
+    val authContextHolder: AuthContextHolder
+) : PersonClient {
 
     override fun hentMålform(fnr: Fnr): Målform {
         val request = Request.Builder()
                 .url(UrlUtils.joinPaths(veilarbpersonUrl, "api/v2/person/malform?fnr=$fnr"))
-                .header(HttpHeaders.AUTHORIZATION, AuthUtils.createBearerToken())
+                .header(HttpHeaders.AUTHORIZATION, AuthUtils.createBearerToken(authContextHolder))
                 .build()
         try {
             client.newCall(request).execute().use { response ->

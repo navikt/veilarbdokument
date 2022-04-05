@@ -9,7 +9,6 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 @ConfigurationProperties(prefix = "app.env")
 public class EnvironmentProperties {
     private String dokumentproduksjonUrl;
-    private String aktorregisterUrl;
     private String cxfStsUrl;
     private String stsDiscoveryUrl;
     private String norg2Url;
@@ -18,4 +17,5 @@ public class EnvironmentProperties {
     private String veilarbloginOpenAmClientId;
     private String aadDiscoveryUrl;
     private String veilarbloginAadClientId;
+    private String unleashUrl;
 }
