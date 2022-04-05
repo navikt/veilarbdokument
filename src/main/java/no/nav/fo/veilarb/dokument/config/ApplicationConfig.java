@@ -1,14 +1,14 @@
 package no.nav.fo.veilarb.dokument.config;
 
 import no.nav.common.abac.Pep;
-import no.nav.common.abac.VeilarbPep;
+import no.nav.common.abac.VeilarbPepFactory;
 import no.nav.common.abac.audit.SpringAuditRequestInfoSupplier;
-import no.nav.common.client.aktorregister.AktorregisterClient;
-import no.nav.common.client.aktorregister.AktorregisterHttpClient;
-import no.nav.common.client.aktorregister.CachedAktorregisterClient;
+import no.nav.common.auth.context.AuthContextHolder;
+import no.nav.common.auth.context.AuthContextHolderThreadLocal;
 import no.nav.common.cxf.CXFClient;
 import no.nav.common.cxf.StsConfig;
-import no.nav.common.featuretoggle.UnleashService;
+import no.nav.common.featuretoggle.UnleashClient;
+import no.nav.common.featuretoggle.UnleashClientImpl;
 import no.nav.common.sts.NaisSystemUserTokenProvider;
 import no.nav.common.sts.SystemUserTokenProvider;
 import no.nav.common.utils.Credentials;
@@ -17,7 +17,6 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import static no.nav.common.featuretoggle.UnleashServiceConfig.resolveFromEnvironment;
 import static no.nav.common.utils.NaisUtils.getCredentials;
 
 @Configuration
@@ -33,8 +32,11 @@ public class ApplicationConfig {
 
     @Bean
     public Pep veilarbPep(EnvironmentProperties properties, Credentials serviceUserCredentials) {
-        return new VeilarbPep(properties.getAbacUrl(), serviceUserCredentials.username, serviceUserCredentials.password, new SpringAuditRequestInfoSupplier());
+        return VeilarbPepFactory.get(
+                properties.getAbacUrl(), serviceUserCredentials.username,
+                serviceUserCredentials.password, new SpringAuditRequestInfoSupplier());
     }
+
     @Bean
     public DokumentproduksjonV3 dokumentproduksjonV3(EnvironmentProperties properties, Credentials credentials) {
 
@@ -51,8 +53,8 @@ public class ApplicationConfig {
     }
 
     @Bean
-    public UnleashService unleashService() {
-        return new UnleashService(resolveFromEnvironment());
+    public UnleashClient unleashClient(EnvironmentProperties properties) {
+        return new UnleashClientImpl(properties.getUnleashUrl(), APPLICATION_NAME);
     }
 
     @Bean
@@ -61,10 +63,7 @@ public class ApplicationConfig {
     }
 
     @Bean
-    public AktorregisterClient aktorregisterClient(EnvironmentProperties properties, SystemUserTokenProvider tokenProvider) {
-        AktorregisterClient aktorregisterClient = new AktorregisterHttpClient(
-                properties.getAktorregisterUrl(), APPLICATION_NAME, tokenProvider::getSystemUserToken
-        );
-        return new CachedAktorregisterClient(aktorregisterClient);
+    public AuthContextHolder authContextHolder() {
+        return AuthContextHolderThreadLocal.instance();
     }
 }

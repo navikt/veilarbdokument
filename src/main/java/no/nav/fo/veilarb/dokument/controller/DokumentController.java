@@ -1,6 +1,6 @@
 package no.nav.fo.veilarb.dokument.controller;
 
-import io.swagger.annotations.ApiOperation;
+import io.swagger.v3.oas.annotations.Operation;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.fo.veilarb.dokument.domain.DokumentbestillingDto;
 import no.nav.fo.veilarb.dokument.domain.DokumentbestillingResponsDto;
@@ -21,7 +21,7 @@ public class DokumentController {
         this.dokumentService = dokumentService;
     }
 
-    @ApiOperation("Bestill dokument og ekspeder som brev")
+    @Operation(summary = "Bestill dokument og ekspeder som brev")
     @PostMapping("/bestilldokument")
     public DokumentbestillingResponsDto bestillDokument(
             @RequestHeader(AUTHORIZATION) String authorization,
@@ -29,7 +29,7 @@ public class DokumentController {
         return dokumentService.bestillDokument(dokumentBestilling);
     }
 
-    @ApiOperation("Produser dokumentutkast")
+    @Operation(summary = "Produser dokumentutkast")
     @PostMapping("/dokumentutkast")
     public ResponseEntity<byte[]> produserDokumentutkast(
             @RequestHeader(AUTHORIZATION) String authorization,

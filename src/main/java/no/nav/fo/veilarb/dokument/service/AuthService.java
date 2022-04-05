@@ -3,7 +3,7 @@ package no.nav.fo.veilarb.dokument.service;
 import no.nav.common.abac.Pep;
 import no.nav.common.abac.domain.request.ActionId;
 import no.nav.common.auth.context.AuthContextHolder;
-import no.nav.common.client.aktorregister.AktorregisterClient;
+import no.nav.common.client.aktoroppslag.AktorOppslagClient;
 import no.nav.common.types.identer.AktorId;
 import no.nav.common.types.identer.EnhetId;
 import no.nav.common.types.identer.Fnr;
@@ -18,23 +18,25 @@ import org.springframework.web.server.ResponseStatusException;
 @Service
 public class AuthService {
 
-    private final AktorregisterClient aktorregisterClient;
+    private final AktorOppslagClient aktorOppslagClient;
     private final Pep pep;
     private final ArenaClient arenaClient;
+    AuthContextHolder authContextHolder;
 
-    public AuthService(AktorregisterClient aktorregisterClient,
+    public AuthService(AktorOppslagClient aktorOppslagClient,
                        Pep pep,
-                       ArenaClient arenaClient) {
-        this.aktorregisterClient = aktorregisterClient;
+                       ArenaClient arenaClient,
+                       AuthContextHolder authContextHolder) {
+        this.aktorOppslagClient = aktorOppslagClient;
         this.pep = pep;
         this.arenaClient = arenaClient;
+        this.authContextHolder = authContextHolder;
     }
-
 
     public Bruker sjekkTilgang(Fnr fnr, EnhetId veilederEnhet) {
         sjekkInternBruker();
 
-        AktorId aktorId = aktorregisterClient.hentAktorId(fnr);
+        AktorId aktorId = aktorOppslagClient.hentAktorId(fnr);
 
         sjekkTilgangTilPerson(aktorId);
         sjekkRiktigEnhet(fnr, veilederEnhet);
@@ -65,13 +67,13 @@ public class AuthService {
     }
 
     private void sjekkInternBruker() {
-        if (!AuthContextHolder.erInternBruker()) {
+        if (!authContextHolder.erInternBruker()) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Ikke intern bruker");
         }
     }
 
     public NavIdent getInnloggetVeilederIdent() {
-        return AuthContextHolder.getNavIdent().orElseThrow(() ->
+        return authContextHolder.getNavIdent().orElseThrow(() ->
                         new ResponseStatusException(HttpStatus.BAD_REQUEST, "Fant ikke ident for innlogget veileder"));
     }
 }
